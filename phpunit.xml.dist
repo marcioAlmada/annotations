@@ -44,12 +44,10 @@
             highlight="true"
         />
         <log
-            type="coverage-clover"
-            target="artifacts/tests/coverage/coverage.xml"
-        />
-        <log
             type="coverage-text"
             target="artifacts/tests/coverage/coverage.txt"
         />
+
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
 </phpunit>
