@@ -7,3 +7,8 @@ php:
 
 before_script:
   - composer install --dev
+
+after_script:
+  - php vendor/bin/coveralls
+  # or enable logging
+  - php vendor/bin/coveralls -v
