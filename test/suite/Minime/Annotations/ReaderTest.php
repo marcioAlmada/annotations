@@ -11,7 +11,8 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$this->Fixture = new Fixture();
+		include_once __DIR__ . "/../../../lib/AnnotationsFixture.php";
+		$this->Fixture =  $this->Fixture = new \AnnotationsFixture;
 	}
 
 	public function testParseGeneralFixture()
@@ -133,63 +134,13 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
-}
-
-class Fixture
-{
 	/**
-	 * @number 1
-	 * @string "123"
-	 * @string2 abc
-	 * @array ["a", "b"]
-	 * @object {"x": "y"}
-	 * @nested {"x": {"y": "z"}}
-	 * @nestedArray {"x": {"y": ["z", "p"]}}
-	 *
-	 * @trueVar
-	 * @null-var null
-	 *
-	 * @booleanTrue true
-	 * @booleanTrue2 tRuE
-	 * @booleanFalse false
-	 * @booleanNull null
-	 * 
+	 * @expectedException \InvalidArgumentException
 	 */
-	private $generalFixture;
-
-	/**
-	 * @var x
-	 * @var2 1024
-	 * @param string x
-	 * @param integer y
-	 * @param array z
-	 */
-	private $multipleValuesFixture;
-
-
-	/**
-	 * @get @post @ajax
-	 * @postParam x
-	 * @postParam y
-	 * @postParam z
-	 */
-	private $sameLineFixture;
-
-	private $emptyFixture;
-
-	/**
-	 * @param string var1
-	 * @param integer var2
-	 */
-	private $variableDeclarationsFixture;
-
-	/**
-	 * @param false
-	 */
-	private $badVariableDeclarationFixtureOne;
-
-	/**
-	 * @param true
-	 */
-	private $badVariableDeclarationFixtureTwo;
+	public function testGetMethodAcceptsOnlyStringKeys()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'generalFixture');
+		$reader = new Reader($reflection->getDocComment());
+		$declarations = $reader->get(0);
+	}
 }

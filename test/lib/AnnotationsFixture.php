@@ -1,7 +1,16 @@
 <?php
 
+/**
+ * @get @post @ajax
+ * @postParam x
+ * @postParam y
+ * @postParam z
+ */
 class AnnotationsFixture
 {
+
+	private $emptyFixture;
+
 	/**
 	 * @number 1
 	 * @string "123"
@@ -40,8 +49,6 @@ class AnnotationsFixture
 	 */
 	private $sameLineFixture;
 
-	private $emptyFixture;
-
 	/**
 	 * @param string var1
 	 * @param integer var2
@@ -57,4 +64,14 @@ class AnnotationsFixture
 	 * @param true
 	 */
 	private $badVariableDeclarationFixtureTwo;
+
+	/**	
+	 * @get @post @ajax
+	 * @postParam x
+	 * @postParam y
+	 * @postParam z
+	 */
+	private function generalMethodFixture()
+	{
+	}
 }
