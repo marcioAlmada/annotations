@@ -22,17 +22,26 @@ class Reader
 		return $this->parameters;
 	}
 
-	public function get($key)
+	public function has($key)
 	{
 		if(is_string($key))
 		{
 			if(isset($this->parameters[$key]))
 			{
-				return $this->parameters[$key];
+				return true;
 			}
-			return null;
+			return false;
 		}
 		throw new \InvalidArgumentException('Annotation key must be a string');
+	}
+
+	public function get($key)
+	{
+		if($this->has($key))
+		{
+			return $this->parameters[$key];
+		}
+		return null;
 	}
 
 	public function getVariableDeclarations($name)
