@@ -1,15 +1,15 @@
 {
-    "name": "minime/meta",
+    "name": "minime/annotations",
     "type": "library",
-    "description": "PHP ReflectionClass extension for simple metadata/annotations support",
-    "keywords": ["php", "metadata"],
-    "homepage": "",
+    "description": "A lightweight dependency free PHP annotation library",
+    "keywords": ["php", "reflection", "annotations", "metadata"],
+    "homepage": "http://github.com/marcioAlmada/minime.annotations",
     "license": "proprietary",
     "authors": [
         {
             "name": "Márcio Almada",
             "email": "marcio.web2@gmail.com",
-            "homepage": "http://www.github.com/marcioAlmada"
+            "homepage": "http://github.com/marcioAlmada/"
         }
     ],
     "require": {
