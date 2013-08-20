@@ -9,6 +9,8 @@
 class AnnotationsFixture
 {
 
+	use Minime\Annotations\Traits\Reader;
+
 	private $emptyFixture;
 
 	/**
