@@ -76,10 +76,6 @@ class Reader
 			{
 				$this->parameters[$rawParameter] = TRUE;
 			}
-			else
-			{
-				$this->parameters[$rawParameter] = NULL;
-			}
 		}
 	}
 
@@ -111,21 +107,34 @@ class Reader
 
 		if($type !== 'string')
 		{
-			throw new ReaderException(
-				"Raw declaration must be string, $type given. Key='$name'.");
-		}
-
-		if(strlen($declaration) === 0)
-		{
-			throw new ReaderException(
-				"Raw declaration cannot have zero length. Key='$name'.");
+			throw new ReaderException("Raw declaration must be string, $type given. Key='$name'.");
 		}
 
 		$declaration = explode(" ", $declaration);
-		if(sizeof($declaration) == 1)
+
+		if($declaration[0] !== "integer" && $declaration[0] !== "string" && $declaration[0] !== "float")
 		{
-			// string is default type
-			array_unshift($declaration, "string");
+			throw new ReaderException("Type declaration must be 'string' or 'integer'. Invalid type '{$declaration[0]}' given.");
+		}
+
+		$declaration[1] = trim($declaration[1]);
+
+		if($declaration[0] === "integer")
+		{
+			if(!filter_var($declaration[1], FILTER_VALIDATE_INT))
+			{
+				throw new ReaderException("Raw value must be integer. Invalid value '{$declaration[1]}' given.");
+			}
+			$declaration[1] = intval($declaration[1]);
+		}
+
+		if($declaration[0] === "float")
+		{
+			if(!filter_var($declaration[1], FILTER_VALIDATE_FLOAT))
+			{
+				throw new ReaderException("Raw value for must be float. Invalid value '{$declaration[1]}' given.");
+			}
+			$declaration[1] = floatval($declaration[1]);
 		}
 
 		// take first two as type and name

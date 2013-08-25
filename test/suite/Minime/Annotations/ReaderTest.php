@@ -109,11 +109,45 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertSame(array(
 				array("type"=>"string", "name" => "var1"),
-				array("type"=>"integer", "name" => "var2")
+				array("type"=>"integer", "name" => 45),
+				array("type"=>"integer", "name" => -45),
+				array("type"=>"float", "name" => .45),
+				array("type"=>"float", "name" => 0.45),
+				array("type"=>"float", "name" => 45.0),
+				array("type"=>"float", "name" => -4.5),
+				array("type"=>"float", "name" => 4.0)
 			), $declarations);
 	}
 
+	/**
+	 * @expectedException Minime\Annotations\ReaderException
+	 */
+	public function testBadIntegerValue()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'badIntegerValueFixture');
+		$reader = new Reader($reflection->getDocComment());
+		$declarations = $reader->getVariableDeclarations("param");
+	}
 
+	/**
+	 * @expectedException Minime\Annotations\ReaderException
+	 */
+	public function testBadFloatValue()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'badFloatValueFixture');
+		$reader = new Reader($reflection->getDocComment());
+		$declarations = $reader->getVariableDeclarations("param");
+	}
+
+	/**
+	 * @expectedException Minime\Annotations\ReaderException
+	 */
+	public function testBadTypeDeclaration()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'badTypeDeclarationFixture');
+		$reader = new Reader($reflection->getDocComment());
+		$declarations = $reader->getVariableDeclarations("param");
+	}
 
 	/**
 	 * @dataProvider badVariableDataProvider

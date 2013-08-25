@@ -53,9 +53,25 @@ class AnnotationsFixture
 
 	/**
 	 * @param string var1
-	 * @param integer var2
+	 * @param integer 45
+	 * @param integer -45
+	 * @param float .45
+	 * @param float 0.45
+	 * @param float 45.
+	 * @param float -4.5
+	 * @param float 4
 	 */
 	private $variableDeclarationsFixture;
+	
+	/**
+	 * @param integer 045
+	 */
+	private $badIntegerValueFixture;
+	
+	/**
+	 * @param float 2.1.3
+	 */
+	private $badFloatValueFixture;
 
 	/**
 	 * @param false
@@ -66,6 +82,11 @@ class AnnotationsFixture
 	 * @param true
 	 */
 	private $badVariableDeclarationFixtureTwo;
+
+	/**
+	 * @param foo invalid type
+	 */
+	private $badTypeDeclarationFixture;
 
 	/**	
 	 * @get @post @ajax
