@@ -4,16 +4,13 @@ namespace Minime\Annotations;
 
 class Reader
 {
-
-	private $rawDocBlock;
 	private $parameters = [];
-	private $keyPattern = "[A-z0-9\_\-]+";
-	private $endPattern = "[ ]*(?:@|\r\n|\n)";
+	const KEY_PATTERN = "[A-z0-9\_\-]+";
+	const END_PATTERN = "[ ]*(?:@|\r\n|\n)";
 
 	public function __construct($rawDocBlock)
 	{
-		$this->rawDocBlock = $rawDocBlock;
-		$this->parse();
+		$this->parse($rawDocBlock);
 		return $this;
 	}
 
@@ -56,15 +53,15 @@ class Reader
 		return $declarations;
 	}
 
-	private function parse()
+	private function parse($rawDocBlock)
 	{
-		$pattern = "/@(?=(.*)".$this->endPattern.")/U";
+		$pattern = "/@(?=(.*)".self::END_PATTERN.")/U";
 
-		preg_match_all($pattern, $this->rawDocBlock, $matches);
+		preg_match_all($pattern, $rawDocBlock, $matches);
 
 		foreach($matches[1] as $rawParameter)
 		{
-			if(preg_match("/^(".$this->keyPattern.") (.*)$/", $rawParameter, $match))
+			if(preg_match("/^(".self::KEY_PATTERN.") (.*)$/", $rawParameter, $match))
 			{
 				if(isset($this->parameters[$match[1]]))
 				{
@@ -75,7 +72,7 @@ class Reader
 					$this->parameters[$match[1]] = $this->parseValue($match[2]);
 				}
 			}
-			else if(preg_match("/^".$this->keyPattern."$/", $rawParameter, $match))
+			else if(preg_match("/^".self::KEY_PATTERN."$/", $rawParameter, $match))
 			{
 				$this->parameters[$rawParameter] = TRUE;
 			}
