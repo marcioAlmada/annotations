@@ -6,9 +6,8 @@ php:
   - 5.5
 
 before_script:
+  - composer self-update
   - composer install --dev
 
 after_script:
   - php vendor/bin/coveralls
-  # or enable logging
-  - php vendor/bin/coveralls -v
