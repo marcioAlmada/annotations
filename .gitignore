@@ -1,3 +1,4 @@
 vendor/
 artifacts/
 build/
+composer.lock
