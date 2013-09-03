@@ -2,6 +2,7 @@
 
 namespace Minime\Annotations\Traits;
 
+use \Minime\Annotations\Fixtures\AnnotationsFixture;
 use \ReflectionProperty;
 
 class ReaderTest extends \PHPUnit_Framework_TestCase
@@ -11,8 +12,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		include_once __DIR__ . "/../../../../lib/AnnotationsFixture.php";
-		$this->Fixture =  $this->Fixture = new \AnnotationsFixture;
+		$this->Fixture = new AnnotationsFixture;
 	}
 
 	public function testTraitReadsAnnotationsFromClass()

@@ -1,5 +1,7 @@
 <?php
 
+namespace Minime\Annotations\Fixtures;
+
 /**
  * @get @post @ajax
  * @postParam x
@@ -9,7 +11,7 @@
 class AnnotationsFixture
 {
 
-	use Minime\Annotations\Traits\Reader;
+	use \Minime\Annotations\Traits\Reader;
 
 	private $emptyFixture;
 

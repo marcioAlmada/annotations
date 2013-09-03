@@ -2,6 +2,7 @@
 
 namespace Minime\Annotations;
 
+use \Minime\Annotations\Fixtures\AnnotationsFixture;
 use \ReflectionProperty;
 
 class LoadTest extends \PHPUnit_Framework_TestCase
@@ -9,9 +10,9 @@ class LoadTest extends \PHPUnit_Framework_TestCase
 	
 	protected $Fixture;
 
-	public function setUp(){
-		include_once __DIR__ . "/../../../lib/AnnotationsFixture.php";
-		$this->Fixture = new \AnnotationsFixture;
+	public function setUp()
+	{
+		$this->Fixture = new AnnotationsFixture;
 	}
 
 	public function testLoadFromClass()
