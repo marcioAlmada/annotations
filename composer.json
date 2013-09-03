@@ -13,7 +13,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "doctrine/cache": "v1.1"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master"
