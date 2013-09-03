@@ -17,7 +17,6 @@
         "doctrine/cache": "v1.1"
     },
     "require-dev": {
-        "satooshi/php-coveralls": "dev-master"
     },
     "autoload": {
         "psr-0": { "Minime": "src" }
