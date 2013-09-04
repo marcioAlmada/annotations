@@ -3,6 +3,8 @@
 namespace Minime\Annotations\Fixtures;
 
 /**
+ * A Common DockBlock
+ * 
  * @get @post @ajax
  * @postParam x
  * @postParam y

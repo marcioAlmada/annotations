@@ -2,11 +2,11 @@
 
 namespace Minime\Annotations;
 
+use StrScan\StringScanner;
+
 class Parser
 {
 	private $raw_doc_block;
-	const KEY_PATTERN = "[A-z0-9\_\-]+";
-	const END_PATTERN = "[ ]*(?:@|\r\n|\n)";
 
 	public function __construct($raw_doc_block)
 	{
@@ -15,23 +15,49 @@ class Parser
 
 	public function parse()
 	{
-		$pattern = "/@(?=(.*)".self::END_PATTERN.")/U";
 		$parameters = [];
-
-		preg_match_all($pattern, $this->raw_doc_block, $matches);
-
-		foreach($matches[1] as $rawParameter)
+		$lines = explode("\n", $this->raw_doc_block);
+		
+		foreach ( $lines as $line)
 		{
-			if(preg_match("/^(".self::KEY_PATTERN.") (.*)$/", $rawParameter, $match))
-			{		
-				$key = $match[1];
-				$raw_value = $match[2];
-				$value = $this->parseValue($raw_value);
-				$parameters[$key][] = $value;
-			}
-			else if(preg_match("/^".self::KEY_PATTERN."$/", $rawParameter, $match))
+			$tokenizer = new StringScanner($line);
+			$tokenizer->skip('/\s+\*\s+/');
+
+			while(!$tokenizer->hasTerminated())
 			{
-				$parameters[$rawParameter] = TRUE;
+				$key = $tokenizer->scan('/\@[A-z0-9\_\-]+/');
+				if($key)
+				{
+					$key = str_replace('@', '', $key);
+					$tokenizer->skip('/\s+/');
+
+					# if implicit boolean
+					if($tokenizer->peek() === "" || $tokenizer->check('/\@/'))
+					{
+						$parameters[$key] = true;
+					}
+
+					# if strong typed
+					else if($tokenizer->check('/(string|integer|float|json)/'))
+					{
+						$type = $tokenizer->scan('/\w+/');
+						$tokenizer->skip('/\s+/');
+						$raw_value = $tokenizer->getRemainder();
+						$parameters[$key][] = $this->parseStrongTypedValue($raw_value, $type);
+					}
+
+					# else weak typed
+					else
+					{
+						$value = $tokenizer->getRemainder();
+						$parameters[$key][] = $this->parseWeakTypedValue($value);
+					}
+				}
+				else
+				{
+					# next line when no annotation is found
+					$tokenizer->terminate();
+				}
 			}
 		}
 
@@ -48,20 +74,14 @@ class Parser
 		return new AnnotationsBag($parameters);
 	}
 
-
-	private function parseValue($original_value)
+	private function parseWeakTypedValue($value)
 	{
-		$original_value = trim($original_value);
-
-		if($original_value && $original_value !== 'null' && $original_value !== 'NULL')
+		$value = $value;
+		if($value && $value !== 'null' && $value !== 'NULL')
 		{
-			$json = json_decode($original_value, TRUE);
+			$json = json_decode($value, TRUE);
 
-			if( $json === NULL)
-			{
-				$value = $this->parseTypedValues($original_value);
-			}
-			else
+			if( $json !== NULL)
 			{
 				$value = $json;
 			}
@@ -70,36 +90,28 @@ class Parser
 		{
 			$value = NULL;
 		}
-
 		return $value;
 	}
 
-	private function parseTypedValues($raw_value)
+	private function parseStrongTypedValue($value, $type)
 	{
 
-		$value = $raw_value;
-
-		if(preg_match("/^(integer|string|float) /", $raw_value))
+		if($type === "integer")
 		{
-			list($type, $value) = explode(" ", $raw_value);
-	
-			if($type === "integer")
+			if(!filter_var($value, FILTER_VALIDATE_INT))
 			{
-				if(!filter_var($value, FILTER_VALIDATE_INT))
-				{
-					throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
-				}
-				$value = intval($value);
+				throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
 			}
+			$value = intval($value);
+		}
 
-			if($type === "float")
+		if($type === "float")
+		{
+			if(!filter_var($value, FILTER_VALIDATE_FLOAT))
 			{
-				if(!filter_var($value, FILTER_VALIDATE_FLOAT))
-				{
-					throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
-				}
-				$value = floatval($value);
+				throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
 			}
+			$value = floatval($value);
 		}
 
 		return $value;

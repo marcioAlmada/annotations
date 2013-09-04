@@ -14,7 +14,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "doctrine/cache": "v1.1"
+        "doctrine/cache": "v1.1",
+        "strscan/strscan": "1.0.1"
     },
     "require-dev": {
         "psy/psysh": "0.1.0.*@dev"

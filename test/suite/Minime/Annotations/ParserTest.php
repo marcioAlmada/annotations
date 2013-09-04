@@ -119,10 +119,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 	{
 		$reflection = new ReflectionProperty($this->Fixture, 'same_line_fixture');
 		$annotations = (new Parser($reflection->getDocComment()))->parse();
-
 		$this->assertSame(TRUE, $annotations->get('get'));
 		$this->assertSame(TRUE, $annotations->get('post'));
 		$this->assertSame(TRUE, $annotations->get('ajax'));
+		$this->assertSame(NULL, $annotations->get('undefined'));
 	}
 
 	/**
