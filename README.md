@@ -77,3 +77,7 @@ Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
  * @config json { "x" : -30, "y" : 20, "z" : 45 }
  */
 ```
+
+## Copyright
+
+Copyright (c) 2013 Márcio Almada. Distributed under the terms of an MIT-style license. See LICENSE for details.
