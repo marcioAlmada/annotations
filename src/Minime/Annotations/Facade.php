@@ -6,24 +6,25 @@ use \ReflectionClass;
 use \ReflectionProperty;
 use \ReflectionMethod;
 
-class Load {
+class Facade
+{
 
-	public static function fromClass($class)
+	public static function getClassAnnotations($class)
 	{
 		$reflection = new ReflectionClass($class);
-		return new Reader($reflection->getDocComment());
+		return (new Parser($reflection->getDocComment()))->parse();
 	}
 
-	public static function fromProperty($class, $property)
+	public static function getPropertyAnnotations($class, $property)
 	{
 		$reflection = new ReflectionProperty($class, $property);
-		return new Reader($reflection->getDocComment());
+		return (new Parser($reflection->getDocComment()))->parse();
 	}
 
-	public static function fromMethod($class, $methd)
+	public static function getMethodAnnotations($class, $method)
 	{
-		$reflection = new ReflectionMethod($class, $methd);
-		return new Reader($reflection->getDocComment());
+		$reflection = new ReflectionMethod($class, $method);
+		return (new Parser($reflection->getDocComment()))->parse();
 	} 
 
 }

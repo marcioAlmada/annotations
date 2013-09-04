@@ -2,6 +2,6 @@
 
 namespace Minime\Annotations;
 
-class ReaderException extends \Exception
+class ParserException extends \Exception
 {
 }

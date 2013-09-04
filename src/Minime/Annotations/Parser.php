@@ -2,91 +2,64 @@
 
 namespace Minime\Annotations;
 
-class Reader
+class Parser
 {
-	private $parameters = [];
+	private $raw_doc_block;
 	const KEY_PATTERN = "[A-z0-9\_\-]+";
 	const END_PATTERN = "[ ]*(?:@|\r\n|\n)";
 
-	public function __construct($rawDocBlock)
+	public function __construct($raw_doc_block)
 	{
-		$this->parse($rawDocBlock);
-		return $this;
+		$this->raw_doc_block = $raw_doc_block;
 	}
 
-	public function export()
-	{
-		return $this->parameters;
-	}
-
-	public function has($key)
-	{
-		if(is_string($key))
-		{
-			if(isset($this->parameters[$key]))
-			{
-				return true;
-			}
-			return false;
-		}
-		throw new \InvalidArgumentException('Annotation key must be a string');
-	}
-
-	public function get($key)
-	{
-		if($this->has($key))
-		{
-			return $this->parameters[$key];
-		}
-		return null;
-	}
-
-	public function getVariableDeclarations($name)
-	{
-		$declarations = (array)$this->get($name);
-
-		foreach($declarations as &$declaration)
-		{
-			$declaration = $this->parseVariableDeclaration($declaration, $name);
-		}
-
-		return $declarations;
-	}
-
-	private function parse($rawDocBlock)
+	public function parse()
 	{
 		$pattern = "/@(?=(.*)".self::END_PATTERN.")/U";
+		$parameters = [];
 
-		preg_match_all($pattern, $rawDocBlock, $matches);
+		preg_match_all($pattern, $this->raw_doc_block, $matches);
 
 		foreach($matches[1] as $rawParameter)
 		{
 			if(preg_match("/^(".self::KEY_PATTERN.") (.*)$/", $rawParameter, $match))
-			{
-				if(isset($this->parameters[$match[1]]))
-				{
-					$this->parameters[$match[1]] = array_merge((array)$this->parameters[$match[1]], (array)$match[2]);
-				}
-				else
-				{
-					$this->parameters[$match[1]] = $this->parseValue($match[2]);
-				}
+			{		
+				$key = $match[1];
+				$raw_value = $match[2];
+				$value = $this->parseValue($raw_value);
+				$parameters[$key][] = $value;
 			}
 			else if(preg_match("/^".self::KEY_PATTERN."$/", $rawParameter, $match))
 			{
-				$this->parameters[$rawParameter] = TRUE;
+				$parameters[$rawParameter] = TRUE;
 			}
 		}
+
+		foreach ($parameters as $key => &$value)
+		{
+			if(!is_bool($value))
+			{
+				if(count($value) === 1)
+				{
+					$value = $value[0];
+				}			
+			}
+		}
+		return new AnnotationsBag($parameters);
 	}
 
-	private function parseValue($originalValue)
+
+	private function parseValue($original_value)
 	{
-		if($originalValue && $originalValue !== 'null')
+		$original_value = trim($original_value);
+
+		if($original_value && $original_value !== 'null' && $original_value !== 'NULL')
 		{
-			// try to json decode, if cannot then store as string
-			if( ($json = json_decode($originalValue,TRUE)) === NULL)
+			$json = json_decode($original_value, TRUE);
+
+			if( $json === NULL)
 			{
-				$value = $originalValue;
+				$value = $this->parseTypedValues($original_value);
 			}
 			else
 			{
@@ -101,49 +74,35 @@ class Reader
 		return $value;
 	}
 
-	private function parseVariableDeclaration($declaration, $name)
+	private function parseTypedValues($raw_value)
 	{
-		$type = gettype($declaration);
 
-		if($type !== 'string')
+		$value = $raw_value;
+
+		if(preg_match("/^(integer|string|float) /", $raw_value))
 		{
-			throw new ReaderException("Raw declaration must be string, $type given. Key='$name'.");
-		}
-
-		$declaration = explode(" ", $declaration);
-
-		if($declaration[0] !== "integer" && $declaration[0] !== "string" && $declaration[0] !== "float")
-		{
-			throw new ReaderException("Type declaration must be 'string' or 'integer'. Invalid type '{$declaration[0]}' given.");
-		}
-
-		$declaration[1] = trim($declaration[1]);
-
-		if($declaration[0] === "integer")
-		{
-			if(!filter_var($declaration[1], FILTER_VALIDATE_INT))
+			list($type, $value) = explode(" ", $raw_value);
+	
+			if($type === "integer")
 			{
-				throw new ReaderException("Raw value must be integer. Invalid value '{$declaration[1]}' given.");
+				if(!filter_var($value, FILTER_VALIDATE_INT))
+				{
+					throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
+				}
+				$value = intval($value);
 			}
-			$declaration[1] = intval($declaration[1]);
-		}
 
-		if($declaration[0] === "float")
-		{
-			if(!filter_var($declaration[1], FILTER_VALIDATE_FLOAT))
+			if($type === "float")
 			{
-				throw new ReaderException("Raw value for must be float. Invalid value '{$declaration[1]}' given.");
+				if(!filter_var($value, FILTER_VALIDATE_FLOAT))
+				{
+					throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
+				}
+				$value = floatval($value);
 			}
-			$declaration[1] = floatval($declaration[1]);
 		}
 
-		// take first two as type and name
-		$declaration = array(
-			'type' => $declaration[0],
-			'name' => $declaration[1]
-		);
-
-		return $declaration;
+		return $value;
 	}
 
 }

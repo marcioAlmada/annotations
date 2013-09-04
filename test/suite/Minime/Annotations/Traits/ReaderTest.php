@@ -24,16 +24,16 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testTraitReadsAnnotationsFromProperty()
 	{
-		$this->assertTrue($this->Fixture->getPropertyAnnotations('sameLineFixture')->get('post'));
-		$this->assertSame(['x', 'y', 'z'], $this->Fixture->getPropertyAnnotations('sameLineFixture')->get('postParam'));
-		$this->assertFalse($this->Fixture->getPropertyAnnotations('sameLineFixture')->has('foo'));
+		$this->assertTrue($this->Fixture->getPropertyAnnotations('same_line_fixture')->get('post'));
+		$this->assertSame(['x', 'y', 'z'], $this->Fixture->getPropertyAnnotations('same_line_fixture')->get('postParam'));
+		$this->assertFalse($this->Fixture->getPropertyAnnotations('same_line_fixture')->has('foo'));
 	}
 
 	public function testTraitReadsAnnotationsFromMethod()
 	{
-		$this->assertTrue($this->Fixture->getMethodAnnotations('generalMethodFixture')->get('post'));
-		$this->assertSame(['x', 'y', 'z'], $this->Fixture->getMethodAnnotations('generalMethodFixture')->get('postParam'));
-		$this->assertFalse($this->Fixture->getMethodAnnotations('generalMethodFixture')->has('foo'));
+		$this->assertTrue($this->Fixture->getMethodAnnotations('method_fixture')->get('post'));
+		$this->assertSame(['x', 'y', 'z'], $this->Fixture->getMethodAnnotations('method_fixture')->get('postParam'));
+		$this->assertFalse($this->Fixture->getMethodAnnotations('method_fixture')->has('foo'));
 	}
 
 }

@@ -2,22 +2,22 @@
 
 namespace Minime\Annotations\Traits;
 
-use Minime\Annotations\Load;
+use Minime\Annotations\Facade;
 
 trait Reader
 {
 	public function getClassAnnotations()
 	{
-		return Load::fromClass($this);
+		return Facade::getClassAnnotations($this);
 	}
 
 	public function getPropertyAnnotations($property)
 	{
-		return Load::fromProperty($this, $property);
+		return Facade::getPropertyAnnotations($this, $property);
 	}
 
 	public function getMethodAnnotations($method)
 	{
-		return Load::fromMethod($this, $method);
+		return Facade::getMethodAnnotations($this, $method);
 	}
 }

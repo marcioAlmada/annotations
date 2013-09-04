@@ -5,7 +5,7 @@ namespace Minime\Annotations;
 use \Minime\Annotations\Fixtures\AnnotationsFixture;
 use \ReflectionProperty;
 
-class ReaderTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends \PHPUnit_Framework_TestCase
 {
 
 	private $Fixture;
@@ -15,166 +15,145 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 		$this->Fixture = new AnnotationsFixture;
 	}
 
-	public function testParseGeneralFixture()
+	/**
+	 * @test
+	 */
+	public function parseEmptyFixture()
 	{
-		$reflection = new ReflectionProperty($this->Fixture, 'generalFixture');
-		$reader = new Reader($reflection->getDocComment());
-		$parameters = $reader->export();
-
-		$this->assertNotEmpty($parameters);
-
-		$this->assertArrayHasKey('number', $parameters);
-		$this->assertArrayHasKey('string', $parameters);
-		$this->assertArrayHasKey('array', $parameters);
-		$this->assertArrayHasKey('object', $parameters);
-		$this->assertArrayHasKey('nested', $parameters);
-		$this->assertArrayHasKey('nestedArray', $parameters);
-		$this->assertArrayHasKey('trueVar', $parameters);
-		$this->assertArrayHasKey('null-var', $parameters);
-		$this->assertArrayHasKey('booleanTrue', $parameters);
-		$this->assertArrayHasKey('booleanFalse', $parameters);
-		$this->assertArrayHasKey('booleanNull', $parameters);
-		$this->assertArrayNotHasKey('non_existent_key', $parameters);
-
-		$this->assertSame(1, $parameters['number']);
-		$this->assertSame("123", $parameters['string']);
-		$this->assertSame("abc", $parameters['string2']);
-		$this->assertSame(array("a", "b"), $parameters['array']);
-		$this->assertSame(array("x" => "y"), $parameters['object']);
-		$this->assertSame(array("x" => array("y" => "z")), $parameters['nested']);
-		$this->assertSame(array("x" => array("y" => array("z", "p"))), $parameters['nestedArray']);
-		$this->assertSame(TRUE, $parameters['trueVar']);
-		$this->assertSame(NULL, $parameters['null-var']);
-
-		$this->assertSame(TRUE, $parameters['booleanTrue']);
-		$this->assertSame(TRUE, $parameters['booleanTrue2']);
-		$this->assertSame(FALSE, $parameters['booleanFalse']);
-		$this->assertSame(NULL, $parameters['booleanNull']);
-
-		$this->assertSame(1, $reader->get('number'));
-		$this->assertSame("123", $reader->get('string'));
-		$this->assertSame(array("x" => array("y" => array("z", "p"))),
-		$reader->get('nestedArray'));
-
-		$this->assertSame(NULL, $reader->get('nullVar'));
-		$this->assertSame(NULL, $reader->get('null-var'));
-		$this->assertSame(NULL, $reader->get('non-existent'));
+		$reflection = new ReflectionProperty($this->Fixture, 'empty_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertSame([], $annotations->export());
 	}
 
-	public function testParseEmptyFixture()
+	/**
+	 * @test
+	 */
+	public function parseNullFixture()
 	{
-		$reflection = new ReflectionProperty($this->Fixture, 'emptyFixture');
-		$reader = new Reader($reflection->getDocComment());
-		$this->assertSame(array(), $reader->export());
+		$reflection = new ReflectionProperty($this->Fixture, 'null_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertSame([null, null, ''], $annotations->get('value'));
 	}
 
-
-	public function testParseMultipleValuesFixture()
+	/**
+	 * @test
+	 */
+	public function parseBooleanFixture()
 	{
-		$reflection = new ReflectionProperty($this->Fixture, 'multipleValuesFixture');
-		$reader = new Reader($reflection->getDocComment());
+		$reflection = new ReflectionProperty($this->Fixture, 'boolean_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertSame([true, false, true, false, "true", "false"], $annotations->get('value'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function parseStringFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'string_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertSame(['abc', 'abc', '123'], $annotations->get('value'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function parseIntegerFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'integer_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertSame([123, 23, -23], $annotations->get('value'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function parseFloatFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'float_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertSame([.45, 0.45, 45., -4.5], $annotations->get('value'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function parseJsonFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'json_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertSame(
+			[
+				["x" => "y"],
+				["x" => ["y" => "z"]],
+				["x" => ["y" => ["z", "p"]]]
+			],
+		$annotations->get('value'));
+	}
+
+	public function parseMultipleValuesFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'multiple_values_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
 		$parameters = $reader->export();
 
 		$this->assertNotEmpty($parameters);
 		$this->assertArrayHasKey('param', $parameters);
-		$this->assertArrayHasKey('var', $parameters);
 
-		$this->assertSame("x",$parameters["var"]);
-		$this->assertSame(1024,$parameters["var2"]);
-
-		$this->assertSame(
-			array("string x", "integer y", "array z"),
+		$this->assertEquals(
+			[
+				'x',
+				'y',
+				'z',
+				[1, 2, 3],
+				["x" => 1, "y" => 2]
+			],
 			$parameters["param"]);
-
-	}
-
-
-
-	public function testParseSameLineFixture()
-	{
-		$reflection = new ReflectionProperty($this->Fixture, 'sameLineFixture');
-		$reader = new Reader($reflection->getDocComment());
-
-		$this->assertSame(TRUE, $reader->get('get'));
-		$this->assertSame(TRUE, $reader->get('post'));
-		$this->assertSame(TRUE, $reader->get('ajax'));
-	}
-
-	public function testVariableDeclarationsFixture()
-	{
-		$reflection = new ReflectionProperty($this->Fixture, 'variableDeclarationsFixture');
-		$reader = new Reader($reflection->getDocComment());
-		$declarations = $reader->getVariableDeclarations("param");
-		$this->assertNotEmpty($declarations);
-
-		$this->assertSame(array(
-				array("type"=>"string", "name" => "var1"),
-				array("type"=>"integer", "name" => 45),
-				array("type"=>"integer", "name" => -45),
-				array("type"=>"float", "name" => .45),
-				array("type"=>"float", "name" => 0.45),
-				array("type"=>"float", "name" => 45.0),
-				array("type"=>"float", "name" => -4.5),
-				array("type"=>"float", "name" => 4.0)
-			), $declarations);
 	}
 
 	/**
-	 * @expectedException Minime\Annotations\ReaderException
+	 * @test
+	 */
+	public function parseParseSameLineFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'same_line_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+
+		$this->assertSame(TRUE, $annotations->get('get'));
+		$this->assertSame(TRUE, $annotations->get('post'));
+		$this->assertSame(TRUE, $annotations->get('ajax'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function parseStrongTypedFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'strong_typed_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$declarations = $annotations->get('value');
+		$this->assertNotEmpty($declarations);
+		$this->assertSame([ "abc", "45", 45, -45, .45, 0.45, 45.0, -4.5, 4. ], $declarations);
+	}
+
+	/**
+	 * @test
+	 * @expectedException Minime\Annotations\ParserException
 	 */
 	public function testBadIntegerValue()
 	{
-		$reflection = new ReflectionProperty($this->Fixture, 'badIntegerValueFixture');
-		$reader = new Reader($reflection->getDocComment());
-		$declarations = $reader->getVariableDeclarations("param");
+		$reflection = new ReflectionProperty($this->Fixture, 'bad_integer_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
 	}
 
 	/**
-	 * @expectedException Minime\Annotations\ReaderException
+	 * @test
+	 * @expectedException Minime\Annotations\ParserException
 	 */
-	public function testBadFloatValue()
+	public function badFloatValue()
 	{
-		$reflection = new ReflectionProperty($this->Fixture, 'badFloatValueFixture');
-		$reader = new Reader($reflection->getDocComment());
-		$declarations = $reader->getVariableDeclarations("param");
+		$reflection = new ReflectionProperty($this->Fixture, 'bad_float_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
 	}
 
-	/**
-	 * @expectedException Minime\Annotations\ReaderException
-	 */
-	public function testBadTypeDeclaration()
-	{
-		$reflection = new ReflectionProperty($this->Fixture, 'badTypeDeclarationFixture');
-		$reader = new Reader($reflection->getDocComment());
-		$declarations = $reader->getVariableDeclarations("param");
-	}
-
-	/**
-	 * @dataProvider badVariableDataProvider
-	 * @expectedException Minime\Annotations\ReaderException
-	 */
-	public function testBadVariableDeclarations($methodName)
-	{
-		$reflection = new ReflectionProperty($this->Fixture, $methodName);
-		$reader = new Reader($reflection->getDocComment());
-		$declarations = $reader->getVariableDeclarations("param");
-	}
-
-	public function badVariableDataProvider()
-	{
-		return array(
-			array('badVariableDeclarationFixtureOne'),
-			array('badVariableDeclarationFixtureTwo')
-		);
-	}
-
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testGetMethodAcceptsOnlyStringKeys()
-	{
-		$reflection = new ReflectionProperty($this->Fixture, 'generalFixture');
-		$reader = new Reader($reflection->getDocComment());
-		$declarations = $reader->get(0);
-	}
 }

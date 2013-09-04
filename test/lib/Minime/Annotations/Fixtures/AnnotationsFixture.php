@@ -13,37 +13,62 @@ class AnnotationsFixture
 
 	use \Minime\Annotations\Traits\Reader;
 
-	private $emptyFixture;
+	private $empty_fixture;
 
 	/**
-	 * @number 1
-	 * @string "123"
-	 * @string2 abc
-	 * @array ["a", "b"]
-	 * @object {"x": "y"}
-	 * @nested {"x": {"y": "z"}}
-	 * @nestedArray {"x": {"y": ["z", "p"]}}
-	 *
-	 * @trueVar
-	 * @null-var null
-	 *
-	 * @booleanTrue true
-	 * @booleanTrue2 tRuE
-	 * @booleanFalse false
-	 * @booleanNull null
-	 * 
+	 * @value null
+	 * @value NULL
+	 * @value ""
 	 */
-	private $generalFixture;
+	private $null_fixture;
 
 	/**
-	 * @var x
-	 * @var2 1024
-	 * @param string x
-	 * @param integer y
-	 * @param array z
+	 * @value TRUE
+	 * @value FALSE
+	 * @value true
+	 * @value false
+	 * @value "true"
+	 * @value "false"
 	 */
-	private $multipleValuesFixture;
+	private $boolean_fixture;
 
+	/**
+	 * @value abc
+	 * @value "abc"
+	 * @value "123"
+	 */
+	private $string_fixture;
+
+	/**
+	 * @value 123
+	 * @value 023
+	 * @value -023
+	 */
+	private $integer_fixture;
+
+	/**
+	 * @value .45
+	 * @value 0.45
+	 * @value 45.
+	 * @value -4.5
+	 */
+	private $float_fixture;
+
+	/**
+	 * @value {"x": "y"}
+	 * @value {"x": {"y": "z"}}
+	 * @value {"x": {"y": ["z", "p"]}}
+	 */
+	private $json_fixture;
+
+	/**
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param [1, 2, 3]
+	 * @param {"x" : 1, "y" : 2}
+	 */
+	private $multiple_values_fixture;
 
 	/**
 	 * @get @post @ajax
@@ -51,52 +76,37 @@ class AnnotationsFixture
 	 * @postParam y
 	 * @postParam z
 	 */
-	private $sameLineFixture;
+	private $same_line_fixture;
 
 	/**
-	 * @param string var1
-	 * @param integer 45
-	 * @param integer -45
-	 * @param float .45
-	 * @param float 0.45
-	 * @param float 45.
-	 * @param float -4.5
-	 * @param float 4
+	 * @value string abc
+	 * @value string 45
+	 * @value integer 45
+	 * @value integer -45
+	 * @value float .45
+	 * @value float 0.45
+	 * @value float 45.
+	 * @value float -4.5
+	 * @value float 4
 	 */
-	private $variableDeclarationsFixture;
+	private $strong_typed_fixture;
 	
 	/**
-	 * @param integer 045
+	 * @value integer 045
 	 */
-	private $badIntegerValueFixture;
+	private $bad_integer_fixture;
 	
 	/**
-	 * @param float 2.1.3
+	 * @value float 2.1.3
 	 */
-	private $badFloatValueFixture;
+	private $bad_float_fixture;
 
 	/**
-	 * @param false
-	 */
-	private $badVariableDeclarationFixtureOne;
-
-	/**
-	 * @param true
-	 */
-	private $badVariableDeclarationFixtureTwo;
-
-	/**
-	 * @param foo invalid type
-	 */
-	private $badTypeDeclarationFixture;
-
-	/**	
 	 * @get @post @ajax
 	 * @postParam x
 	 * @postParam y
 	 * @postParam z
 	 */
-	private function generalMethodFixture()
-	{
-	}
+	private function method_fixture(){}
+
 }
