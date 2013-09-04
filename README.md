@@ -11,20 +11,15 @@ A lightweight (dependency free) PHP annotations library. Minime Annotations is i
 * Class annotations
 * Property annotations
 * Method annotations
-* Annotations reader trait for convenience
+* Annotations reader trait, just for convenience
 * (optional) Strong typed annotations (float, integer, string)
 * Freedom (no auxiliary class for each annotation you define)
-
-## Coming Soon
-
-* Annotations cache - any help?
-* Maybe I'll add more interesting annotation types like json
 
 ## Basic Usage
 
 ### Using as a trait
 
-Trait is useful for self / internal reflection:
+The trait approach is useful for self / internal reflection:
 
 ```php
 /**
@@ -51,21 +46,34 @@ $annotations->get('max')      // > int(45)
 $annotations->get('delta')    // > double(0.45)
 ```
 
-Get property and method annotations is fine too:
-
+Getting annotations from property and methods is easy too:
 
 ```php
-$property_annotations = $foo->getPropertyAnnotations('property_name');
-$method_annotations = $foo->getMethodAnnotations('method_name');
+$foo->getPropertyAnnotations('property_name');
+$foo->getMethodAnnotations('method_name');
 ```
 
-### Using as a facade
+### Using the facade
 
-Facade is useful when you want to inspect classes out of your logic domain:
+The facade is useful when you want to inspect classes out of your logic domain:
 
 ```php
 use Minime\Annotations\Facade;
-$annotations = Facade::getClassAnnotations('Full\Qualified\Class\Name');
-$property_annotations = Facade::getPropertyAnnotations('Full\Qualified\Class\Name', 'property_name');
-$method_annotations = Facade::getMethodAnnotations('Full\Qualified\Class\Name', 'method_name');
+
+Facade::getClassAnnotations('Full\Class\Name');
+Facade::getPropertyAnnotations('Full\Class\Name', 'property_name');
+Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
+```
+
+## Coming Soon
+
+* Annotations cache - any help?
+* Possibility to inject a custom parser
+* A better AnnotationsBag with support to grep annotations
+* Maybe add more interesting annotation types (like json):
+
+```php
+/**
+ * @config json { "x" : -30, "y" : 20, "z" : 45 }
+ */
 ```
