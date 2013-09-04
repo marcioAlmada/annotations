@@ -62,11 +62,15 @@ class AnnotationsFixture
 	private $json_fixture;
 
 	/**
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param [1, 2, 3]
-	 * @param {"x" : 1, "y" : 2}
+	 * @param_a foo
+	 * @param_b bar
+	 */
+	private $single_values_fixture;
+
+	/**
+	 * @value x
+	 * @value y
+	 * @value z
 	 */
 	private $multiple_values_fixture;
 

@@ -91,24 +91,25 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 		$annotations->get('value'));
 	}
 
+	/**
+	 * @test
+	 */
+	public function parseSingleValuesFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'single_values_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertEquals('foo', $annotations->get('param_a'));
+		$this->assertEquals('bar', $annotations->get('param_b'));
+	}
+
+	/**
+	 * @test
+	 */
 	public function parseMultipleValuesFixture()
 	{
 		$reflection = new ReflectionProperty($this->Fixture, 'multiple_values_fixture');
 		$annotations = (new Parser($reflection->getDocComment()))->parse();
-		$parameters = $reader->export();
-
-		$this->assertNotEmpty($parameters);
-		$this->assertArrayHasKey('param', $parameters);
-
-		$this->assertEquals(
-			[
-				'x',
-				'y',
-				'z',
-				[1, 2, 3],
-				["x" => 1, "y" => 2]
-			],
-			$parameters["param"]);
+		$this->assertEquals(['x','y','z'], $annotations->get('value'));
 	}
 
 	/**
