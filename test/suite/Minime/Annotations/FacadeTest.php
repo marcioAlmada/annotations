@@ -14,19 +14,28 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 		$this->Fixture = new AnnotationsFixture;
 	}
 
-	public function testLoadFromClass()
+	/**
+	 * @test
+	 */
+	public function getClassAnnotations()
 	{
 		$annotations = Facade::getClassAnnotations($this->Fixture);
 		$this->assertSame(TRUE, $annotations->get('post'));
 	}
 
-	public function testLoadFromProperty()
+	/**
+	 * @test
+	 */
+	public function getPropertyAnnotations()
 	{
 		$annotations = Facade::getPropertyAnnotations($this->Fixture, 'same_line_fixture');
 		$this->assertSame(TRUE, $annotations->get('post'));
 	}
 
-	public function testLoadFromMethod()
+	/**
+	 * @test
+	 */
+	public function getMethodAnnotations()
 	{
 		$annotations = Facade::getMethodAnnotations($this->Fixture, 'method_fixture');
 		$this->assertSame(TRUE, $annotations->get('post'));
