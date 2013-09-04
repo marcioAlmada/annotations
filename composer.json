@@ -17,6 +17,7 @@
         "doctrine/cache": "v1.1"
     },
     "require-dev": {
+        "psy/psysh": "0.1.0.*@dev"
     },
     "autoload": {
         "psr-0": { "Minime": "src" }
