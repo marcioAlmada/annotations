@@ -14,6 +14,7 @@ A lightweight (dependency free) PHP annotations library. Minime Annotations is i
 * Annotations reader trait, just for convenience
 * (optional) Strong typed annotations (float, integer, string)
 * Freedom (no auxiliary class for each annotation you define)
+* Grep annotations from a colletion of annotations based on a regexp
 
 ## Basic Usage
 
@@ -69,7 +70,6 @@ Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
 
 * Annotations cache - any help?
 * Possibility to inject a custom parser
-* A better AnnotationsBag with support to grep annotations
 * Maybe add more interesting annotation types (like json):
 
 ```php

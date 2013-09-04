@@ -33,6 +33,28 @@ class AnnotationsBag
 		throw new \InvalidArgumentException('Annotation key must be a string');
 	}
 
+	public function grep($pattern)
+	{
+
+		if(!is_string($pattern))
+		{
+			throw new \InvalidArgumentException('Grep pattern must be a string');
+		}
+
+		$regex = "/$pattern/";		
+		$results = [];
+
+		foreach ($this->parameters as $key => $value)
+		{
+			if(preg_match($regex, $key))
+			{
+				$results[$key] = $value;
+			}
+		}
+
+		return new self($results);
+	}
+
 	public function get($key)
 	{
 		if($this->has($key))

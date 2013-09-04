@@ -37,6 +37,28 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 	 * @test
 	 * @expectedException \InvalidArgumentException
 	 */
+	public function grep()
+	{
+		$this->Bag = new AnnotationsBag([
+			'get' => true,
+			'post' => false,
+			'put' => false,
+			'val.max' => 16,
+			'val.min' => 6,
+			'val.regex' => "/[A-z0-9\_\-]+/"
+		]);
+		
+		$this->assertCount(3, $this->Bag->grep('val')->export());
+		$this->assertCount(1, $this->Bag->grep('^p')->grep('st$')->export());
+		$this->assertSame(['val.max' => 16], $this->Bag->grep('max$')->export());
+		$this->assertCount(6, $this->Bag->export());
+		$this->Bag->grep([]);
+	}
+
+	/**
+	 * @test
+	 * @expectedException \InvalidArgumentException
+	 */
 	public function getAcceptsOnlyStringKeys()
 	{
 		$this->Bag->get(0);
