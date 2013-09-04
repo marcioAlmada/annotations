@@ -12,17 +12,19 @@ A lightweight (dependency free) PHP annotations library. Minime Annotations is i
 * Property annotations
 * Method annotations
 * Annotations reader trait for convenience
-* Typed annotations (float, integer, string)
+* (optional) Strong typed annotations (float, integer, string)
 * Freedom (no auxiliary class for each annotation you define)
 
 ## Coming Soon
 
-* Cache - any help?
-* Maybe I'll add more interesting annotation types (bin, regex)
+* Annotations cache - any help?
+* Maybe I'll add more interesting annotation types like json
 
 ## Basic Usage
 
 ### Using as a trait
+
+Trait is useful for self / internal reflection:
 
 ```php
 /**
@@ -49,8 +51,21 @@ $annotations->get('max')      // > int(45)
 $annotations->get('delta')    // > double(0.45)
 ```
 
-### Using as a facade
+Get property and method annotations is fine too:
+
 
 ```php
-$annotations = Minime\Annotations\Load::fromClass('Full\Qualified\Class\Name');
+$property_annotations = $foo->getPropertyAnnotations('property_name');
+$method_annotations = $foo->getMethodAnnotations('method_name');
+```
+
+### Using as a facade
+
+Facade is useful when you want to inspect classes out of your logic domain:
+
+```php
+use Minime\Annotations\Facade;
+$annotations = Facade::getClassAnnotations('Full\Qualified\Class\Name');
+$property_annotations = Facade::getPropertyAnnotations('Full\Qualified\Class\Name', 'property_name');
+$method_annotations = Facade::getMethodAnnotations('Full\Qualified\Class\Name', 'method_name');
 ```
