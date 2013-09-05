@@ -76,7 +76,6 @@ class Parser
 
 	private function parseWeakTypedValue($value)
 	{
-		$value = $value;
 		if($value && $value !== 'null' && $value !== 'NULL')
 		{
 			$json = json_decode($value, TRUE);
