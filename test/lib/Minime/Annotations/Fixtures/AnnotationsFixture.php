@@ -57,11 +57,16 @@ class AnnotationsFixture
 	private $float_fixture;
 
 	/**
-	 * @value {"x": "y"}
-	 * @value {"x": {"y": "z"}}
-	 * @value {"x": {"y": ["z", "p"]}}
+	 * @value json ["x", "y"]
+	 * @value json {"x": {"y": "z"}}
+	 * @value json {"x": {"y": ["z", "p"]}}
 	 */
 	private $json_fixture;
+
+	/**
+	 * @value json {"x" : ["y"}
+	 */
+	private $bad_json_fixture;
 
 	/**
 	 * @param_a foo

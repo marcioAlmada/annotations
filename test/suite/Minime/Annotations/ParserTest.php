@@ -82,11 +82,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 	{
 		$reflection = new ReflectionProperty($this->Fixture, 'json_fixture');
 		$annotations = (new Parser($reflection->getDocComment()))->parse();
-		$this->assertSame(
+		$this->assertEquals(
 			[
-				["x" => "y"],
-				["x" => ["y" => "z"]],
-				["x" => ["y" => ["z", "p"]]]
+				["x", "y"],
+				json_decode('{"x": {"y": "z"}}'),
+				json_decode('{"x": {"y": ["z", "p"]}}')
 			],
 		$annotations->get('value'));
 	}
@@ -141,7 +141,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 	 * @test
 	 * @expectedException Minime\Annotations\ParserException
 	 */
-	public function testBadIntegerValue()
+	public function badJSONValue()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'bad_json_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+	}
+
+	/**
+	 * @test
+	 * @expectedException Minime\Annotations\ParserException
+	 */
+	public function badIntegerValue()
 	{
 		$reflection = new ReflectionProperty($this->Fixture, 'bad_integer_fixture');
 		$annotations = (new Parser($reflection->getDocComment()))->parse();

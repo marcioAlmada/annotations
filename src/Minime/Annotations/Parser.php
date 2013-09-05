@@ -78,7 +78,7 @@ class Parser
 	{
 		if($value && $value !== 'null' && $value !== 'NULL')
 		{
-			$json = json_decode($value, TRUE);
+			$json = json_decode($value);
 
 			if( $json !== NULL)
 			{
@@ -104,13 +104,38 @@ class Parser
 			$value = intval($value);
 		}
 
-		if($type === "float")
+		else if($type === "float")
 		{
 			if(!filter_var($value, FILTER_VALIDATE_FLOAT))
 			{
 				throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
 			}
 			$value = floatval($value);
+		}
+
+		else if($type === "string")
+		{
+
+		}
+
+		else if($type === "json")
+		{
+			$json = json_decode($value);
+
+			if( $json !== NULL)
+			{
+				$value = $json;
+			}
+			else
+			{
+				throw new ParserException("Invalid JSON string supplied.");	
+			}
+		}
+
+		else
+		{
+			throw new ParserException("Invalid type {$type}. Type must be (string| integer | float | json).", 1);
+			
 		}
 
 		return $value;
