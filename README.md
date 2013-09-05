@@ -12,7 +12,7 @@ A lightweight (dependency free) PHP annotations library. Minime Annotations is i
 * Property annotations
 * Method annotations
 * Annotations reader trait, just for convenience
-* (optional) Strong typed annotations (float, integer, string)
+* (optional) Strong typed annotations (float, integer, string, json*)
 * Freedom (no auxiliary class for each annotation you define)
 * Grep annotations from a colletion of annotations based on a regexp
 
@@ -24,27 +24,33 @@ The trait approach is useful for self / internal reflection:
 
 ```php
 /**
- * @post @get
+ * @get @post @delete
  * @entity bar
  * @has-many Baz
- * @export ["json", "xml", "csv"]
+ * @export json ["json", "xml", "csv"]
  * @max integer 45
  * @delta float .45
  */
-class Foo
+class FooController
 {
     use Minime\Annotations\Traits\Reader;
 }
 
 $foo = new Foo();
 $annotations = $foo->getClassAnnotations();
+
+$annotations->get('get') 	  // > bool(true)
 $annotations->get('post')     // > bool(true)
-$annotations->get('get') 	  // > bool(false)
+$annotations->get('delete')   // > bool(true)
+
 $annotations->get('entity')   // > string(3) "bar"
 $annotations->get('has-many') // > string(3) "Baz"
+
 $annotations->get('export')   // > array(3){ [0] => "json" [1] => "xml" [2] => "csv" }
 $annotations->get('max')      // > int(45)
 $annotations->get('delta')    // > double(0.45)
+
+$annotations->get('undefined')  // > null
 ```
 
 Getting annotations from property and methods is easy too:
@@ -70,13 +76,6 @@ Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
 
 * Annotations cache - any help?
 * Possibility to inject a custom parser
-* Maybe add more interesting annotation types (like json):
-
-```php
-/**
- * @config json { "x" : -30, "y" : 20, "z" : 45 }
- */
-```
 
 ## Copyright
 
