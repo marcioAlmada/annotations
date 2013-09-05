@@ -2,9 +2,6 @@
 
 namespace Minime\Annotations;
 
-use \Minime\Annotations\Fixtures\AnnotationsFixture;
-use \ReflectionProperty;
-
 class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 {
 
