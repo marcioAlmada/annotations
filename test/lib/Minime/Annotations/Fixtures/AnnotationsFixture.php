@@ -35,6 +35,13 @@ class AnnotationsFixture
 	private $boolean_fixture;
 
 	/**
+	 * @alpha
+	 * @beta
+	 * @gamma
+	 */
+	private $implicit_boolean_fixture;
+
+	/**
 	 * @value abc
 	 * @value "abc"
 	 * @value "123"
@@ -86,6 +93,7 @@ class AnnotationsFixture
 	 * @postParam x
 	 * @postParam y
 	 * @postParam z
+	 * @alpha @beta @gamma
 	 */
 	private $same_line_fixture;
 

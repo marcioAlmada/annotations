@@ -48,6 +48,19 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @test
 	 */
+	public function parseImplicitBooleanFixture()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'implicit_boolean_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertSame(TRUE, $annotations->get('alpha'));
+		$this->assertSame(TRUE, $annotations->get('beta'));
+		$this->assertSame(TRUE, $annotations->get('gamma'));
+		$this->assertSame(NULL, $annotations->get('delta'));
+	}
+
+	/**
+	 * @test
+	 */
 	public function parseStringFixture()
 	{
 		$reflection = new ReflectionProperty($this->Fixture, 'string_fixture');
@@ -122,6 +135,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame(TRUE, $annotations->get('get'));
 		$this->assertSame(TRUE, $annotations->get('post'));
 		$this->assertSame(TRUE, $annotations->get('ajax'));
+		$this->assertSame(TRUE, $annotations->get('alpha'));
+		$this->assertSame(TRUE, $annotations->get('beta'));
+		$this->assertSame(TRUE, $annotations->get('gamma'));
 		$this->assertSame(NULL, $annotations->get('undefined'));
 	}
 
