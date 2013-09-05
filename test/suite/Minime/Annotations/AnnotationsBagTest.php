@@ -9,7 +9,16 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$this->Bag = new AnnotationsBag(['bar' => 'baz']);
+		$this->Bag = new AnnotationsBag([
+			'get' => true,
+			'post' => false,
+			'put' => false,
+			'val.max' => 16,
+			'val.min' => 6,
+			'val.regex' => "/[A-z0-9\_\-]+/",
+			'config.container' => 'Some\Collection',
+			'config.export' => ['json', 'csv']
+		]);
 	}
 
 	/**
@@ -26,8 +35,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function nullForUnsetAnnotation()
 	{
-		$this->assertSame(null, $this->Bag->get('foo'));
-		$this->assertSame('baz', $this->Bag->get('bar'));
+		$this->assertSame(FALSE, $this->Bag->get('post'));
+		$this->assertSame(NULL , $this->Bag->get('bar'));
 	}
 
 	/**
@@ -36,20 +45,36 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function grep()
 	{
-		$this->Bag = new AnnotationsBag([
-			'get' => true,
-			'post' => false,
-			'put' => false,
-			'val.max' => 16,
-			'val.min' => 6,
-			'val.regex' => "/[A-z0-9\_\-]+/"
-		]);
-		
+		$this->assertCount(8, $this->Bag->export());
 		$this->assertCount(3, $this->Bag->grep('val')->export());
-		$this->assertCount(1, $this->Bag->grep('^p')->grep('st$')->export());
+		$this->assertCount(2, $this->Bag->grep('config')->export());
+
+		# grep that always matches nothing
+		$this->assertCount(0, $this->Bag->grep('^$')->export());
+
+		# chained grep
 		$this->assertSame(['val.max' => 16], $this->Bag->grep('max$')->export());
-		$this->assertCount(6, $this->Bag->export());
+		$this->assertSame(['config.export' => ['json', 'csv']], $this->Bag->grep('export$')->export());
+
+		# should throw exception
 		$this->Bag->grep([]);
+	}
+
+	/**
+	 * @test
+	 */
+	public function isTraversable()
+	{
+		foreach ($this->Bag as $annotation => $value)
+		{
+			$this->assertEquals($value, $this->Bag->get($annotation));
+		}
+
+		$this->Bag = new AnnotationsBag([
+			'min' => 1,
+			'max' => 2,
+			'medium' => 3
+		]);
 	}
 
 	/**

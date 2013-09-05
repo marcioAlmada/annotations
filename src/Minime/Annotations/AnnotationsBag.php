@@ -2,29 +2,29 @@
 
 namespace Minime\Annotations;
 
-class AnnotationsBag
+class AnnotationsBag implements \IteratorAggregate
 {
-	private $parameters = [];
+	private $attributes = [];
 
-	public function __construct($parameters)
+	public function __construct($attributes)
 	{
-		if(!is_array($parameters))
+		if(!is_array($attributes))
 		{
 			throw new \InvalidArgumentException("AnnotationsBag expects array of annotations");
 		}
-		$this->parameters = $parameters;
+		$this->attributes = $attributes;
 	}
 
 	public function export()
 	{
-		return $this->parameters;
+		return $this->attributes;
 	}
 
 	public function has($key)
 	{
 		if(is_string($key))
 		{
-			if(isset($this->parameters[$key]))
+			if(isset($this->attributes[$key]))
 			{
 				return true;
 			}
@@ -44,7 +44,7 @@ class AnnotationsBag
 		$regex = "/$pattern/";		
 		$results = [];
 
-		foreach ($this->parameters as $key => $value)
+		foreach ($this->attributes as $key => $value)
 		{
 			if(preg_match($regex, $key))
 			{
@@ -59,8 +59,13 @@ class AnnotationsBag
 	{
 		if($this->has($key))
 		{
-			return $this->parameters[$key];
+			return $this->attributes[$key];
 		}
 		return null;
+	}
+
+	public function getIterator()
+	{
+		return new \ArrayIterator($this->attributes);
 	}
 }
