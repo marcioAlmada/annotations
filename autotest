@@ -32,7 +32,7 @@ def notify status, msg
   system "notify-send #{title} #{msg} -i #{image}"
 end
  
-watch('tests/.*Test\.php') do |md|
+watch('test/.*Test\.php') do |md|
   clear
   status = phpunit "#{md[0]}"
   notify status, md[0]
