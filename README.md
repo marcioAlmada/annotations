@@ -6,22 +6,6 @@ Minime Annotations
 
 A lightweight (dependency free) PHP annotations library. Minime Annotations is intended to be dynamic.
 
-## Currently Supports
-
-* Class annotations
-* Property annotations
-* Method annotations
-* Trait, just for convenience
-* Optional strong typed annotations (float, integer, string, json*)
-* Freedom (no auxiliary class for each annotation you define)
-* Grep annotations from a colletion of annotations based on a regexp
-
-
-## Coming Soon
-
-* Annotations cache - any help?
-* Possibility to inject a custom parser
-
 
 ## Basic Usage
 
@@ -94,6 +78,7 @@ Let's suppose you want to pick just a group of annotations:
  */
 class WebService
 {
+    use Minime\Annotations\Traits\Reader;
 }
 
 $annotations = (new WebService())->getClassAnnotations();
@@ -113,6 +98,22 @@ foreach($annotations->grep('^method') as $annotation => $value)
 	// some behavior
 }
 ```
+
+
+## Currently Supports
+
+* Class annotations
+* Property annotations
+* Method annotations
+* A very convenient Trait
+* Optional strong typed annotations: float, integer, string, json
+* Grep annotations from a collection based on a regexp
+
+
+## Coming Soon
+
+* Annotations cache - any help?
+* Possibility to inject a custom parser
 
 
 ## Copyright
