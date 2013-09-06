@@ -4,7 +4,7 @@
     "description": "A lightweight dependency free PHP annotation library",
     "keywords": ["php", "reflection", "annotations", "metadata"],
     "homepage": "http://github.com/marcioAlmada/minime.annotations",
-    "license": "proprietary",
+    "license": "MIT",
     "authors": [
         {
             "name": "Márcio Almada",
