@@ -11,10 +11,17 @@ A lightweight (dependency free) PHP annotations library. Minime Annotations is i
 * Class annotations
 * Property annotations
 * Method annotations
-* Annotations reader trait, just for convenience
-* (optional) Strong typed annotations (float, integer, string, json*)
+* Trait, just for convenience
+* Optional strong typed annotations (float, integer, string, json*)
 * Freedom (no auxiliary class for each annotation you define)
 * Grep annotations from a colletion of annotations based on a regexp
+
+
+## Coming Soon
+
+* Annotations cache - any help?
+* Possibility to inject a custom parser
+
 
 ## Basic Usage
 
@@ -72,10 +79,41 @@ Facade::getPropertyAnnotations('Full\Class\Name', 'property_name');
 Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
 ```
 
-## Coming Soon
+### Grepping and traversing
 
-* Annotations cache - any help?
-* Possibility to inject a custom parser
+Let's suppose you want to pick just a group of annotations:
+
+```php
+/**
+ * @response.xml
+ * @response.xls
+ * @response.json
+ * @response.csv
+ * @method.get
+ * @method.post
+ */
+class WebService
+{
+}
+
+$annotations = (new WebService())->getClassAnnotations();
+
+# grep all annotations starting with 'response.x'
+$annotations->grep('^response.x')->export();
+// > array(3){ ["@response.xml"] => TRUE, ["@response.xls"] => TRUE }
+
+# or just "pipe" grep
+$annotations->grep('^response')
+			->grep('x')
+			->export();
+
+# traversing results
+foreach($annotations->grep('^method') as $annotation => $value)
+{
+	// some behavior
+}
+```
+
 
 ## Copyright
 
