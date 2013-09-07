@@ -1,8 +1,8 @@
 Minime Annotations
 ==================
 
-[![Build Status](https://travis-ci.org/marcioAlmada/minime.annotations.png?branch=master)](https://travis-ci.org/marcioAlmada/minime.annotations)
-[![Coverage Status](https://coveralls.io/repos/marcioAlmada/minime.annotations/badge.png?branch=master)](https://coveralls.io/r/marcioAlmada/minime.annotations?branch=master)
+[![Build Status](https://travis-ci.org/marcioAlmada/annotations.png?branch=master)](https://travis-ci.org/marcioAlmada/annotations)
+[![Coverage Status](https://coveralls.io/repos/marcioAlmada/annotations/badge.png?branch=master)](https://coveralls.io/r/marcioAlmada/annotations?branch=master)
 [![SemVer](http://calm-shore-6115.herokuapp.com/?label=semver&value=1.0.0&color=yellow)](http://semver.org)
 
 A lightweight (dependency free) PHP annotations library. Minime Annotations is intended to be dynamic.
