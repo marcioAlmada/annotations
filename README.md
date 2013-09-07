@@ -3,13 +3,25 @@ Minime \ Annotations
 
 [![Build Status](https://travis-ci.org/marcioAlmada/annotations.png?branch=master)](https://travis-ci.org/marcioAlmada/annotations)
 [![Coverage Status](https://coveralls.io/repos/marcioAlmada/annotations/badge.png?branch=master)](https://coveralls.io/r/marcioAlmada/annotations?branch=master)
-[![SemVer](http://calm-shore-6115.herokuapp.com/?label=semver&value=1.0.0&color=yellow)](http://semver.org)
 [![Latest Stable Version](https://poser.pugx.org/minime/annotations/v/stable.png)](https://packagist.org/packages/minime/annotations)
 [![Total Downloads](https://poser.pugx.org/minime/annotations/downloads.png)](https://packagist.org/packages/minime/annotations)
 
 Minime\Annotations is a lightweight PHP annotation library.
-It supports both weak and strong typed annotations that just works.
-Smart JSON support included.
+It supports both weak and strong typed annotations, JSON included.
+
+## Installation
+
+Manually update `composer.json` with:
+```json
+{
+  "require": {
+    "minime/annotations": "1.*"
+  }
+}
+```
+
+Or just use your terminal: `composer require minime/annotations:1.*` :8ball:
+
 
 ## Basic Usage
 
