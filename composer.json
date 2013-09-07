@@ -3,7 +3,6 @@
     "type": "library",
     "description": "A lightweight dependency free PHP annotation library",
     "keywords": ["php", "reflection", "annotations", "metadata"],
-    "homepage": "http://github.com/marcioAlmada/minime.annotations",
     "license": "MIT",
     "authors": [
         {
@@ -14,7 +13,6 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "doctrine/cache": "v1.1",
         "strscan/strscan": "1.0.1"
     },
     "require-dev": {
