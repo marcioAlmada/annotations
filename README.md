@@ -1,12 +1,15 @@
-Minime Annotations
+Minime \ Annotations
 ==================
 
 [![Build Status](https://travis-ci.org/marcioAlmada/annotations.png?branch=master)](https://travis-ci.org/marcioAlmada/annotations)
 [![Coverage Status](https://coveralls.io/repos/marcioAlmada/annotations/badge.png?branch=master)](https://coveralls.io/r/marcioAlmada/annotations?branch=master)
 [![SemVer](http://calm-shore-6115.herokuapp.com/?label=semver&value=1.0.0&color=yellow)](http://semver.org)
+[![Latest Stable Version](https://poser.pugx.org/minime/annotations/v/stable.png)](https://packagist.org/packages/minime/annotations)
+[![Total Downloads](https://poser.pugx.org/minime/annotations/downloads.png)](https://packagist.org/packages/minime/annotations)
 
-A lightweight (dependency free) PHP annotations library. Minime Annotations is intended to be dynamic.
-
+Minime\Annotations is a lightweight PHP annotation library.
+It supports both weak and strong typed annotations that just works.
+Smart JSON support included.
 
 ## Basic Usage
 
