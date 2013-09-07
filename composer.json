@@ -1,7 +1,7 @@
 {
     "name": "minime/annotations",
     "type": "library",
-    "description": "Minime / Annotations is a lightweight (dependency free PHP) PHP annotation library",
+    "description": "Minime / Annotations is a lightweight PHP annotation library",
     "keywords": ["php", "reflection", "annotations", "metadata"],
     "license": "MIT",
     "authors": [
