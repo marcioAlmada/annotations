@@ -41,7 +41,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
-	 * @expectedException \InvalidArgumentException
 	 */
 	public function grep()
 	{
@@ -55,9 +54,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 		# chained grep
 		$this->assertSame(['val.max' => 16], $this->Bag->grep('max$')->export());
 		$this->assertSame(['config.export' => ['json', 'csv']], $this->Bag->grep('export$')->export());
-
-		# should throw exception
-		$this->Bag->grep([]);
 	}
 
 	/**
@@ -84,6 +80,15 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 	public function getAcceptsOnlyStringKeys()
 	{
 		$this->Bag->get(0);
+	}
+
+	/**
+	 * @test
+	 * @expectedException \InvalidArgumentException
+	 */
+	public function pregAcceptsOnlyStringKeys()
+	{
+		$this->Bag->grep(0)->export();
 	}
 
 }

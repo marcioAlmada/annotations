@@ -35,24 +35,23 @@ class AnnotationsBag implements \IteratorAggregate
 
 	public function grep($pattern)
 	{
+		if(is_string($pattern))
+		{			
+			$regex = "/$pattern/";		
+			$results = [];
 
-		if(!is_string($pattern))
-		{
-			throw new \InvalidArgumentException('Grep pattern must be a string');
-		}
-
-		$regex = "/$pattern/";		
-		$results = [];
-
-		foreach ($this->attributes as $key => $value)
-		{
-			if(preg_match($regex, $key))
+			foreach ($this->attributes as $key => $value)
 			{
-				$results[$key] = $value;
+				if(preg_match($regex, $key))
+				{
+					$results[$key] = $value;
+				}
 			}
+
+			return new self($results);
 		}
 
-		return new self($results);
+		throw new \InvalidArgumentException('Grep pattern must be a regexp string');
 	}
 
 	public function get($key)
