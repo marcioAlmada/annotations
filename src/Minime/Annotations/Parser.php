@@ -61,6 +61,13 @@ class Parser
 			}
 		}
 
+		$parameters = $this->condense($parameters);
+
+		return new AnnotationsBag($parameters);
+	}
+
+	private function condense($parameters)
+	{
 		foreach ($parameters as $key => &$value)
 		{
 			if(!is_bool($value))
@@ -71,7 +78,8 @@ class Parser
 				}			
 			}
 		}
-		return new AnnotationsBag($parameters);
+
+		return $parameters;
 	}
 
 	private function parseWeakTypedValue($value)
@@ -97,42 +105,47 @@ class Parser
 
 		if($type === "integer")
 		{
-			if(!filter_var($value, FILTER_VALIDATE_INT))
-			{
-				throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
-			}
-			$value = intval($value);
+			return $this->parseInteger($value);
 		}
 
 		else if($type === "float")
 		{
-			if(!filter_var($value, FILTER_VALIDATE_FLOAT))
-			{
-				throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
-			}
-			$value = floatval($value);
-		}
-
-		else if($type === "string")
-		{
-
+			return $this->parseFloat($value);
 		}
 
 		else if($type === "json")
 		{
-			$json = json_decode($value);
-
-			if( $json !== NULL)
-			{
-				$value = $json;
-			}
-			else
-			{
-				throw new ParserException("Invalid JSON string supplied.");	
-			}
+			return $this->parseJSON($value);
 		}
 
 		return $value;
 	}
 
+	private function parseInteger($value)
+	{
+		if(!filter_var($value, FILTER_VALIDATE_INT))
+		{
+			throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
+		}
+		return intval($value);
+	}
+
+	private function parseFloat($value)
+	{
+		if(!filter_var($value, FILTER_VALIDATE_FLOAT))
+		{
+			throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
+		}
+		return floatval($value);
+	}
+
+	private function parseJSON($value)
+	{
+		$json_decoded = json_decode($value);
+		if( $json_decoded === NULL)
+		{
+			throw new ParserException("Invalid JSON string supplied.");	
+		}
+		return $json_decoded;
+	}
 }
