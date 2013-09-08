@@ -132,12 +132,6 @@ class Parser
 			}
 		}
 
-		else
-		{
-			throw new ParserException("Invalid type {$type}. Type must be (string| integer | float | json).", 1);
-			
-		}
-
 		return $value;
 	}
 
