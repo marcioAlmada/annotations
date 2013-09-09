@@ -17,46 +17,26 @@ class Parser
 	{
 		$parameters = [];
 		$lines = explode("\n", $this->raw_doc_block);
-		
-		foreach ( $lines as $line)
-		{
+		foreach ($lines as $line) {
 			$tokenizer = new StringScanner($line);
 			$tokenizer->skip('/\s+\*\s+/');
-
-			while(!$tokenizer->hasTerminated())
-			{
+			while (! $tokenizer->hasTerminated()) {
 				$key = $tokenizer->scan('/\@[A-z0-9\_\-]+/');
-				if($key)
-				{
-					$key = str_replace('@', '', $key);
-					$tokenizer->skip('/\s+/');
-
-					# if implicit boolean
-					if($tokenizer->peek() === "" || $tokenizer->check('/\@/'))
-					{
-						$parameters[$key] = true;
-					}
-
-					# if strong typed
-					else if($tokenizer->check('/(string|integer|float|json)/'))
-					{
-						$type = $tokenizer->scan('/\w+/');
-						$tokenizer->skip('/\s+/');
-						$raw_value = $tokenizer->getRemainder();
-						$parameters[$key][] = $this->parseStrongTypedValue($raw_value, $type);
-					}
-
-					# else weak typed
-					else
-					{
-						$value = $tokenizer->getRemainder();
-						$parameters[$key][] = $this->parseWeakTypedValue($value);
-					}
-				}
-				else
-				{
-					# next line when no annotation is found
+				if (! $key) {
+				    // next line when no annotation is found
 					$tokenizer->terminate();
+					continue;
+				}
+				$key = str_replace('@', '', $key);
+				$tokenizer->skip('/\s+/');
+				if ('' == $tokenizer->peek() || $tokenizer->check('/\@/')) { // if implicit boolean
+					$parameters[$key] = true;
+				} elseif($tokenizer->check('/(string|integer|float|json)/')) { //if strong typed
+					$type = $tokenizer->scan('/\w+/');
+					$tokenizer->skip('/\s+/');
+					$parameters[$key][] = $this->parseStrongTypedValue($tokenizer->getRemainder(), $type);
+				} else { //else weak typed
+					$parameters[$key][] = $this->parseWeakTypedValue($tokenizer->getRemainder());
 				}
 			}
 		}
@@ -68,83 +48,60 @@ class Parser
 
 	private function condense($parameters)
 	{
-		foreach ($parameters as $key => &$value)
-		{
-			if(!is_bool($value))
-			{
-				if(count($value) === 1)
-				{
-					$value = $value[0];
-				}			
+		foreach ($parameters as &$value) {
+			if (! is_bool($value) && 1 == count($value)) {
+				$value = $value[0];
 			}
 		}
-
+		unset($value);
 		return $parameters;
 	}
 
 	private function parseWeakTypedValue($value)
 	{
-		if($value && $value !== 'null' && $value !== 'NULL')
-		{
-			$json = json_decode($value);
-
-			if( $json !== NULL)
-			{
-				$value = $json;
-			}
-		}
-		else
-		{
-			$value = NULL;
+	    if (! isset($value) || 'null' == $value || 'NULL' == $value)) {
+	        return null;
+	    }
+	    $json = json_decode($value);
+		if (null !== $json) {
+		    return $json;
 		}
 		return $value;
 	}
 
-	private function parseStrongTypedValue($value, $type)
+	private function parseStrongTypedValue($value, $type = null)
 	{
-
-		if($type === "integer")
-		{
-			return $this->parseInteger($value);
-		}
-
-		else if($type === "float")
-		{
-			return $this->parseFloat($value);
-		}
-
-		else if($type === "json")
-		{
-			return $this->parseJSON($value);
-		}
-
-		return $value;
+        $method = 'parse'.ucfirst($type);
+        if (! isset($type) || ! method_exists($this, $method)) {
+            return $value;
+        }
+        return $this->{$method}($value);
 	}
 
 	private function parseInteger($value)
 	{
-		if(!filter_var($value, FILTER_VALIDATE_INT))
-		{
-			throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
+	    $value = filter_var($value, FILTER_VALIDATE_INT);
+		if(false === $value) {
+			throw new \InvalidArgumentException("Raw value must be integer. Invalid value '{$value}' given.");
 		}
-		return intval($value);
+		return $value;
 	}
 
 	private function parseFloat($value)
 	{
-		if(!filter_var($value, FILTER_VALIDATE_FLOAT))
-		{
-			throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
+	    $value = filter_var($value, FILTER_VALIDATE_FLOAT);
+		if(false === $value) {
+			throw new \InvalidArgumentException("Raw value must be float. Invalid value '{$value}' given.");
 		}
 		return floatval($value);
 	}
 
-	private function parseJSON($value)
+	private function parseJson($value)
 	{
 		$json_decoded = json_decode($value);
-		if( $json_decoded === NULL)
-		{
-			throw new ParserException("Invalid JSON string supplied.");	
+		$error = json_last_error();
+		if ($error != JSON_ERROR_NONE) {
+		   throw new \InvalidArgumentException("Invalid JSON string supplied.");	
 		}
 		return $json_decoded;
 	}
