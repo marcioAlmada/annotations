@@ -4,6 +4,10 @@ namespace Minime\Annotations;
 
 class AnnotationsBag implements \IteratorAggregate
 {
+	/**
+	 * Associative arrays of annotations
+	 * @var array
+	 */
 	private $attributes = [];
 
 	public function __construct($attributes)
@@ -15,11 +19,20 @@ class AnnotationsBag implements \IteratorAggregate
 		$this->attributes = $attributes;
 	}
 
+	/**
+	 * Unbox all annotations in the form of an associative array
+	 * @return array associative array of annotations
+	 */
 	public function export()
 	{
 		return $this->attributes;
 	}
 
+	/**
+	 * Checks if a given annotation is declared
+	 * @param  string  $key A valid annotation tag, should match /[A-z0-9\-\_]/
+	 * @return boolean TRUE if annotation is declared, FALSE if not
+	 */
 	public function has($key)
 	{
 		if(is_string($key))
@@ -33,6 +46,11 @@ class AnnotationsBag implements \IteratorAggregate
 		throw new \InvalidArgumentException('Annotation key must be a string');
 	}
 
+	/**
+	 * Filters annotations based on a regexp
+	 * @param  string $pattern Valid regexp
+	 * @return Minime\Annotations\AnnotationsBag Annotations collection with filtered results
+	 */
 	public function grep($pattern)
 	{
 		if(is_string($pattern))
@@ -54,6 +72,11 @@ class AnnotationsBag implements \IteratorAggregate
 		throw new \InvalidArgumentException('Grep pattern must be a regexp string');
 	}
 
+	/**
+	 * Retrieves a single annotation value
+	 * @param  string  $key A valid annotation tag, should match /[A-z0-9\-\_]/
+	 * @return mixed   null if no annotation is found
+	 */
 	public function get($key)
 	{
 		if($this->has($key))

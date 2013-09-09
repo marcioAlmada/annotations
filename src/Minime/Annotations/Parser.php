@@ -6,13 +6,26 @@ use StrScan\StringScanner;
 
 class Parser
 {
+	/**
+	 * The DocBlock extracted from source
+	 * @var string
+	 */
 	private $raw_doc_block;
 
+	/**
+	 * @param string $raw_doc_block A DocBlock string to be parsed
+	 */
 	public function __construct($raw_doc_block)
 	{
 		$this->raw_doc_block = $raw_doc_block;
 	}
 
+	/**
+	 * Iterates through raw DocBlock line by line and uses a tokenizer
+	 * to parse and extract all found annotations
+	 * 
+	 * @return Minime\Annotations\AnnotationsBag Annotations collection
+	 */
 	public function parse()
 	{
 		$parameters = [];
