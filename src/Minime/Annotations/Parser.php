@@ -34,22 +34,26 @@ class Parser
             $tokenizer->skip('/\s+\*\s+/');
             while (! $tokenizer->hasTerminated()) {
                 $key = $tokenizer->scan('/\@[A-z0-9\_\-]+/');
-                if (! $key) {
-                    // next line when no annotation is found
+                if (! $key) { // next line when no annotation is found
                     $tokenizer->terminate();
                     continue;
                 }
+
                 $key = str_replace('@', '', $key);
                 $tokenizer->skip('/\s+/');
                 if ('' == $tokenizer->peek() || $tokenizer->check('/\@/')) { // if implicit boolean
                     $parameters[$key] = true;
-                } elseif($tokenizer->check('/(string|integer|float|json)/')) { //if strong typed
+                    continue;
+                }
+
+                $type = 'string';
+                $value = $tokenizer->getRemainder();
+                if ($tokenizer->check('/(string|integer|float|json)/')) { //if strong typed
                     $type = $tokenizer->scan('/\w+/');
                     $tokenizer->skip('/\s+/');
-                    $parameters[$key][] = $this->parseStrongTypedValue($tokenizer->getRemainder(), $type);
-                } else { //else weak typed
-                    $parameters[$key][] = $this->parseWeakTypedValue($tokenizer->getRemainder());
+                    $value = $tokenizer->getRemainder();
                 }
+                $parameters[$key][] = $this->parseValue($value, $type);
             }
         }
 
@@ -76,12 +80,30 @@ class Parser
     }
 
     /**
+     * Parse a given value against a specific type
+     * @param  string $value
+     * @param  string $type  the type to parse the value against
+     *
+     * @throws ParserException If the type is not recognized
+     * 
+     * @return scalar|object
+     */
+    private function parseValue($value, $type = 'string')
+    {
+        $method = 'parse'.ucfirst(strtolower($type));
+        if (! method_exists($this, $method)) {
+            throw new ParserException("Invalid Strong Type '{$type}' no yet implemented.");
+        }
+        return $this->{$method}($value);
+    }
+
+    /**
      * Parse a given value
      * @param  string $value
      * 
      * @return scalar|object
      */
-    private function parseWeakTypedValue($value)
+    private function parseString($value)
     {
         if (! isset($value) || 'null' == $value || 'NULL' == $value) {
             return null;
@@ -91,26 +113,6 @@ class Parser
             return $json;
         }
         return $value;
-    }
-
-    /**
-     * Parse a given value against a specific type
-     * @param  string $value
-     * @param  string $type  the type to parse the value against
-     *
-     * @throws ParserException If the type is not recognized
-     * 
-     * @return scalar|object
-     */
-    private function parseStrongTypedValue($value, $type = null)
-    {
-        $method = 'parse'.ucfirst(strtolower($type));
-        if (! isset($type)) {
-            return $this->parseWeakTypedValue($value);
-        } elseif (! method_exists($this, $method)) {
-            throw new ParserException("Invalid Strong Type '{$type}' no yet implemented.");
-        }
-        return $this->{$method}($value);
     }
 
     /**
@@ -157,11 +159,11 @@ class Parser
      */
     private function parseJson($value)
     {
-        $json_decoded = json_decode($value);
+        $json = json_decode($value);
         $error = json_last_error();
         if (JSON_ERROR_NONE != $error) {
             throw new ParserException("Invalid JSON string supplied.");
         }
-        return $json_decoded;
+        return $json;
     }
 }
