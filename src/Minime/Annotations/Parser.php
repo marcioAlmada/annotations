@@ -61,6 +61,7 @@ class Parser
     /**
      * Filter parameters array to remove single value array
      * @param  array $parameters
+     * 
      * @return array
      */
     private function condense(array $parameters)
@@ -76,8 +77,9 @@ class Parser
 
     /**
      * Parse a given value
-     * @param  scalar $value
-     * @return scalar
+     * @param  string $value
+     * 
+     * @return scalar|object
      */
     private function parseWeakTypedValue($value)
     {
@@ -93,12 +95,12 @@ class Parser
 
     /**
      * Parse a given value against a specific type
-     * @param  scalar $value
+     * @param  string $value
      * @param  string $type  the type to parse the value against
      *
      * @throws ParserException If the type is not recognized
      * 
-     * @return scalar 
+     * @return scalar|object
      */
     private function parseStrongTypedValue($value, $type = null)
     {
@@ -134,7 +136,7 @@ class Parser
      *
      * @throws ParserException If $value is not a float
      * 
-     * @return integer
+     * @return float
      */
     private function parseFloat($value)
     {
@@ -151,7 +153,7 @@ class Parser
      *
      * @throws ParserException If $value is not a Json
      * 
-     * @return integer
+     * @return scalar|object
      */
     private function parseJson($value)
     {
