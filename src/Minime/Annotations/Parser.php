@@ -71,9 +71,11 @@ class Parser
 
 	private function parseStrongTypedValue($value, $type = null)
 	{
-        $method = 'parse'.ucfirst($type);
-        if (! isset($type) || ! method_exists($this, $method)) {
+        $method = 'parse'.ucfirst(strtolower($type));
+        if (! isset($type)) {
             return $value;
+        } elseif (! method_exists($this, $method)) {
+            throw new \InvalidArgumentException("Invalid Strong Type '{$type}' no yet implemented.");
         }
         return $this->{$method}($value);
 	}
@@ -100,7 +102,7 @@ class Parser
 	{
 		$json_decoded = json_decode($value);
 		$error = json_last_error();
-		if ($error != JSON_ERROR_NONE) {
+		if (JSON_ERROR_NONE != $error) {
 		   throw new \InvalidArgumentException("Invalid JSON string supplied.");	
 		}
 		return $json_decoded;
