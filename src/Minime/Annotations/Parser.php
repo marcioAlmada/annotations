@@ -142,7 +142,7 @@ class Parser
         if (false === $value) {
             throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
         }
-        return floatval($value);
+        return $value;
     }
 
     /**
