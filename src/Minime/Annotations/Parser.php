@@ -82,7 +82,7 @@ class Parser
     {
         $method = 'parse'.ucfirst(strtolower($type));
         if (! method_exists('Parser', $method)) {
-            throw new ParserException("Invalid Strong Type '{$type}' no yet implemented.");
+            throw new ParserException("Invalid Type '{$type}' unknown OR no yet implemented.");
         }
         return Parser::{$method}($value);
     }
