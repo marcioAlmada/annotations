@@ -52,7 +52,7 @@ class Parser
                     $tokenizer->skip('/\s+/');
                 }
                 $value = $tokenizer->getRemainder();
-                $parameters[$key][] = $this->parseValue($value, $type);
+                $parameters[$key][] = Parser::parseValue($value, $type);
             }
         }
 
@@ -78,7 +78,7 @@ class Parser
      * 
      * @return scalar|object
      */
-    private function parseValue($value, $type = 'string')
+    private static function parseValue($value, $type = 'string')
     {
         $method = 'parse'.ucfirst(strtolower($type));
         if (! method_exists('Parser', $method)) {
