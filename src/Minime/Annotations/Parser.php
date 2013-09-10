@@ -47,12 +47,11 @@ class Parser
                 }
 
                 $type = 'string';
-                $value = $tokenizer->getRemainder();
                 if ($tokenizer->check('/(string|integer|float|json)/')) { //if strong typed
                     $type = $tokenizer->scan('/\w+/');
                     $tokenizer->skip('/\s+/');
-                    $value = $tokenizer->getRemainder();
                 }
+                $value = $tokenizer->getRemainder();
                 $parameters[$key][] = $this->parseValue($value, $type);
             }
         }
