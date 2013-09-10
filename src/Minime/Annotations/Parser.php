@@ -57,26 +57,17 @@ class Parser
             }
         }
 
-        $parameters = $this->condense($parameters);
+        $parameters = array_map(
+            function ($value) {
+                if (is_array($value) && 1 == count($value)) {
+                    $value = $value[0];
+                }
+                return $value;
+            },
+            $parameters
+        );
 
         return new AnnotationsBag($parameters);
-    }
-
-    /**
-     * Filter parameters array to remove single value array
-     * @param  array $parameters
-     * 
-     * @return array
-     */
-    private function condense(array $parameters)
-    {
-        foreach ($parameters as &$value) {
-            if (! is_bool($value) && 1 == count($value)) {
-                $value = $value[0];
-            }
-        }
-        unset($value);
-        return $parameters;
     }
 
     /**
@@ -91,10 +82,10 @@ class Parser
     private function parseValue($value, $type = 'string')
     {
         $method = 'parse'.ucfirst(strtolower($type));
-        if (! method_exists($this, $method)) {
+        if (! method_exists('Parser', $method)) {
             throw new ParserException("Invalid Strong Type '{$type}' no yet implemented.");
         }
-        return $this->{$method}($value);
+        return Parser::{$method}($value);
     }
 
     /**
@@ -103,7 +94,7 @@ class Parser
      * 
      * @return scalar|object
      */
-    private function parseString($value)
+    private static function parseString($value)
     {
         if (! isset($value) || 'null' == $value || 'NULL' == $value) {
             return null;
@@ -123,7 +114,7 @@ class Parser
      * 
      * @return integer
      */
-    private function parseInteger($value)
+    private static function parseInteger($value)
     {
         $value = filter_var($value, FILTER_VALIDATE_INT);
         if (false === $value) {
@@ -140,7 +131,7 @@ class Parser
      * 
      * @return float
      */
-    private function parseFloat($value)
+    private static function parseFloat($value)
     {
         $value = filter_var($value, FILTER_VALIDATE_FLOAT);
         if (false === $value) {
@@ -157,7 +148,7 @@ class Parser
      * 
      * @return scalar|object
      */
-    private function parseJson($value)
+    private static function parseJson($value)
     {
         $json = json_decode($value);
         $error = json_last_error();
