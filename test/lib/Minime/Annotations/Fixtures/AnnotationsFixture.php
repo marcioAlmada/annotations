@@ -109,7 +109,12 @@ class AnnotationsFixture
 	 * @value float 4
 	 */
 	private $strong_typed_fixture;
-	
+
+	/**
+	 * @value footype Tolerate me. DockBlocks can't be evaluated rigidly.
+	 */
+	private $non_recognized_type_fixture;
+
 	/**
 	 * @value integer 045
 	 */

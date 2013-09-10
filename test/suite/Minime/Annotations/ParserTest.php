@@ -165,6 +165,16 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
+	 */
+	public function tolerateUnrecognizedTypes()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'non_recognized_type_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		$this->assertEquals("footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations->get('value'));
+	}
+
+	/**
+	 * @test
 	 * @expectedException Minime\Annotations\ParserException
 	 */
 	public function badIntegerValue()
