@@ -32,6 +32,7 @@ class AnnotationsBag implements \IteratorAggregate
 	 * Checks if a given annotation is declared
 	 * @param  string  $key A valid annotation tag, should match /[A-z0-9\-\_]/
 	 * @return boolean TRUE if annotation is declared, FALSE if not
+	 * @throws \InvalidArgumentException If non string key is passed
 	 */
 	public function has($key)
 	{
@@ -50,6 +51,7 @@ class AnnotationsBag implements \IteratorAggregate
 	 * Filters annotations based on a regexp
 	 * @param  string $pattern Valid regexp
 	 * @return Minime\Annotations\AnnotationsBag Annotations collection with filtered results
+	 * @throws \InvalidArgumentException If non valid regexp is passed
 	 */
 	public function grep($pattern)
 	{

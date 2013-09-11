@@ -11,8 +11,10 @@ class Facade
 
 	/**
 	 * Retrieve all annotations from a given class
+	 * 
 	 * @param  string $class Full qualified class name
 	 * @return Minime\Annotations\AnnotationsBag Annotations collection
+	 * @throws  \ReflectionException If class is not found
 	 */
 	public static function getClassAnnotations($class)
 	{
@@ -22,9 +24,11 @@ class Facade
 
 	/**
 	 * Retrieve all annotations from a given property of a class
+	 * 
 	 * @param  string $class Full qualified class name
 	 * @param  string $property Property name
 	 * @return Minime\Annotations\AnnotationsBag Annotations collection
+	 * @throws  \ReflectionException If property is undefined
 	 */
 	public static function getPropertyAnnotations($class, $property)
 	{
@@ -34,9 +38,11 @@ class Facade
 
 	/**
 	 * Retrieve all annotations from a given method of a class
+	 * 
 	 * @param  string $class Full qualified class name
 	 * @param  string $property Method name
 	 * @return Minime\Annotations\AnnotationsBag Annotations collection
+	 * @throws  \ReflectionException If method is undefined
 	 */
 	public static function getMethodAnnotations($class, $method)
 	{

@@ -40,4 +40,31 @@ class FacadeTest extends \PHPUnit_Framework_TestCase
 		$annotations = Facade::getMethodAnnotations($this->Fixture, 'method_fixture');
 		$this->assertSame(TRUE, $annotations->get('post'));
 	}
+
+	/**
+	 * @test
+	 * @expectedException \ReflectionException
+	 */
+	public function exceptionWhenInspectingUndefinedClass()
+	{
+		$annotations = Facade::getClassAnnotations('Some\Undefined\Class');
+	}
+
+	/**
+	 * @test
+	 * @expectedException \ReflectionException
+	 */
+	public function exceptionWhenInspectingUndefinedProperty()
+	{
+		$annotations = Facade::getPropertyAnnotations($this->Fixture, 'undefined_property');
+	}
+
+	/**
+	 * @test
+	 * @expectedException \ReflectionException
+	 */
+	public function exceptionWhenInspectingUndefinedMethod()
+	{
+		$annotations = Facade::getMethodAnnotations($this->Fixture, 'undefined_method');
+	}
 }
