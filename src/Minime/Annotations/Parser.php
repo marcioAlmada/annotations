@@ -81,7 +81,7 @@ class Parser
 
 	private function condense($parameters)
 	{
-		foreach ($parameters as $key => &$value)
+		foreach ($parameters as &$value)
 		{
 			if(!is_bool($value))
 			{
