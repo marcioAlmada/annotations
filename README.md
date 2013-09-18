@@ -99,18 +99,34 @@ class WebService
 }
 
 $annotations = (new WebService())->getClassAnnotations();
+```
 
-# grep all annotations starting with 'response.x'
-$annotations->grep('^response.x')->export();
-// > array(3){ ["@response.xml"] => TRUE, ["@response.xls"] => TRUE }
+#### Grep all annotations within 'response' namespace
 
-# or just "pipe" grep
-$annotations->grep('^response')
-			->grep('x')
-			->export();
+```php
+$annotations->grepNamespace('response')->export();
+// > array(3){
+// > 	["xml"]  => (bool) TRUE,
+// > 	["xls"]  => (bool) TRUE,
+// > 	["json"] => (bool) TRUE,
+// > 	["csv"]  => (bool) TRUE
+// > }
+```
 
-# traversing results
-foreach($annotations->grep('^method') as $annotation => $value)
+#### Chainning grep to get all annotations beginning with 'x' within 'response' namespace:
+
+```php
+$annotations->grepNamespace('response')->grep('^x')->export();
+// > array(3){
+// > 	["xml"]  => (bool) TRUE,
+// > 	["xls"]  => (bool) TRUE
+// > }
+```
+
+#### Traversing results
+
+```php
+foreach($annotations->grepNamespace('method') as $annotation => $value)
 {
 	// some behavior
 }
@@ -125,6 +141,7 @@ foreach($annotations->grep('^method') as $annotation => $value)
 * A very convenient Trait
 * Optional strong typed annotations: float, integer, string, json
 * Grep annotations from a collection based on a regexp
+* Namespaced annotations
 
 
 ## Coming Soon
@@ -132,6 +149,17 @@ foreach($annotations->grep('^method') as $annotation => $value)
 * Annotations cache - any help?
 * Possibility to inject a custom parser
 
+
+## Want to contribute?
+
+I'm looking for a good cache library. Better to have multiple drivers support, like:
+ 
+ * Memory
+ * File
+ * Redis
+ * Mongo
+
+If you know a great cache library, come aboard!
 
 ## Copyright
 
