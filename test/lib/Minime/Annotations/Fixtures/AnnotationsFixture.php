@@ -126,6 +126,13 @@ class AnnotationsFixture
 	private $bad_float_fixture;
 
 	/**
+	 * @path.to.the.treasure "cheers!"
+	 * @path.to.the.cake "the cake is a lie"
+	 * @another.path.to.cake "foo"
+	 */
+	private $namespaced_fixture;
+
+	/**
 	 * @get @post @ajax
 	 * @postParam x
 	 * @postParam y

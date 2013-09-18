@@ -38,7 +38,7 @@ class Parser
 
 			while(!$tokenizer->hasTerminated())
 			{
-				$key = $tokenizer->scan('/\@[A-z0-9\_\-]+/');
+				$key = $tokenizer->scan('/\@[A-z0-9\_\-\.]+/');
 				if($key)
 				{
 					$key = str_replace('@', '', $key);

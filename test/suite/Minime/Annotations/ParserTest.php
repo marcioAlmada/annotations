@@ -144,6 +144,19 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @test
 	 */
+	public function namespacedAnnotations()
+	{
+		$reflection = new ReflectionProperty($this->Fixture, 'namespaced_fixture');
+		$annotations = (new Parser($reflection->getDocComment()))->parse();
+		
+		$this->assertSame('cheers!', $annotations->get('path.to.the.treasure'));
+		$this->assertSame('the cake is a lie', $annotations->get('path.to.the.cake'));
+		$this->assertSame('foo', $annotations->get('another.path.to.cake'));
+	}
+
+	/**
+	 * @test
+	 */
 	public function parseStrongTypedFixture()
 	{
 		$reflection = new ReflectionProperty($this->Fixture, 'strong_typed_fixture');
