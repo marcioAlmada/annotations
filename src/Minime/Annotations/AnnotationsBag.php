@@ -74,6 +74,17 @@ class AnnotationsBag implements \IteratorAggregate
 		throw new \InvalidArgumentException('Grep pattern must be a regexp string');
 	}
 
+	public function grepNamespace($pattern)
+	{
+		$annotations = $this->grep('^'.$pattern);
+		$results = [];
+		foreach ($annotations->export() as $namespace => $value)
+		{
+			$results[str_replace($pattern . '.', '', $namespace)] = $value;
+		}
+		return new self($results);
+	}
+
 	/**
 	 * Retrieves a single annotation value
 	 * @param  string  $key A valid annotation tag, should match /[A-z0-9\-\_]/

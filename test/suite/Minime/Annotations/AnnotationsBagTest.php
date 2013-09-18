@@ -59,6 +59,33 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @test
 	 */
+	public function grepNamespace()
+	{
+		$this->Bag = new AnnotationsBag([
+			'path.to.the.treasure' => 'cheers!',
+			'path.to.the.cake' => 'the cake is a lie',
+			'another.path.to.cake' => 'foo'
+		]);
+
+		$this->assertSame(
+			['treasure' => 'cheers!', 'cake' => 'the cake is a lie'],
+			$this->Bag->grepNamespace('path.to.the')->export()
+		);
+
+		# chained namespace grep		
+		$this->assertSame(
+			['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie'],
+			$this->Bag->grepNamespace('path')->grepNamespace('to')->export()
+		);
+		$this->assertSame(
+			['treasure' => 'cheers!', 'cake' => 'the cake is a lie'],
+			$this->Bag->grepNamespace('path')->grepNamespace('to')->grepNamespace('the')->export()
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function isTraversable()
 	{
 		foreach ($this->Bag as $annotation => $value)
