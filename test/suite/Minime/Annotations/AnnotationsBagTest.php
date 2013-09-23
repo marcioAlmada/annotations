@@ -13,6 +13,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 			'get' => true,
 			'post' => false,
 			'put' => false,
+			'default' => null,			
 			'val.max' => 16,
 			'val.min' => 6,
 			'val.regex' => "/[A-z0-9\_\-]+/",
@@ -44,7 +45,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function grep()
 	{
-		$this->assertCount(8, $this->Bag->export());
+		$this->assertCount(9, $this->Bag->export());
 		$this->assertCount(3, $this->Bag->grep('val')->export());
 		$this->assertCount(2, $this->Bag->grep('config')->export());
 
@@ -105,8 +106,16 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function getAsArray()
 	{
-		$this->assertTrue(is_array($this->Bag->getAsArray('put')));
+		$this->assertSame([false], $this->Bag->getAsArray('put'));
 		$this->assertCount(1, $this->Bag->getAsArray('put'));
+
+		# null value
+		$this->assertSame([null], $this->Bag->getAsArray('default'));
+		$this->assertCount(1, $this->Bag->getAsArray('default'));
+
+		# this value is not set
+		$this->assertSame([], $this->Bag->getAsArray('foo'));
+		$this->assertCount(0, $this->Bag->getAsArray('foo'));
 	}
 
 	/**
