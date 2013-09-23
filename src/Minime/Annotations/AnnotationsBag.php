@@ -99,6 +99,25 @@ class AnnotationsBag implements \IteratorAggregate
 		return null;
 	}
 
+	/**
+	 * Retrieve annotation values as an array even if there's only one single value
+	 * @return array
+	 */
+	public function getAsArray($key)
+	{
+		$values = [];
+		$result = $this->get($key);
+		if(!is_array($result))
+		{
+			$values[] = $result;
+		}
+		else
+		{
+			$values = $result;
+		}
+		return $values;
+	}
+
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->attributes);

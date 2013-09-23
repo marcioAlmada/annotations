@@ -102,6 +102,15 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
+	 */
+	public function getAsArray()
+	{
+		$this->assertTrue(is_array($this->Bag->getAsArray('put')));
+		$this->assertCount(1, $this->Bag->getAsArray('put'));
+	}
+
+	/**
+	 * @test
 	 * @expectedException \InvalidArgumentException
 	 */
 	public function getAcceptsOnlyStringKeys()
