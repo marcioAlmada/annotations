@@ -16,12 +16,12 @@ Manually update `composer.json` with:
 ```json
 {
   "require": {
-    "minime/annotations": "1.*"
+    "minime/annotations": "~1.1"
   }
 }
 ```
 
-Or just use your terminal: `composer require minime/annotations:1.*` :8ball:
+Or just use your terminal: `composer require minime/annotations:~1.1` :8ball:
 
 
 ## Basic Usage
