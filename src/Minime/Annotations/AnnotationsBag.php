@@ -38,7 +38,7 @@ class AnnotationsBag implements \IteratorAggregate
 	{
 		if(is_string($key))
 		{
-			if(isset($this->attributes[$key]))
+			if(array_key_exists($key, $this->attributes))
 			{
 				return true;
 			}
@@ -106,14 +106,18 @@ class AnnotationsBag implements \IteratorAggregate
 	public function getAsArray($key)
 	{
 		$values = [];
-		$result = $this->get($key);
-		if(!is_array($result))
+		if($this->has($key))
 		{
-			$values[] = $result;
-		}
-		else
-		{
-			$values = $result;
+			$result = $this->get($key);
+			
+			if(!is_array($result))
+			{
+				$values[] = $result;
+			}
+			else
+			{
+				$values = $result;
+			}
 		}
 		return $values;
 	}
