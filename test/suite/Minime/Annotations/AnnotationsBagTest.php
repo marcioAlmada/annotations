@@ -106,8 +106,13 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function getAsArray()
 	{
+		# single value
 		$this->assertSame([false], $this->Bag->getAsArray('put'));
 		$this->assertCount(1, $this->Bag->getAsArray('put'));
+
+		# array value
+		$this->assertSame(['json', 'csv'], $this->Bag->getAsArray('config.export'));
+		$this->assertCount(2, $this->Bag->getAsArray('config.export'));
 
 		# null value
 		$this->assertSame([null], $this->Bag->getAsArray('default'));
