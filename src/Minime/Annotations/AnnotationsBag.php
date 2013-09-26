@@ -74,7 +74,26 @@ class AnnotationsBag implements \IteratorAggregate
 		throw new \InvalidArgumentException('Grep pattern must be a regexp string');
 	}
 
+	/**
+	 * Just an alias for AnnotationsBag::useNamespace.
+	 * 
+	 * @todo Remove this method in version 2.*
+	 * @deprecated
+	 * @param  string $pattern
+	 * @return Minime\Annotations\AnnotationsBag
+	 */
 	public function grepNamespace($pattern)
+	{
+		return $this->useNamespace($pattern);
+	}
+
+	/**
+	 * Isolates a given namespace of annotations.
+	 * 
+	 * @param  string $pattern namespace
+	 * @return Minime\Annotations\AnnotationsBag
+	 */
+	public function useNamespace($pattern)
 	{
 		$annotations = $this->grep('^'.$pattern);
 		$results = [];
