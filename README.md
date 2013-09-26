@@ -104,7 +104,7 @@ $annotations = (new WebService())->getClassAnnotations();
 #### Grep all annotations within 'response' namespace
 
 ```php
-$annotations->grepNamespace('response')->export();
+$annotations->useNamespace('response')->export();
 // > array(3){
 // > 	["xml"]  => (bool) TRUE,
 // > 	["xls"]  => (bool) TRUE,
@@ -116,7 +116,7 @@ $annotations->grepNamespace('response')->export();
 #### Chainning grep to get all annotations beginning with 'x' within 'response' namespace:
 
 ```php
-$annotations->grepNamespace('response')->grep('^x')->export();
+$annotations->useNamespace('response')->grep('^x')->export();
 // > array(3){
 // > 	["xml"]  => (bool) TRUE,
 // > 	["xls"]  => (bool) TRUE
@@ -126,7 +126,7 @@ $annotations->grepNamespace('response')->grep('^x')->export();
 #### Traversing results
 
 ```php
-foreach($annotations->grepNamespace('method') as $annotation => $value)
+foreach($annotations->useNamespace('method') as $annotation => $value)
 {
 	// some behavior
 }
