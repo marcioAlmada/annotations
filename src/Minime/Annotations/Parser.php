@@ -85,7 +85,7 @@ class Parser
 	 * 
 	 * @return scalar|object
 	 */
-	private static function parseValue($value, $type = 'string')
+	protected static function parseValue($value, $type = 'string')
 	{
 		$method = 'parse'.ucfirst(strtolower($type));
 		return Parser::{$method}($value);
@@ -97,7 +97,7 @@ class Parser
 	 * 
 	 * @return scalar|object
 	 */
-	private static function parseDynamic($value)
+	protected static function parseDynamic($value)
 	{
 		$json = json_decode($value);
 		if (JSON_ERROR_NONE == json_last_error()) {
@@ -112,7 +112,7 @@ class Parser
 	 * 
 	 * @return scalar|object
 	 */
-	private static function parseString($value)
+	protected static function parseString($value)
 	{
 		return $value;
 	}
@@ -125,7 +125,7 @@ class Parser
 	 * 
 	 * @return integer
 	 */
-	private static function parseInteger($value)
+	protected static function parseInteger($value)
 	{
 		$value = filter_var($value, FILTER_VALIDATE_INT);
 		if (false === $value) {
@@ -142,7 +142,7 @@ class Parser
 	 * 
 	 * @return float
 	 */
-	private static function parseFloat($value)
+	protected static function parseFloat($value)
 	{
 		$value = filter_var($value, FILTER_VALIDATE_FLOAT);
 		if (false === $value) {
@@ -159,7 +159,7 @@ class Parser
 	 * 
 	 * @return scalar|object
 	 */
-	private static function parseJson($value)
+	protected static function parseJson($value)
 	{
 		$json = json_decode($value);
 		$error = json_last_error();
