@@ -88,9 +88,6 @@ class Parser
 	private static function parseValue($value, $type = 'string')
 	{
 		$method = 'parse'.ucfirst(strtolower($type));
-		if (! method_exists(__CLASS__, $method)) {
-			throw new ParserException("Invalid Type '{$type}' unknown OR no yet implemented.");
-		}
 		return Parser::{$method}($value);
 	}
 
@@ -117,18 +114,6 @@ class Parser
 	 */
 	private static function parseString($value)
 	{
-		if (! isset($value) || 'null' == $value || 'NULL' == $value) {
-			return null;
-		}
-
-		if (! isset($value) || 'false' == $value || 'FALSE' == $value) {
-			return false;
-		}
-
-		if (! isset($value) || 'true' == $value || 'TRUE' == $value) {
-			return false;
-		}
-
 		return $value;
 	}
 
