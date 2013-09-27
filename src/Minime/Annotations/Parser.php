@@ -7,13 +7,14 @@ use StrScan\StringScanner;
 class Parser
 {
 	/**
-	 * The DocBlock extracted from source
+	 * The Doc block to parse
 	 * @var string
 	 */
 	private $raw_doc_block;
 
 	/**
-	 * @param string $raw_doc_block A DocBlock string to be parsed
+	 * Parser constructor
+	 * @param string $raw_doc_block  the doc block to parse
 	 */
 	public function __construct($raw_doc_block)
 	{
@@ -21,56 +22,37 @@ class Parser
 	}
 
 	/**
-	 * Iterates through raw DocBlock line by line and uses a tokenizer
-	 * to parse and extract all found annotations
-	 * 
-	 * @return Minime\Annotations\AnnotationsBag Annotations collection
+	 * Parse a given docblock
+	 * @return AnnotationsBag an AnnotationBag Object
 	 */
 	public function parse()
 	{
 		$parameters = [];
-		$lines = explode("\n", $this->raw_doc_block);
-		
-		foreach ( $lines as $line)
-		{
+		$lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
+		foreach ($lines as $line) {
 			$tokenizer = new StringScanner($line);
 			$tokenizer->skip('/\s+\*\s+/');
-
-			while(!$tokenizer->hasTerminated())
-			{
+			while (! $tokenizer->hasTerminated()) {
 				$key = $tokenizer->scan('/\@[A-z0-9\_\-\.]+/');
-				if($key)
-				{
-					$key = str_replace('@', '', $key);
-					$tokenizer->skip('/\s+/');
-
-					# if implicit boolean
-					if($tokenizer->peek() === "" || $tokenizer->check('/\@/'))
-					{
-						$parameters[$key] = true;
-					}
-
-					# if strong typed
-					else if($tokenizer->check('/(string|integer|float|json)/'))
-					{
-						$type = $tokenizer->scan('/\w+/');
-						$tokenizer->skip('/\s+/');
-						$raw_value = $tokenizer->getRemainder();
-						$parameters[$key][] = $this->parseStrongTypedValue($raw_value, $type);
-					}
-
-					# else weak typed
-					else
-					{
-						$value = $tokenizer->getRemainder();
-						$parameters[$key][] = $this->parseWeakTypedValue($value);
-					}
-				}
-				else
-				{
-					# next line when no annotation is found
+				if (! $key) { // next line when no annotation is found
 					$tokenizer->terminate();
+					continue;
 				}
+
+				$key = str_replace('@', '', $key);
+				$tokenizer->skip('/\s+/');
+				if ('' == $tokenizer->peek() || $tokenizer->check('/\@/')) { // if implicit boolean
+					$parameters[$key] = true;
+					continue;
+				}
+
+				$type = 'dynamic';
+				if ($tokenizer->check('/(string|integer|float|json)/')) { //if strong typed
+					$type = $tokenizer->scan('/\w+/');
+					$tokenizer->skip('/\s+/');
+				}
+				$value = $tokenizer->getRemainder();
+				$parameters[$key][] = Parser::parseValue($value, $type);
 			}
 		}
 
@@ -81,84 +63,124 @@ class Parser
 
 	private function condense($parameters)
 	{
-		foreach ($parameters as &$value)
-		{
-			if(!is_bool($value))
-			{
-				if(count($value) === 1)
-				{
+		$parameters = array_map(
+			function ($value) {
+				if (is_array($value) && 1 == count($value)) {
 					$value = $value[0];
-				}			
-			}
-		}
+				}
+				return $value;
+			},
+			$parameters
+		);
 
 		return $parameters;
 	}
 
-	private function parseWeakTypedValue($value)
+	/**
+	 * Parse a given value against a specific type
+	 * @param  string $value
+	 * @param  string $type  the type to parse the value against
+	 *
+	 * @throws ParserException If the type is not recognized
+	 * 
+	 * @return scalar|object
+	 */
+	private static function parseValue($value, $type = 'string')
 	{
-		if($value && $value !== 'null' && $value !== 'NULL')
-		{
-			$json = json_decode($value);
-
-			if( $json !== NULL)
-			{
-				$value = $json;
-			}
+		$method = 'parse'.ucfirst(strtolower($type));
+		if (! method_exists(__CLASS__, $method)) {
+			throw new ParserException("Invalid Type '{$type}' unknown OR no yet implemented.");
 		}
-		else
-		{
-			$value = NULL;
+		return Parser::{$method}($value);
+	}
+
+	/**
+	 * Parse a given undefined type value
+	 * @param  string $value
+	 * 
+	 * @return scalar|object
+	 */
+	private static function parseDynamic($value)
+	{
+		$json = json_decode($value);
+		if (JSON_ERROR_NONE == json_last_error()) {
+			return $json;
 		}
 		return $value;
 	}
 
-	private function parseStrongTypedValue($value, $type)
+	/**
+	 * Parse a given value
+	 * @param  string $value
+	 * 
+	 * @return scalar|object
+	 */
+	private static function parseString($value)
 	{
-
-		if($type === "integer")
-		{
-			return $this->parseInteger($value);
+		if (! isset($value) || 'null' == $value || 'NULL' == $value) {
+			return null;
 		}
 
-		else if($type === "float")
-		{
-			return $this->parseFloat($value);
+		if (! isset($value) || 'false' == $value || 'FALSE' == $value) {
+			return false;
 		}
 
-		else if($type === "json")
-		{
-			return $this->parseJSON($value);
+		if (! isset($value) || 'true' == $value || 'TRUE' == $value) {
+			return false;
 		}
 
 		return $value;
 	}
 
-	private function parseInteger($value)
+	/**
+	 * Filter a value to be an Integer
+	 * @param  string $value
+	 *
+	 * @throws ParserException If $value is not an integer
+	 * 
+	 * @return integer
+	 */
+	private static function parseInteger($value)
 	{
-		if(!filter_var($value, FILTER_VALIDATE_INT))
-		{
+		$value = filter_var($value, FILTER_VALIDATE_INT);
+		if (false === $value) {
 			throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
 		}
-		return intval($value);
+		return $value;
 	}
 
-	private function parseFloat($value)
+	/**
+	 * Filter a value to be a Float
+	 * @param  string $value
+	 *
+	 * @throws ParserException If $value is not a float
+	 * 
+	 * @return float
+	 */
+	private static function parseFloat($value)
 	{
-		if(!filter_var($value, FILTER_VALIDATE_FLOAT))
-		{
+		$value = filter_var($value, FILTER_VALIDATE_FLOAT);
+		if (false === $value) {
 			throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
 		}
-		return floatval($value);
+		return $value;
 	}
 
-	private function parseJSON($value)
+	/**
+	 * Filter a value to be a Json
+	 * @param  string $value
+	 *
+	 * @throws ParserException If $value is not a Json
+	 * 
+	 * @return scalar|object
+	 */
+	private static function parseJson($value)
 	{
-		$json_decoded = json_decode($value);
-		if( $json_decoded === NULL)
-		{
-			throw new ParserException("Invalid JSON string supplied.");	
+		$json = json_decode($value);
+		$error = json_last_error();
+		if (JSON_ERROR_NONE != $error) {
+			throw new ParserException("Invalid JSON string supplied.");
 		}
-		return $json_decoded;
+		return $json;
 	}
 }
