@@ -14,7 +14,7 @@ class Parser
 
 	/**
 	 * Parser constructor
-	 * @param string $raw_doc_block  the doc block to parse
+	 * @param string $raw_doc_block the doc block to parse
 	 */
 	public function __construct($raw_doc_block)
 	{
@@ -61,40 +61,40 @@ class Parser
 		return new AnnotationsBag($parameters);
 	}
 
-	private function condense($parameters)
+	private function condense(array $parameters)
 	{
-		$parameters = array_map(
+		return array_map(
 			function ($value) {
 				if (is_array($value) && 1 == count($value)) {
 					$value = $value[0];
 				}
+
 				return $value;
 			},
 			$parameters
 		);
-
-		return $parameters;
 	}
 
 	/**
 	 * Parse a given value against a specific type
-	 * @param  string $value
-	 * @param  string $type  the type to parse the value against
+	 * @param string $value
+	 * @param string $type  the type to parse the value against
 	 *
 	 * @throws ParserException If the type is not recognized
-	 * 
+	 *
 	 * @return scalar|object
 	 */
 	protected static function parseValue($value, $type = 'string')
 	{
 		$method = 'parse'.ucfirst(strtolower($type));
+
 		return Parser::{$method}($value);
 	}
 
 	/**
 	 * Parse a given undefined type value
-	 * @param  string $value
-	 * 
+	 * @param string $value
+	 *
 	 * @return scalar|object
 	 */
 	protected static function parseDynamic($value)
@@ -103,13 +103,14 @@ class Parser
 		if (JSON_ERROR_NONE == json_last_error()) {
 			return $json;
 		}
+
 		return $value;
 	}
 
 	/**
 	 * Parse a given value
-	 * @param  string $value
-	 * 
+	 * @param string $value
+	 *
 	 * @return scalar|object
 	 */
 	protected static function parseString($value)
@@ -119,10 +120,10 @@ class Parser
 
 	/**
 	 * Filter a value to be an Integer
-	 * @param  string $value
+	 * @param string $value
 	 *
 	 * @throws ParserException If $value is not an integer
-	 * 
+	 *
 	 * @return integer
 	 */
 	protected static function parseInteger($value)
@@ -131,15 +132,16 @@ class Parser
 		if (false === $value) {
 			throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
 		}
+
 		return $value;
 	}
 
 	/**
 	 * Filter a value to be a Float
-	 * @param  string $value
+	 * @param string $value
 	 *
 	 * @throws ParserException If $value is not a float
-	 * 
+	 *
 	 * @return float
 	 */
 	protected static function parseFloat($value)
@@ -148,15 +150,16 @@ class Parser
 		if (false === $value) {
 			throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
 		}
+
 		return $value;
 	}
 
 	/**
 	 * Filter a value to be a Json
-	 * @param  string $value
+	 * @param string $value
 	 *
 	 * @throws ParserException If $value is not a Json
-	 * 
+	 *
 	 * @return scalar|object
 	 */
 	protected static function parseJson($value)
@@ -166,6 +169,7 @@ class Parser
 		if (JSON_ERROR_NONE != $error) {
 			throw new ParserException("Invalid JSON string supplied.");
 		}
+
 		return $json;
 	}
 }
