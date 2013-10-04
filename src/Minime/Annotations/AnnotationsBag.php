@@ -10,45 +10,9 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      */
     private $attributes = [];
 
-    /**
-     * Grep delimeter
-     * @var string
-     */
-    private $delim = '/';
-
     public function __construct(array $attributes)
     {
         $this->attributes = $attributes;
-    }
-
-    /**
-     * Retrieves a single annotation value
-     * @param string $str the delimeter use by the Object
-     *
-     * @throws InvalidArgumentExcpetion If $str is not a single character string
-     *
-     * @return self
-     */
-    public function setDelimeter($str)
-    {
-        $str = trim($str);
-        if (! is_string($str) || ! $str || 1 != strlen($str)) {
-            throw new \InvalidArgumentException(
-                "The delimeter must be a single caracter string"
-            );
-        }
-        $this->delim = $str;
-
-        return $this;
-    }
-
-    /**
-     * return the current Object delimeter
-     * @return string
-     */
-    public function getDelimeter()
-    {
-        return $this->delim;
     }
 
     /**
@@ -97,7 +61,15 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      */
     public function getAsArray($key)
     {
-        return (array) $this->get($key);
+        if (! $this->has($key)) {
+            return [];
+        }
+        $res = $this->attributes[$key];
+        if (is_null($res)) {
+            return [null];
+        }
+
+        return (array) $res;
     }
 
     /**
@@ -111,16 +83,14 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
         if (! is_string($pattern)) {
             throw new \InvalidArgumentException('Grep pattern must be a regexp string');
         }
-        $regex = $this->delim.preg_quote($pattern, $this->delim).$this->delim;
-        $results = [];
-        foreach ($this->attributes as $key => $value) {
-            if (preg_match($regex, $key)) {
-                $results[$key] = $value;
-            }
-        }
-        $res = new self($results);
 
-        return $res->setDelimeter($this->delim);
+        $results = array_intersect_key(
+            $this->attributes,
+            array_flip(
+                preg_grep('/'.$pattern.'/', array_keys($this->attributes))
+            )
+        );
+        return new self($results);
     }
 
     /**
@@ -149,9 +119,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
         foreach ($annotations->export() as $namespace => $value) {
             $results[str_replace($pattern.'.', '', $namespace)] = $value;
         }
-        $res = new self($results);
-
-        return $res->setDelimeter($this->delim);
+        return new self($results);
     }
 
     /**
