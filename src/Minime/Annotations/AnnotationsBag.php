@@ -84,13 +84,12 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
             throw new \InvalidArgumentException('Grep pattern must be a regexp string');
         }
 
-        $keys = preg_grep('/'.$pattern.'/', array_keys($this->attributes));
-        $results = [];
-        if (count($keys)) {
-            foreach ($keys as $key) {
-                $results[$key] = $this->attributes[$key];
-            }
-        }
+        $results = array_intersect_key(
+            $this->attributes,
+            array_flip(
+                preg_grep('/'.$pattern.'/', array_keys($this->attributes))
+            )
+        );
         return new self($results);
     }
 
