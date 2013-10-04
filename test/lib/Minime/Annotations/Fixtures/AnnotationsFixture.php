@@ -64,9 +64,9 @@ class AnnotationsFixture
     private $float_fixture;
 
     /**
-     * @value json ["x", "y"]
-     * @value json {"x": {"y": "z"}}
-     * @value json {"x": {"y": ["z", "p"]}}
+     * @value ["x", "y"]
+     * @value {"x": {"y": "z"}}
+     * @value {"x": {"y": ["z", "p"]}}
      */
     private $json_fixture;
 
@@ -107,6 +107,9 @@ class AnnotationsFixture
      * @value float 45.
      * @value float -4.5
      * @value float 4
+     * @json_value json ["x", "y"]
+     * @json_value json {"x": {"y": "z"}}
+     * @json_value json {"x": {"y": ["z", "p"]}}
      */
     private $strong_typed_fixture;
 

@@ -163,7 +163,24 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $annotations = (new Parser($reflection->getDocComment()))->parse();
         $declarations = $annotations->get('value');
         $this->assertNotEmpty($declarations);
-        $this->assertSame([ "abc", "45", 45, -45, .45, 0.45, 45.0, -4.5, 4. ], $declarations);
+        $this->assertSame(
+            [
+                "abc", "45", // string
+                45, -45, // integer
+                .45, 0.45, 45.0, -4.5, 4., // float
+            ],
+            $declarations
+        );
+
+        $declarations = $annotations->get('json_value');
+        $this->assertEquals(
+            [
+                ["x", "y"], // json
+                json_decode('{"x": {"y": "z"}}'),
+                json_decode('{"x": {"y": ["z", "p"]}}')
+            ],
+            $declarations
+        );
     }
 
     /**
