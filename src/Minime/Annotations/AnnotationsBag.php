@@ -97,7 +97,12 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      */
     public function getAsArray($key)
     {
-        return (array) $this->get($key);
+        $res = $this->get($key);
+        if (is_null($res)) {
+            return array(null);
+        }
+        
+        return (array) $res;
     }
 
     /**
