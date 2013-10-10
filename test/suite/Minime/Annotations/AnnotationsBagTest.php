@@ -178,6 +178,15 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException \InvalidArgumentException
      */
+    public function getDoesNotAcceptsNumericKeys()
+    {
+        $this->Bag->get('0');
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
     public function pregAcceptsOnlyStringKeys()
     {
         $this->Bag->grep(0)->export();
