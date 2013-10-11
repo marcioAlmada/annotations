@@ -7,7 +7,7 @@ use StrScan\StringScanner;
 class Parser
 {
     
-    use Minime\Annotations\Traits\KeyValidation;
+    use Traits\KeyValidation;
     
     /**
      * The Doc block to parse

@@ -1,8 +1,8 @@
 <?php
 
-namespace Minime/Annotations/Traits/KeyValidation;
+namespace Minime\Annotations\Traits;
 
-traits KeyValidation
+trait KeyValidation
 {
 
     private $regexAnnotationName = '[a-zA-Z\_][a-zA-Z0-9\_\-\.]*';

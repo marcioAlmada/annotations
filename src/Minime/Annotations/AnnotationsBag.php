@@ -5,7 +5,7 @@ namespace Minime\Annotations;
 class AnnotationsBag implements \IteratorAggregate, \Countable
 {
     
-    use Minime\Annotations\Traits\KeyValidation;
+    use Traits\KeyValidation;
     
     /**
      * Associative arrays of annotations
