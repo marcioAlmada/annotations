@@ -94,7 +94,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
             )
         );
 
-        return new self($results);
+        return new static($results);
     }
 
     /**
@@ -124,7 +124,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
             $results[str_replace($pattern.'.', '', $namespace)] = $value;
         }
 
-        return new self($results);
+        return new static($results);
     }
 
     /**
