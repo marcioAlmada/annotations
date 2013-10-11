@@ -31,10 +31,9 @@ class Parser
     public function parse()
     {
         $parameters = [];
-        $lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
         $pattern = $this->getRegexAnnotationIdentifier().$this->getRegexAnnotationName();
         $identifier = $this->getRegexAnnotationIdentifier();
-        $annotationName = $this->getRegexAnnotationName();
+        $lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
         foreach ($lines as $line) {
             $tokenizer = new StringScanner($line);
             $tokenizer->skip('/\s+\*\s+/');
