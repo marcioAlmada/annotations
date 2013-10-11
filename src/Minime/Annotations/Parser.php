@@ -6,6 +6,9 @@ use StrScan\StringScanner;
 
 class Parser
 {
+    
+    use Minime\Annotations\Traits\KeyValidation;
+    
     /**
      * The Doc block to parse
      * @var string
@@ -29,19 +32,22 @@ class Parser
     {
         $parameters = [];
         $lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
+        $pattern = $this->getRegexAnnotationIdentifier().$this->getRegexAnnotationName();
+        $identifier = $this->getRegexAnnotationIdentifier();
+        $annotationName = $this->getRegexAnnotationName();
         foreach ($lines as $line) {
             $tokenizer = new StringScanner($line);
             $tokenizer->skip('/\s+\*\s+/');
             while (! $tokenizer->hasTerminated()) {
-                $key = $tokenizer->scan('/\@[A-z0-9\_\-\.]+/');
+                $key = $tokenizer->scan('/\\'.$pattern.'/');
                 if (! $key) { // next line when no annotation is found
                     $tokenizer->terminate();
                     continue;
                 }
 
-                $key = str_replace('@', '', $key);
+                $key = str_replace($identifier, '', $key);
                 $tokenizer->skip('/\s+/');
-                if ('' == $tokenizer->peek() || $tokenizer->check('/\@/')) { // if implicit boolean
+                if ('' == $tokenizer->peek() || $tokenizer->check('/\\'.$identifier.'/')) { // if implicit boolean
                     $parameters[$key] = true;
                     continue;
                 }
