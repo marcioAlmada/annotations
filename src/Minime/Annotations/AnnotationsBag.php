@@ -34,7 +34,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      */
     public function has($key)
     {
-        if (! is_string($key)) {
+        if (! is_string($key) || is_numeric($key)) {
             throw new \InvalidArgumentException('Annotation key must be a string');
         }
 
@@ -90,6 +90,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
                 preg_grep('/'.$pattern.'/', array_keys($this->attributes))
             )
         );
+
         return new self($results);
     }
 
@@ -119,6 +120,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
         foreach ($annotations->export() as $namespace => $value) {
             $results[str_replace($pattern.'.', '', $namespace)] = $value;
         }
+
         return new self($results);
     }
 
