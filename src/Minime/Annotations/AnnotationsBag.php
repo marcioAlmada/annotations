@@ -4,6 +4,9 @@ namespace Minime\Annotations;
 
 class AnnotationsBag implements \IteratorAggregate, \Countable
 {
+    
+    use Minime\Annotations\Traits\KeyValidation;
+    
     /**
      * Associative arrays of annotations
      * @var array
@@ -34,7 +37,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      */
     public function has($key)
     {
-        if (! is_string($key) || is_numeric($key)) {
+        if (! $this->isValidKey($key)) {
             throw new \InvalidArgumentException('Annotation key must be a string');
         }
 
