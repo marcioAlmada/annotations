@@ -6,6 +6,11 @@ use StrScan\StringScanner;
 
 class Parser
 {
+
+    const REGEX_ANNOTATION_NAME = '[a-zA-Z\_][a-zA-Z0-9\_\-\.]*';
+
+    const REGEX_ANNOTATION_IDENTIFIER = '@';
+
     /**
      * The Doc block to parse
      * @var string
@@ -33,15 +38,15 @@ class Parser
             $tokenizer = new StringScanner($line);
             $tokenizer->skip('/\s+\*\s+/');
             while (! $tokenizer->hasTerminated()) {
-                $key = $tokenizer->scan('/\@[A-z0-9\_\-\.]+/');
+                $key = $tokenizer->scan('/' . self::REGEX_ANNOTATION_IDENTIFIER . self::REGEX_ANNOTATION_NAME . '/');
                 if (! $key) { // next line when no annotation is found
                     $tokenizer->terminate();
                     continue;
                 }
 
-                $key = str_replace('@', '', $key);
+                $key = str_replace(self::REGEX_ANNOTATION_IDENTIFIER, '', $key);
                 $tokenizer->skip('/\s+/');
-                if ('' == $tokenizer->peek() || $tokenizer->check('/\@/')) { // if implicit boolean
+                if ('' == $tokenizer->peek() || $tokenizer->check('/\\'. self::REGEX_ANNOTATION_IDENTIFIER .'/')) { // if implicit boolean
                     $parameters[$key] = true;
                     continue;
                 }

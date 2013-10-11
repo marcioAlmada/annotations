@@ -26,24 +26,19 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
 
     /**
      * Checks if a given annotation is declared
-     * @param string $key A valid annotation tag, should match /[A-z0-9\-\_]/
-     *
+     * @param string $key A valid annotation tag, according to rules in Minime\Annotations\Parser
      * @throws \InvalidArgumentException If non string key is passed
-     *
      * @return boolean TRUE if annotation is declared, FALSE if not
      */
     public function has($key)
     {
-        if (! is_string($key) || is_numeric($key)) {
-            throw new \InvalidArgumentException('Annotation key must be a string');
-        }
-
+        $this->validateKeyOrFail($key);
         return array_key_exists($key, $this->attributes);
     }
 
     /**
      * Retrieves a single annotation value
-     * @param  string $key A valid annotation tag, should match /[A-z0-9\-\_]/
+     * @param  string $key A valid annotation tag, according to rules in Minime\Annotations\Parser
      * @return mixed  null if no annotation is found
      */
     public function get($key)
@@ -81,7 +76,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
     public function grep($pattern)
     {
         if (! is_string($pattern)) {
-            throw new \InvalidArgumentException('Grep pattern must be a regexp string');
+            throw new \InvalidArgumentException('Grep pattern must be a valid regexp string');
         }
 
         $results = array_intersect_key(
@@ -125,18 +120,34 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
     }
 
     /**
-    * Countable
-    */
+     * Countable
+     */
     public function count()
     {
         return count($this->attributes);
     }
 
     /**
-    * IteratorAggregate
-    */
+     * IteratorAggregate
+     */
     public function getIterator()
     {
         return new \ArrayIterator($this->attributes);
+    }
+
+    private function validateKeyOrFail($key)
+    {
+        if(!$this->isKeyValid($key))
+        {
+            throw new \InvalidArgumentException('Annotation key must be a valid annotation name.');
+        }
+    }
+
+    private function isKeyValid($key)
+    {
+        if (preg_match('/^'. Parser::REGEX_ANNOTATION_NAME .'$/', $key)) {
+            return true;    
+        }
+        return false;
     }
 }
