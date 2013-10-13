@@ -35,6 +35,15 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException InvalidArgumentException
+     */
+    public function constructAcceptsOnlyWellFormedArrays()
+    {
+        new AnnotationsBag([0 => true, 'post' => 20]);
+    }
+
+    /**
+     * @test
      */
     public function nullForUnsetAnnotation()
     {

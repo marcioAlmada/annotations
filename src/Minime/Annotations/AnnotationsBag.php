@@ -4,9 +4,9 @@ namespace Minime\Annotations;
 
 class AnnotationsBag implements \IteratorAggregate, \Countable
 {
-    
+
     use Traits\KeyValidation;
-    
+
     /**
      * Associative arrays of annotations
      * @var array
@@ -15,7 +15,12 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
 
     public function __construct(array $attributes)
     {
-        $this->attributes = $attributes;
+        foreach (array_keys($attributes) as $key) {
+            if (! $this->isValidKey($key)) {
+                throw new \InvalidArgumentException('the used key is not valid');
+            }
+            $this->attributes[$key] = $attributes[$key];
+        }
     }
 
     /**
