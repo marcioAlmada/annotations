@@ -4,6 +4,13 @@ namespace Minime\Annotations\Traits;
 
 use Minime\Annotations\Facade;
 
+/**
+ *
+ * A trait for adding Annotations parsing
+ *
+ * @package Annotations
+ *
+ */
 trait Reader
 {
     /**

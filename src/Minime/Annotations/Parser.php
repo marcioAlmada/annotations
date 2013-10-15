@@ -6,16 +6,26 @@ use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
 use StrScan\StringScanner;
 
+/**
+ *
+ * An Annotation Parser
+ *
+ * @package Annotations
+ *
+ */
 class Parser implements ParserInterface
 {
-    
+
     /**
      * The Doc block to parse
      * @var string
      */
     private $raw_doc_block;
-    
-    
+
+    /**
+     * The ParserRules object
+     * @var ParserRulesInterface
+     */
     private $rules;
 
     /**
@@ -35,8 +45,8 @@ class Parser implements ParserInterface
     public function parse()
     {
         $parameters = [];
-        $pattern = $this->rules->getRegexAnnotationIdentifier().$this->rules->getRegexAnnotationName();
-        $identifier = $this->rules->getRegexAnnotationIdentifier();
+        $identifier = $this->rules->getAnnotationIdentifier();
+        $pattern = $identifier.$this->rules->getRegexAnnotationName();
         $lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
         foreach ($lines as $line) {
             $tokenizer = new StringScanner($line);
@@ -61,13 +71,19 @@ class Parser implements ParserInterface
                     $tokenizer->skip('/\s+/');
                 }
                 $value = $tokenizer->getRemainder();
-                $parameters[$key][] = Parser::parseValue($value, $type);
+                $parameters[$key][] = self::parseValue($value, $type);
             }
         }
 
         return self::condense($parameters);
     }
 
+    /**
+     * Filter an array to converted to string a single value array
+     * @param array $parameters
+     *
+     * @return array
+     */
     protected static function condense(array $parameters)
     {
         return array_map(

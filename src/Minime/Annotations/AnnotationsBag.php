@@ -4,6 +4,13 @@ namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\ParserRulesInterface;
 
+/**
+ *
+ * An annotation collection class.
+ *
+ * @package Annotations
+ *
+ */
 class AnnotationsBag implements \IteratorAggregate, \Countable
 {
 
@@ -12,10 +19,18 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      * @var array
      */
     private $attributes = [];
-    
-    private $rules;
-    
 
+    /**
+     * The ParserRules object
+     * @var ParserRulesInterface
+     */
+    private $rules;
+
+    /**
+     * The Constructor
+     * @param array                $attributes
+     * @param ParserRulesInterface $rules
+     */
     public function __construct(array $attributes, ParserRulesInterface $rules)
     {
         $this->rules = $rules;
@@ -41,7 +56,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      *
      * @throws \InvalidArgumentException If non string key is passed
      *
-     * @return boolean TRUE if annotation is declared, FALSE if not
+     * @return boolean
      */
     public function has($key)
     {
@@ -54,8 +69,9 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
 
     /**
      * Retrieves a single annotation value
-     * @param  string $key A valid annotation tag, should match /[A-z0-9\-\_]/
-     * @return mixed  null if no annotation is found
+     * @param string $key A valid annotation tag, should match /[A-z0-9\-\_]/
+     *
+     * @return mixed|null
      */
     public function get($key)
     {
@@ -68,6 +84,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
 
     /**
      * Retrieve annotation values as an array even if there's only one single value
+     *
      * @return array
      */
     public function getAsArray($key)
@@ -110,7 +127,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      *
      * @todo Remove this method in version 2.*
      * @deprecated
-     * @param  string                            $pattern
+     * @param string $pattern namespace
+     *
      * @return Minime\Annotations\AnnotationsBag
      */
     public function grepNamespace($pattern)
@@ -120,8 +138,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
 
     /**
      * Isolates a given namespace of annotations.
+     * @param string $pattern namespace
      *
-     * @param  string                            $pattern namespace
      * @return Minime\Annotations\AnnotationsBag
      */
     public function useNamespace($pattern)
