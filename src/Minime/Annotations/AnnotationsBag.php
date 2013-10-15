@@ -5,18 +5,20 @@ namespace Minime\Annotations;
 class AnnotationsBag implements \IteratorAggregate, \Countable
 {
 
-    use Traits\KeyValidation;
-
     /**
      * Associative arrays of annotations
      * @var array
      */
     private $attributes = [];
+    
+    private $rules;
+    
 
-    public function __construct(array $attributes)
+    public function __construct(array $attributes, ParserRulesInterface $rules)
     {
+        $this->rules = $rules;
         foreach (array_keys($attributes) as $key) {
-            if (! $this->isValidKey($key)) {
+            if (! $this->rules->isValidKey($key)) {
                 throw new \InvalidArgumentException('the used key is not valid');
             }
             $this->attributes[$key] = $attributes[$key];
@@ -42,7 +44,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      */
     public function has($key)
     {
-        if (! $this->isValidKey($key)) {
+        if (! $this->rules->isValidKey($key)) {
             throw new \InvalidArgumentException('Annotation key must be a string');
         }
 
