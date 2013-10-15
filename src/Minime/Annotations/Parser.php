@@ -68,7 +68,7 @@ class Parser implements ParserInterface
         return self::condense($parameters);
     }
 
-    protected static condense(array $parameters)
+    protected static function condense(array $parameters)
     {
         return array_map(
             function ($value) {
