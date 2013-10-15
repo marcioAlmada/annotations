@@ -13,8 +13,7 @@ trait Reader
      */
     public function getClassAnnotations()
     {
-        $annotations = Facade::getClassAnnotations($this);
-        return $annotations;
+        return Facade::getClassAnnotations($this);
     }
 
     /**
@@ -25,8 +24,7 @@ trait Reader
      */
     public function getPropertyAnnotations($property)
     {
-        $annotations = Facade::getPropertyAnnotations($this, $property);
-        return $annotations;
+        return Facade::getPropertyAnnotations($this, $property);
     }
 
     /**
@@ -37,7 +35,6 @@ trait Reader
      */
     public function getMethodAnnotations($method)
     {
-        $annotations = Facade::getMethodAnnotations($this, $method);
-        return $annotations;
+        return Facade::getMethodAnnotations($this, $method);
     }
 }

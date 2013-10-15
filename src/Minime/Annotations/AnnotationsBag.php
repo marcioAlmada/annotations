@@ -2,6 +2,8 @@
 
 namespace Minime\Annotations;
 
+use Minime\Annotations\Interfaces\ParserRulesInterface;
+
 class AnnotationsBag implements \IteratorAggregate, \Countable
 {
 
@@ -18,10 +20,9 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
     {
         $this->rules = $rules;
         foreach (array_keys($attributes) as $key) {
-            if (! $this->rules->isValidKey($key)) {
-                throw new \InvalidArgumentException('the used key is not valid');
+            if ($this->rules->isValidKey($key)) {
+                $this->attributes[$key] = $attributes[$key];
             }
-            $this->attributes[$key] = $attributes[$key];
         }
     }
 
@@ -101,7 +102,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
             )
         );
 
-        return new static($results);
+        return new static($results, $this->rules);
     }
 
     /**
@@ -125,13 +126,23 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      */
     public function useNamespace($pattern)
     {
-        $annotations = $this->grep('^'.$pattern);
+        $pattern = trim($pattern);
+        if (! is_string($pattern) || is_numeric($pattern) || empty($pattern)) {
+            throw new \InvalidArgumentException('namespace pattern must be a valid string');
+        }
+        $length = strlen($pattern);
+        if ('.' != $pattern[$length-1]) {
+            $pattern .= '.';
+            $length++;
+        }
         $results = [];
-        foreach ($annotations->export() as $namespace => $value) {
-            $results[str_replace($pattern.'.', '', $namespace)] = $value;
+        foreach ($this->attributes as $key => $value) {
+            if (strpos($key, $pattern) === 0) {
+                $results[substr($key, $length)] = $value;
+            }
         }
 
-        return new static($results);
+        return new static($results, $this->rules);
     }
 
     /**

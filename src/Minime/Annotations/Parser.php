@@ -2,9 +2,11 @@
 
 namespace Minime\Annotations;
 
+use Minime\Annotations\Interfaces\ParserInterface;
+use Minime\Annotations\Interfaces\ParserRulesInterface;
 use StrScan\StringScanner;
 
-class Parser
+class Parser implements ParserInterface
 {
     
     /**
@@ -63,9 +65,7 @@ class Parser
             }
         }
 
-        $parameters = $this->condense($parameters);
-
-        return new AnnotationsBag($parameters);
+        return $this->condense($parameters);
     }
 
     private function condense(array $parameters)
@@ -95,7 +95,7 @@ class Parser
     {
         $method = 'parse'.ucfirst(strtolower($type));
 
-        return Parser::{$method}($value);
+        return self::{$method}($value);
     }
 
     /**

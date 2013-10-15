@@ -2,6 +2,8 @@
 
 namespace Minime\Annotations;
 
+use Minime\Annotations\Interfaces\ParserRulesInterface;
+
 class ParserRules implements ParserRulesInterface
 {
 
