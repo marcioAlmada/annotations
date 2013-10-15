@@ -7,21 +7,23 @@ use StrScan\StringScanner;
 class Parser
 {
     
-    use Traits\KeyValidation;
-    
     /**
      * The Doc block to parse
      * @var string
      */
     private $raw_doc_block;
+    
+    
+    private $rules;
 
     /**
      * Parser constructor
      * @param string $raw_doc_block the doc block to parse
      */
-    public function __construct($raw_doc_block)
+    public function __construct($raw_doc_block, ParserRulesInterface $rules)
     {
         $this->raw_doc_block = $raw_doc_block;
+        $this->rules = $rules;
     }
 
     /**
@@ -31,8 +33,8 @@ class Parser
     public function parse()
     {
         $parameters = [];
-        $pattern = $this->getRegexAnnotationIdentifier().$this->getRegexAnnotationName();
-        $identifier = $this->getRegexAnnotationIdentifier();
+        $pattern = $this->rules->getRegexAnnotationIdentifier().$this->rules->getRegexAnnotationName();
+        $identifier = $this->rules->getRegexAnnotationIdentifier();
         $lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
         foreach ($lines as $line) {
             $tokenizer = new StringScanner($line);
