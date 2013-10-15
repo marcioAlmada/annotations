@@ -65,10 +65,10 @@ class Parser implements ParserInterface
             }
         }
 
-        return $this->condense($parameters);
+        return self::condense($parameters);
     }
 
-    private function condense(array $parameters)
+    protected static condense(array $parameters)
     {
         return array_map(
             function ($value) {
