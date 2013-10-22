@@ -3,7 +3,6 @@
 namespace Minime\Annotations\Traits;
 
 use \Minime\Annotations\Fixtures\AnnotationsFixture;
-use \ReflectionProperty;
 
 class ReaderTest extends \PHPUnit_Framework_TestCase
 {

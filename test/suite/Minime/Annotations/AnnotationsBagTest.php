@@ -7,8 +7,12 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
     private $Bag;
 
+    private $rules;
+
     public function setUp()
     {
+        $this->rules = new ParserRules;
+
         $this->Bag = new AnnotationsBag(
             [
                 'get' => true,
@@ -20,8 +24,18 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'val.regex' => "/[A-z0-9\_\-]+/",
                 'config.container' => 'Some\Collection',
                 'config.export' => ['json', 'csv']
-            ]
+            ],
+            $this->rules
         );
+    }
+
+    /**
+     * @test
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function constructMustTakeAParserRule()
+    {
+        new AnnotationsBag(['post' => 20]);
     }
 
     /**
@@ -30,7 +44,13 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function constructAcceptsOnlyArrays()
     {
-        new AnnotationsBag('');
+        new AnnotationsBag('', $this->rules);
+    }
+
+    public function constructRemoveUncorrectIndex()
+    {
+        $res = new AnnotationsBag([0 => true, 'post' => 20], $this->rules);
+        $this->assertSame($res->export(), ['post' => 20]);
     }
 
     /**
@@ -68,7 +88,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'path.to.the.treasure' => 'cheers!',
                 'path.to.the.cake' => 'the cake is a lie',
                 'another.path.to.cake' => 'foo'
-            ]
+            ],
+            $this->rules
         );
 
         $this->assertSame(
@@ -96,24 +117,44 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
             [
                 'path.to.the.treasure' => 'cheers!',
                 'path.to.the.cake' => 'the cake is a lie',
-                'another.path.to.cake' => 'foo'
-            ]
+                'another.path.to.cake' => 'foo',
+                'path.to.the.cake.another.path.to.the.cake' => 'the real cake',
+            ],
+            $this->rules
         );
 
         $this->assertSame(
-            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie'],
+            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
             $this->Bag->useNamespace('path.to.the')->export()
         );
 
         // chained namespace grep
         $this->assertSame(
-            ['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie'],
+            ['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie', 'the.cake.another.path.to.the.cake' => 'the real cake'],
             $this->Bag->useNamespace('path')->useNamespace('to')->export()
         );
         $this->assertSame(
-            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie'],
+            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
             $this->Bag->useNamespace('path')->useNamespace('to')->useNamespace('the')->export()
         );
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function useNamespaceWithInvalidArgument()
+    {
+        $this->Bag->useNamespace(0);
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function useNamespaceWithInvalidArgument2()
+    {
+        $this->Bag->useNamespace('0');
     }
 
     /**
@@ -130,7 +171,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'min' => 1,
                 'max' => 2,
                 'medium' => 3
-            ]
+            ],
+            $this->rules
         );
     }
 

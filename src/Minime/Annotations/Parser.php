@@ -2,10 +2,20 @@
 
 namespace Minime\Annotations;
 
+use Minime\Annotations\Interfaces\ParserInterface;
+use Minime\Annotations\Interfaces\ParserRulesInterface;
 use StrScan\StringScanner;
 
-class Parser
+/**
+ *
+ * An Annotation Parser
+ *
+ * @package Annotations
+ *
+ */
+class Parser implements ParserInterface
 {
+
     /**
      * The Doc block to parse
      * @var string
@@ -13,12 +23,19 @@ class Parser
     private $raw_doc_block;
 
     /**
+     * The ParserRules object
+     * @var ParserRulesInterface
+     */
+    private $rules;
+
+    /**
      * Parser constructor
      * @param string $raw_doc_block the doc block to parse
      */
-    public function __construct($raw_doc_block)
+    public function __construct($raw_doc_block, ParserRulesInterface $rules)
     {
         $this->raw_doc_block = $raw_doc_block;
+        $this->rules = $rules;
     }
 
     /**
@@ -28,20 +45,22 @@ class Parser
     public function parse()
     {
         $parameters = [];
+        $identifier = $this->rules->getAnnotationIdentifier();
+        $pattern = $identifier.$this->rules->getRegexAnnotationName();
         $lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
         foreach ($lines as $line) {
             $tokenizer = new StringScanner($line);
             $tokenizer->skip('/\s+\*\s+/');
             while (! $tokenizer->hasTerminated()) {
-                $key = $tokenizer->scan('/\@[A-z0-9\_\-\.]+/');
+                $key = $tokenizer->scan('/\\'.$pattern.'/');
                 if (! $key) { // next line when no annotation is found
                     $tokenizer->terminate();
                     continue;
                 }
 
-                $key = str_replace('@', '', $key);
+                $key = str_replace($identifier, '', $key);
                 $tokenizer->skip('/\s+/');
-                if ('' == $tokenizer->peek() || $tokenizer->check('/\@/')) { // if implicit boolean
+                if ('' == $tokenizer->peek() || $tokenizer->check('/\\'.$identifier.'/')) { // if implicit boolean
                     $parameters[$key] = true;
                     continue;
                 }
@@ -52,16 +71,20 @@ class Parser
                     $tokenizer->skip('/\s+/');
                 }
                 $value = $tokenizer->getRemainder();
-                $parameters[$key][] = Parser::parseValue($value, $type);
+                $parameters[$key][] = self::parseValue($value, $type);
             }
         }
 
-        $parameters = $this->condense($parameters);
-
-        return new AnnotationsBag($parameters);
+        return self::condense($parameters);
     }
 
-    private function condense(array $parameters)
+    /**
+     * Filter an array to converted to string a single value array
+     * @param array $parameters
+     *
+     * @return array
+     */
+    protected static function condense(array $parameters)
     {
         return array_map(
             function ($value) {
@@ -88,7 +111,7 @@ class Parser
     {
         $method = 'parse'.ucfirst(strtolower($type));
 
-        return Parser::{$method}($value);
+        return self::{$method}($value);
     }
 
     /**
