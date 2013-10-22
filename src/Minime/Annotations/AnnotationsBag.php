@@ -35,7 +35,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
     {
         $this->rules = $rules;
         foreach (array_keys($attributes) as $key) {
-            if ($this->rules->isValidKey($key)) {
+            if ($this->rules->isKeyValid($key)) {
                 $this->attributes[$key] = $attributes[$key];
             }
         }
@@ -52,7 +52,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
 
     /**
      * Checks if a given annotation is declared
-     * @param string $key A valid annotation tag, should match /[A-z0-9\-\_]/
+     * @param string $key A valid annotation tag, should match parser rules
      *
      * @throws \InvalidArgumentException If non string key is passed
      *
@@ -60,8 +60,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
      */
     public function has($key)
     {
-        if (! $this->rules->isValidKey($key)) {
-            throw new \InvalidArgumentException('Annotation key must be a string');
+        if (! $this->rules->isKeyValid($key)) {
+            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
         }
 
         return array_key_exists($key, $this->attributes);
@@ -69,7 +69,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
 
     /**
      * Retrieves a single annotation value
-     * @param string $key A valid annotation tag, should match /[A-z0-9\-\_]/
+     * @param string $key A valid annotation tag, should match parser rules
      *
      * @return mixed|null
      */
@@ -109,7 +109,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
     public function grep($pattern)
     {
         if (! is_string($pattern)) {
-            throw new \InvalidArgumentException('Grep pattern must be a regexp string');
+            throw new \InvalidArgumentException('Grep pattern must be a valid regexp string.');
         }
 
         $results = array_intersect_key(
@@ -145,17 +145,22 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
     public function useNamespace($pattern)
     {
         $pattern = trim($pattern);
-        if (! is_string($pattern) || is_numeric($pattern) || empty($pattern)) {
-            throw new \InvalidArgumentException('namespace pattern must be a valid string');
+        if (!$this->rules->isNamespaceValid($pattern))
+        {
+            throw new \InvalidArgumentException('Namespace pattern must be a valid namespace string, according to parser rules.');
         }
+        $namespaceIdentifier = $this->rules->getNamespaceIdentifier();
         $length = strlen($pattern);
-        if ('.' != $pattern[$length-1]) {
-            $pattern .= '.';
+        if ($namespaceIdentifier != $pattern[$length-1])
+        {
+            $pattern .= $namespaceIdentifier;
             $length++;
         }
         $results = [];
-        foreach ($this->attributes as $key => $value) {
-            if (strpos($key, $pattern) === 0) {
+        foreach ($this->attributes as $key => $value)
+        {
+            if (strpos($key, $pattern) === 0)
+            {
                 $results[substr($key, $length)] = $value;
             }
         }

@@ -12,28 +12,50 @@ namespace Minime\Annotations\Interfaces;
 interface ParserRulesInterface
 {
     /**
-     * Tells if a string validate the annotationName regular expression
+     * Tells if a string validate the annotation name regular expression
      *
      * @param string $key
      *
      * @return boolean
      *
      */
-    public function isValidKey($key);
+    public function isKeyValid($key);
 
     /**
-     * Get the annotationName regular expression
+     * Tells if a string validate the namespace regular expression
+     *
+     * @param string $key
+     *
+     * @return boolean
+     *
+     */
+    public function isNamespaceValid($key);
+
+    /**
+     * Get the annotation name regular expression
      *
      * @return string
      *
      */
-    public function getRegexAnnotationName();
+    public function getAnnotationNameRegex();
 
     /**
-     * Get the annotationIdentifier string
+     * Get the annotation identifier string
      *
      * @return string
      *
      */
     public function getAnnotationIdentifier();
+
+    /**
+     * Get the namespace identifier string
+     * @return string
+     */
+    public function getNamespaceIdentifier();
+
+    /**
+     * Return the namespace regular expression
+     * @return string
+     */
+    public function getNamespaceRegex();
 }

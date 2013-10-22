@@ -46,7 +46,7 @@ class Parser implements ParserInterface
     {
         $parameters = [];
         $identifier = $this->rules->getAnnotationIdentifier();
-        $pattern = $identifier.$this->rules->getRegexAnnotationName();
+        $pattern = $identifier.$this->rules->getAnnotationNameRegex();
         $lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
         foreach ($lines as $line) {
             $tokenizer = new StringScanner($line);

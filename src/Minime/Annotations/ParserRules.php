@@ -15,16 +15,29 @@ class ParserRules implements ParserRulesInterface
 {
 
     /**
-     * Annotation Name Regular Expression
-     * @var string
-     */
-    private $regexAnnotationName = '[a-zA-Z\_][a-zA-Z0-9\_\-\.]*';
-
-    /**
      * Annotation Identifier
      * @var string
      */
     private $annotationIdentifier = '@';
+
+    /**
+     * Annotation Name Regular Expression
+     * @var string
+     */
+    private $annotationNameRegex = '[a-zA-Z\_\-][a-zA-Z0-9\_\-\.]*';
+
+
+    /**
+     * Namespace identifier
+     * @var string
+     */
+    private $namespaceIdentifier = '.';
+
+    /**
+     * Namespace regex
+     * @var string
+     */
+    private $namespaceRegex = '[a-zA-Z\_\-][a-zA-Z0-9\_\-\.]*';
 
     /**
      * Valid a key according to internal rules
@@ -32,18 +45,29 @@ class ParserRules implements ParserRulesInterface
      *
      * @return boolean
      */
-    public function isValidKey($key)
+    public function isKeyValid($key)
     {
-        return preg_match('/'.$this->regexAnnotationName.'/', $key);
+        return preg_match('/^'.$this->getAnnotationNameRegex().'$/', $key);
+    }
+
+    /**
+     * Valid a key according to internal rules
+     * @param string $key
+     *
+     * @return boolean
+     */
+    public function isNamespaceValid($key)
+    {
+        return preg_match('/^'.$this->getNamespaceRegex().'$/', $key);
     }
 
     /**
      * Return the AnnotationName regular expression
      * @return string
      */
-    public function getRegexAnnotationName()
+    public function getAnnotationNameRegex()
     {
-        return $this->regexAnnotationName;
+        return $this->annotationNameRegex;
     }
 
     /**
@@ -53,5 +77,23 @@ class ParserRules implements ParserRulesInterface
     public function getAnnotationIdentifier()
     {
         return $this->annotationIdentifier;
+    }
+
+    /**
+     * Return the NamespaceIdentifier
+     * @return string
+     */
+    public function getNamespaceIdentifier()
+    {
+        return $this->namespaceIdentifier;
+    }
+
+    /**
+     * Return the Namespace regular expression
+     * @return string
+     */
+    public function getNamespaceRegex()
+    {
+        return $this->namespaceRegex;
     }
 }
