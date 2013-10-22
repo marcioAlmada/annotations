@@ -186,6 +186,14 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test     
+     */
+    public function isJsonSerializable()
+    {           
+        $this->assertSame(json_encode($this->Bag->export()), json_encode($this->Bag));
+    }
+
+    /**
      * @test
      */
     public function getAsArray()

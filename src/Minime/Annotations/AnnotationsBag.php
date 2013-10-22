@@ -11,7 +11,7 @@ use Minime\Annotations\Interfaces\ParserRulesInterface;
  * @package Annotations
  *
  */
-class AnnotationsBag implements \IteratorAggregate, \Countable
+class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializable
 {
 
     /**
@@ -174,6 +174,13 @@ class AnnotationsBag implements \IteratorAggregate, \Countable
     public function count()
     {
         return count($this->attributes);
+    }
+
+    /**
+     * JsonSerializable
+     */
+    public function jsonSerialize() {
+        return $this->export();
     }
 
     /**
