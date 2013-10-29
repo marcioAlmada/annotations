@@ -47,6 +47,9 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         new AnnotationsBag('', $this->rules);
     }
 
+    /**
+     * @test
+     */
     public function constructRemoveUncorrectIndex()
     {
         $res = new AnnotationsBag([0 => true, 'post' => 20], $this->rules);
