@@ -7,8 +7,21 @@ Minime \ Annotations
 [![Latest Stable Version](https://poser.pugx.org/minime/annotations/v/stable.png)](https://packagist.org/packages/minime/annotations)
 [![Total Downloads](https://poser.pugx.org/minime/annotations/downloads.png)](https://packagist.org/packages/minime/annotations)
 
-Minime\Annotations is a lightweight PHP annotation library.
-It supports both weak and strong typed annotations, JSON included.
+Minime\Annotations is a very simple PHP library that lets you create APIs
+that react to metadata with great flexibility and no headache.
+
+## Features & Roadmap
+
+- ~~[DONE]~~ Class, property and method annotations
+- ~~[DONE]~~ <b>Optional</b> strong typed annotations: float, integer, string, json
+- ~~[DONE]~~ Dynamic annotations (eval type)
+- ~~[DONE]~~ Namespaced annotations
+- ~~[DONE]~~ Implicit boolean annotations
+- ~~[DONE]~~ Multiple value annotations
+- ~~[DONE]~~ Traits (for convenient integration)
+- ~~[DONE]~~ API to filter and traverse annotations
+- [TODO] Cache support [#7](https://github.com/marcioAlmada/annotations/issues/7)
+- [TODO] Parser injection [#8](https://github.com/marcioAlmada/annotations/issues/8)
 
 ## Installation
 
@@ -35,9 +48,10 @@ The trait approach is useful for self / internal reflection:
  * @get @post @delete
  * @entity bar
  * @has-many Baz
- * @export json ["json", "xml", "csv"]
+ * @accept json ["json", "xml", "csv"]
  * @max integer 45
  * @delta float .45
+ * @cache-duration eval 1000 * 24 * 60 * 60
  */
 class FooController
 {
@@ -47,16 +61,17 @@ class FooController
 $foo = new Foo();
 $annotations = $foo->getClassAnnotations();
 
-$annotations->get('get') 	  // > bool(true)
+$annotations->get('get')      // > bool(true)
 $annotations->get('post')     // > bool(true)
 $annotations->get('delete')   // > bool(true)
 
 $annotations->get('entity')   // > string(3) "bar"
 $annotations->get('has-many') // > string(3) "Baz"
 
-$annotations->get('export')   // > array(3){ [0] => "json" [1] => "xml" [2] => "csv" }
+$annotations->get('accept')   // > array(3){ [0] => "json" [1] => "xml" [2] => "csv" }
 $annotations->get('max')      // > int(45)
 $annotations->get('delta')    // > double(0.45)
+$annotations->get('cache-duration')    // > int(86400000)
 
 $annotations->get('undefined')  // > null
 ```
@@ -106,10 +121,10 @@ $annotations = (new WebService())->getClassAnnotations();
 ```php
 $annotations->useNamespace('response')->export();
 // > array(3){
-// > 	["xml"]  => (bool) TRUE,
-// > 	["xls"]  => (bool) TRUE,
-// > 	["json"] => (bool) TRUE,
-// > 	["csv"]  => (bool) TRUE
+// >    ["xml"]  => (bool) TRUE,
+// >    ["xls"]  => (bool) TRUE,
+// >    ["json"] => (bool) TRUE,
+// >    ["csv"]  => (bool) TRUE
 // > }
 ```
 
@@ -118,8 +133,8 @@ $annotations->useNamespace('response')->export();
 ```php
 $annotations->useNamespace('response')->grep('^x')->export();
 // > array(3){
-// > 	["xml"]  => (bool) TRUE,
-// > 	["xls"]  => (bool) TRUE
+// >    ["xml"]  => (bool) TRUE,
+// >    ["xls"]  => (bool) TRUE
 // > }
 ```
 
@@ -128,36 +143,14 @@ $annotations->useNamespace('response')->grep('^x')->export();
 ```php
 foreach($annotations->useNamespace('method') as $annotation => $value)
 {
-	// some behavior
+    // some behavior
 }
 ```
-
-
-## Currently Supports
-
-* Class annotations
-* Property annotations
-* Method annotations
-* A very convenient Trait
-* Optional strong typed annotations: float, integer, string, json
-* Grep annotations from a collection based on a regexp
-* Namespaced annotations
-
 
 ## Coming Soon
 
 * Annotations cache - any help?
 * Possibility to inject a custom parser
-
-
-## Want to contribute?
-
-I'm looking for a good cache library. Better to have multiple drivers support, like:
- 
- * Memory
- * File
- * Redis
- * Mongo
 
 If you know a great cache library, come aboard!
 
