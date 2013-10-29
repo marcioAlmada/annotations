@@ -192,7 +192,7 @@ class Parser implements ParserInterface
         $json = json_decode($value);
         $error = json_last_error();
         if (JSON_ERROR_NONE != $error) {
-            throw new ParserException("Invalid JSON string supplied.");
+            throw new ParserException("Raw value must be a valid JSON string. Invalid value '{$value}' given.");
         }
 
         return $json;
@@ -211,7 +211,7 @@ class Parser implements ParserInterface
         $output = @eval("return {$value};");
         
         if (FALSE === $output) {
-            throw new ParserException("Invalid PHP string supplied for eval type.");
+            throw new ParserException("Raw value should be valid PHP. Invalid code '{$value}' given.");
         }
 
         return $output;
