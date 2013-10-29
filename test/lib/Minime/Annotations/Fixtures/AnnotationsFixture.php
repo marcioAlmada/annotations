@@ -76,6 +76,18 @@ class AnnotationsFixture
     private $bad_json_fixture;
 
     /**
+     * @value eval (1000 * 24 * 60 * 60)
+     * @value eval range(1, 3)
+     * @value eval base_convert('A37334', 16, 2)
+     */
+    private $eval_fixture;
+
+    /**
+     * @value eval $
+     */
+    private $bad_eval_fixture;
+
+    /**
      * @param_a foo
      * @param_b bar
      */

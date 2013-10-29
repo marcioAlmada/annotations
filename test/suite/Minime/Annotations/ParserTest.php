@@ -128,6 +128,24 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function parseEvalFixture()
+    {
+        $reflection = new ReflectionProperty($this->Fixture, 'eval_fixture');
+        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
+        $annotations = new AnnotationsBag($res, $this->rules);
+        $this->assertEquals(
+            [
+                86400000,
+                [1, 2, 3],
+                101000110111001100110100
+            ],
+            $annotations->get('value')
+        );
+    }
+
+    /**
+     * @test
+     */
     public function parseSingleValuesFixture()
     {
         $reflection = new ReflectionProperty($this->Fixture, 'single_values_fixture');
@@ -211,6 +229,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function tolerateUnrecognizedTypes()
+    {
+        $reflection = new ReflectionProperty($this->Fixture, 'non_recognized_type_fixture');
+        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
+        $annotations = new AnnotationsBag($res, $this->rules);
+        $this->assertEquals("footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations->get('value'));
+    }
+
+    /**
+     * @test
      * @expectedException Minime\Annotations\ParserException
      */
     public function badJSONValue()
@@ -221,13 +250,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException Minime\Annotations\ParserException
      */
-    public function tolerateUnrecognizedTypes()
+    public function badEvalValue()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'non_recognized_type_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertEquals("footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations->get('value'));
+        $reflection = new ReflectionProperty($this->Fixture, 'bad_eval_fixture');
+        (new Parser($reflection->getDocComment(), $this->rules))->parse();
     }
 
     /**

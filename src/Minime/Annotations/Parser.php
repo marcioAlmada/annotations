@@ -28,6 +28,8 @@ class Parser implements ParserInterface
      */
     private $rules;
 
+    protected $types = ['string', 'integer', 'float', 'json', 'eval'];
+
     /**
      * Parser constructor
      * @param string $raw_doc_block the doc block to parse
@@ -66,7 +68,7 @@ class Parser implements ParserInterface
                 }
 
                 $type = 'dynamic';
-                if ($tokenizer->check('/(string|integer|float|json)/')) { //if strong typed
+                if ($tokenizer->check('/('. implode('|', $this->types) .')/')) { //if strong typed
                     $type = $tokenizer->scan('/\w+/');
                     $tokenizer->skip('/\s+/');
                 }
@@ -194,5 +196,24 @@ class Parser implements ParserInterface
         }
 
         return $json;
+    }
+
+    /**
+     * Filter a value to be a PHP eval
+     * @param string $value
+     *
+     * @throws ParserException If $value is not a valid PHP code
+     *
+     * @return mixed
+     */
+    protected static function parseEval($value)
+    {
+        $output = @eval("return {$value};");
+        
+        if (FALSE === $output) {
+            throw new ParserException("Invalid PHP string supplied for eval type.");
+        }
+
+        return $output;
     }
 }
