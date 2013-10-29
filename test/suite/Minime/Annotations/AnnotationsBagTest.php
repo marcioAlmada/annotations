@@ -162,29 +162,41 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function merge()
     {
-        $Bag = new AnnotationsBag(
+        $this->Bag = new AnnotationsBag(
             [
-                'get' => 'new get',                
-                'request' => false,
-                'delete' => true
+                'alpha' => 'a',
+                'beta'  => 'b',
+                'gama'  => 'g'
             ],
             $this->rules
         );
-        $this->Bag->merge($Bag);
 
-        $this->assertCount(11, $this->Bag);
-        $this->assertSame(true, $this->Bag->get('get'));
+        $DefaultBag = new AnnotationsBag(
+            [
+                'alpha'   => 'x',
+                'beta'    => 'b',
+                'gama'    => 'g',
+                'delta'   => 'd',
+                'epsilon' => 'e',
+            ],
+            $this->rules
+        );
+
+        $this->Bag->merge($DefaultBag);
+
+        $this->assertCount(5,  $this->Bag);
+        $this->assertSame('a', $this->Bag->get('alpha'));
+        $this->assertSame('d', $this->Bag->get('delta'));
+        $this->assertSame('e', $this->Bag->get('epsilon'));
     }
 
     /**
      * @test
      * @expectedException PHPUnit_Framework_Error
      */
-    public function mergeWithInvalidArgument()
+    public function mergeAcceptsOnlyAnnotationsBag()
     {
-        $this->Bag->merge('0');
         $this->Bag->merge(0);
-        $this->Bag->merge();
     }
 
     /**
@@ -249,26 +261,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException \InvalidArgumentException
      */
-    public function getAcceptsOnlyStringKeys()
-    {
-        $this->Bag->get(0);
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     */
-    public function getDoesNotAcceptsNumericKeys()
-    {
-        $this->Bag->get('0');
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     */
     public function pregAcceptsOnlyStringKeys()
     {
-        $this->Bag->grep(0)->export();
+        $this->Bag->grep(0);
     }
 }
