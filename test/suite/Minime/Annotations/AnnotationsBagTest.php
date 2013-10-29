@@ -158,6 +158,36 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test     
+     */
+    public function merge()
+    {
+        $Bag = new AnnotationsBag(
+            [
+                'get' => 'new get',                
+                'request' => false,
+                'delete' => true
+            ],
+            $this->rules
+        );
+        $this->Bag->merge($Bag);
+
+        $this->assertCount(11, $this->Bag);
+        $this->assertSame(true, $this->Bag->get('get'));
+    }
+
+    /**
+     * @test
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function mergeWithInvalidArgument()
+    {
+        $this->Bag->merge('0');
+        $this->Bag->merge(0);
+        $this->Bag->merge();
+    }
+
+    /**
      * @test
      */
     public function isTraversable()
