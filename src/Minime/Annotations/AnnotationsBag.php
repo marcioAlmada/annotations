@@ -169,6 +169,16 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
     }
 
     /**
+     * Merge instances of AnnotationBag
+     * @param  object Minime\Annotations\AnnotationsBag
+     * @return void
+     */
+    public function merge(AnnotationsBag $annotation)
+    {   
+        $this->attributes = array_merge($annotation->export(), $this->attributes);
+    }
+
+    /**
     * Countable
     */
     public function count()
