@@ -177,23 +177,22 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $Bag = new AnnotationsBag(
             [
                 'alpha'   => 'x',
-                'beta'    => 'b',
-                'gama'    => 'g',
+                'beta'    => 'x',
+                'gama'    => 'x',
                 'delta'   => 'd',
                 'epsilon' => 'e',
             ],
             $this->rules
         );
 
-        $this->Bag->merge($Bag);
+        $MergedBag = $this->Bag->merge($Bag);
 
-        $this->assertCount(5,  $this->Bag);
-        $this->assertSame('a', $this->Bag->get('alpha'));
-        $this->assertSame('d', $this->Bag->get('delta'));
-        $this->assertSame('e', $this->Bag->get('epsilon'));
+        $this->assertCount(5,  $MergedBag);
+        $this->assertSame('a', $MergedBag->get('alpha'));
+        $this->assertSame('d', $MergedBag->get('delta'));
+        $this->assertSame('e', $MergedBag->get('epsilon'));
 
-        $this->assertSame($this->Bag, $this->Bag->merge($Bag));
-        $this->assertSame($this->Bag, $this->Bag->merge($Bag)->merge($Bag));
+        $this->assertNotSame($this->Bag, $this->Bag->merge($Bag));
     }
 
     /**
