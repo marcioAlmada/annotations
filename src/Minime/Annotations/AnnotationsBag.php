@@ -183,7 +183,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      */
     public function merge(AnnotationsBag $bag)
     {   
-        return new static($bag->export() + $this->attributes, $this->rules);
+        return new static($this->attributes + $bag->export(), $this->rules);
     }
 
     /**
