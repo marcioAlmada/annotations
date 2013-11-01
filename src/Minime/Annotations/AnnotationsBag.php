@@ -37,7 +37,12 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
         $this->replace($attributes);
     }
 
-
+    /**
+    * Set a set of annotations value
+    * @param array $attributes
+    *
+    * @return self
+    */
     public function replace(array $attributes)
     {
         foreach (array_keys($attributes) as $key) {
@@ -51,6 +56,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
 
     /**
      * Unbox all annotations in the form of an associative array
+     * 
      * @return array associative array of annotations
      */
     public function export()
@@ -62,7 +68,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      * Checks if a given annotation is declared
      * @param string $key A valid annotation tag, should match parser rules
      *
-     * @throws \InvalidArgumentException If non string key is passed
+     * @throws \InvalidArgumentException If $key is not validated by the parserRules
      *
      * @return boolean
      */
@@ -75,8 +81,16 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
         return array_key_exists($key, $this->attributes);
     }
 
-
-    public function set($key, $name)
+    /**
+    * Set a single annotation value
+    * @param string $key A valid annotation tag, should match parser rules
+    * @param mixed  $value the param value
+    * 
+    * @throws \InvalidArgumentException If $key is not validated by the parserRules
+    *
+    * @return self
+    */
+    public function set($key, $value)
     {
         if (! $this->rules->isKeyValid($key)) {
             throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
@@ -88,6 +102,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
 
     /**
      * Retrieves a single annotation value
+     * 
      * @param string $key A valid annotation tag, should match parser rules
      *
      * @return mixed|null
@@ -104,6 +119,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     /**
      * Retrieve annotation values as an array even if there's only one single value
      *
+     * @param string $key A valid annotation tag, should match parser rules
+     * 
      * @return array
      */
     public function getAsArray($key)
@@ -242,8 +259,6 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      
      public function offsetUnset($key)
      {
-         if (array_key_exists($key, $this->attributes)) {
-             unset($this->attributes[$key]);
-         }
+        unset($this->attributes[$key]);
      }
 }
