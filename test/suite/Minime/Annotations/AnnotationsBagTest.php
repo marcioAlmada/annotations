@@ -65,9 +65,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(null, $this->Bag->get('bar'));
     }
 
-    /**
-     * @test
-     */
     public function testArrayAccessBag()
     {
         $bag = new AnnotationsBag([], $this->rules);
@@ -78,6 +75,27 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('orange', $bag['fruit']);
         unset($bag['fruit']);
         $this->assetEquals(0, count($bag));
+        $this->assertNull($bag['fruit']);
+    }
+
+    /**
+     * @test
+     * @expectedException InvalidArgumentException
+     */
+    public function testArrayAccessInvalidSetterBag()
+    {
+        $bag = new AnnotationsBag([], $this->rules);
+        $bag[0] = 'orange';
+    }
+ 
+    /**
+     * @test
+     * @expectedException InvalidArgumentException
+     */
+    public function testArrayAccessInvalidGetterBag()
+    {
+        $bag = new AnnotationsBag([], $this->rules);
+        $res = $bag[0];
     }
 
     /**
