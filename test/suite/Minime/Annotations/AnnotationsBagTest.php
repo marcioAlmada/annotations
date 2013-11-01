@@ -68,6 +68,21 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testArrayAccessBag()
+    {
+        $bag = new AnnotationsBag([], $this->rules);
+        $this->assetEquals(0, count($bag));
+        $bag['fruit'] = 'orange';
+        $this->assetEquals(1, count($bag));
+        $this->assertSame('orange', $bag->get('fruit'));
+        $this->assertSame('orange', $bag['fruit']);
+        unset($bag['fruit']);
+        $this->assetEquals(0, count($bag));
+    }
+
+    /**
+     * @test
+     */
     public function grep()
     {
         $this->assertCount(3, $this->Bag->grep('val'));
