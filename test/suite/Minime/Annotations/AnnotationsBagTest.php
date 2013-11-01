@@ -85,7 +85,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $bag = new AnnotationsBag([], $this->rules);
         $bag[0] = 'orange';
     }
- 
+
     /**
      * @expectedException InvalidArgumentException
      */
@@ -93,6 +93,14 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     {
         $bag = new AnnotationsBag([], $this->rules);
         $res = $bag[0];
+    }
+
+    public function testArrayAccessOffsetExistsBag()
+    {
+        $bag = new AnnotationsBag([], $this->rules);
+        $bag['fruit'] = 'orange';
+        $this->assertTrue(isset($bag['fruit']));
+        $this->assertFalse(isset($bag['cheese']));
     }
 
     /**
@@ -191,7 +199,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test     
+     * @test
      */
     public function merge()
     {
@@ -217,7 +225,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
         $MergedBag = $this->Bag->merge($Bag);
 
-        $this->assertCount(5,  $MergedBag);
+        $this->assertCount(5, $MergedBag);
         $this->assertSame('a', $MergedBag->get('alpha'));
         $this->assertSame('d', $MergedBag->get('delta'));
         $this->assertSame('e', $MergedBag->get('epsilon'));
@@ -263,10 +271,10 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test     
+     * @test
      */
     public function isJsonSerializable()
-    {           
+    {
         $this->assertSame(json_encode($this->Bag->export()), json_encode($this->Bag));
     }
 

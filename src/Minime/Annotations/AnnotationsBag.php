@@ -48,15 +48,15 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
         foreach (array_keys($attributes) as $key) {
             if ($this->rules->isKeyValid($key)) {
                 $this->attributes[$key] = $attributes[$key];
-            }            
+            }
         }
-        
+
         return $this;
     }
 
     /**
      * Unbox all annotations in the form of an associative array
-     * 
+     *
      * @return array associative array of annotations
      */
     public function export()
@@ -85,7 +85,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     * Set a single annotation value
     * @param string $key A valid annotation tag, should match parser rules
     * @param mixed  $value the param value
-    * 
+    *
     * @throws \InvalidArgumentException If $key is not validated by the parserRules
     *
     * @return self
@@ -96,13 +96,13 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
             throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
         }
         $this->attributes[$key] = $value;
-        
+
         return $this;
     }
 
     /**
      * Retrieves a single annotation value
-     * 
+     *
      * @param string $key A valid annotation tag, should match parser rules
      *
      * @return mixed|null
@@ -120,7 +120,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      * Retrieve annotation values as an array even if there's only one single value
      *
      * @param string $key A valid annotation tag, should match parser rules
-     * 
+     *
      * @return array
      */
     public function getAsArray($key)
@@ -205,7 +205,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      * @return self
      */
     public function merge(AnnotationsBag $bag)
-    {   
+    {
         return new static($this->attributes + $bag->export(), $this->rules);
     }
 
@@ -220,7 +220,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     /**
      * JsonSerializable
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return $this->export();
     }
 
@@ -231,29 +232,29 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     {
         return new \ArrayIterator($this->attributes);
     }
-    
+
     /**
-     * ArrayAccess
-     */
-     public function offsetExists($key)
-     {
-         return $this->has($key);
-     }
-     
-     public function offsetGet($key)
-     {
-         return $this->get($key);
-     }
-     
-     public function offsetSet($key, $value)
-     {
-        $this->set($key, $name);
-        
+    * ArrayAccess
+    */
+    public function offsetExists($key)
+    {
+        return $this->has($key);
+    }
+
+    public function offsetGet($key)
+    {
+        return $this->get($key);
+    }
+
+    public function offsetSet($key, $value)
+    {
+        $this->set($key, $value);
+
         return true;
-     }
-     
-     public function offsetUnset($key)
-     {
+    }
+
+    public function offsetUnset($key)
+    {
         unset($this->attributes[$key]);
-     }
+    }
 }
