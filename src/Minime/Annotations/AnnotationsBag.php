@@ -148,12 +148,9 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
             throw new \InvalidArgumentException('Grep pattern must be a valid regexp string.');
         }
 
-        $results = array_intersect_key(
-            $this->attributes,
-            array_flip(
-                preg_grep('/'.$pattern.'/', array_keys($this->attributes))
-            )
-        );
+        $results = array_intersect_key($this->attributes, array_flip(
+            preg_grep('/'.$pattern.'/', array_keys($this->attributes))
+        ));
 
         return new static($results, $this->rules);
     }
@@ -181,22 +178,20 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     public function useNamespace($pattern)
     {
         $pattern = trim($pattern);
-        if (!$this->rules->isNamespaceValid($pattern))
-        {
-            throw new \InvalidArgumentException('Namespace pattern must be a valid namespace string, according to parser rules.');
+        if (!$this->rules->isNamespaceValid($pattern)) {
+            throw new \InvalidArgumentException(
+                'Namespace pattern must be a valid namespace string, according to parser rules.'
+            );
         }
         $namespaceIdentifier = $this->rules->getNamespaceIdentifier();
         $length = strlen($pattern);
-        if ($namespaceIdentifier != $pattern[$length-1])
-        {
+        if ($namespaceIdentifier != $pattern[$length-1]) {
             $pattern .= $namespaceIdentifier;
             $length++;
         }
         $results = [];
-        foreach ($this->attributes as $key => $value)
-        {
-            if (strpos($key, $pattern) === 0)
-            {
+        foreach ($this->attributes as $key => $value) {
+            if (strpos($key, $pattern) === 0) {
                 $results[substr($key, $length)] = $value;
             }
         }
