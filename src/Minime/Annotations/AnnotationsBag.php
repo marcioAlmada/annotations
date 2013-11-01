@@ -38,7 +38,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     }
 
     /**
-    * Set a set of annotations value
+    * replace a set of annotations values
     * @param array $attributes
     *
     * @return self
@@ -83,7 +83,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
 
     /**
     * Set a single annotation value
-    * @param string $key A valid annotation tag, should match parser rules
+    * @param string $key a valid annotation tag, should match parser rules
     * @param mixed  $value the param value
     *
     * @throws \InvalidArgumentException If $key is not validated by the parserRules
@@ -178,7 +178,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     public function useNamespace($pattern)
     {
         $pattern = trim($pattern);
-        if (!$this->rules->isNamespaceValid($pattern)) {
+        if (! $this->rules->isNamespaceValid($pattern)) {
             throw new \InvalidArgumentException(
                 'Namespace pattern must be a valid namespace string, according to parser rules.'
             );
@@ -191,7 +191,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
         }
         $results = [];
         foreach ($this->attributes as $key => $value) {
-            if (strpos($key, $pattern) === 0) {
+            if (0 === strpos($key, $pattern)) {
                 $results[substr($key, $length)] = $value;
             }
         }
@@ -201,8 +201,9 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
 
     /**
      * Merge instances of AnnotationsBag
-     * @param  AnnotationsBag $bag The annotation bag to be merged
-     * @return self
+     * @param AnnotationsBag $bag The annotation bag to be merged
+     *
+     * @return Minime\Annotations\AnnotationsBag Annotations collection with merged results
      */
     public function merge(AnnotationsBag $bag)
     {
@@ -234,18 +235,24 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     }
 
     /**
-    * ArrayAccess
+    * ArrayAccess - Whether or not an offset exists.
     */
     public function offsetExists($key)
     {
         return $this->has($key);
     }
 
+    /**
+    * ArrayAccess - Returns the value at specified offset.
+    */
     public function offsetGet($key)
     {
         return $this->get($key);
     }
 
+    /**
+    * ArrayAccess - Assigns a value to the specified offset.
+    */
     public function offsetSet($key, $value)
     {
         $this->set($key, $value);
@@ -253,6 +260,9 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
         return true;
     }
 
+    /**
+    * ArrayAccess - Unsets an offset.
+    */
     public function offsetUnset($key)
     {
         unset($this->attributes[$key]);
