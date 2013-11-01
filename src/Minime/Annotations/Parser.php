@@ -88,16 +88,13 @@ class Parser implements ParserInterface
      */
     protected static function condense(array $parameters)
     {
-        return array_map(
-            function ($value) {
-                if (is_array($value) && 1 == count($value)) {
-                    $value = $value[0];
-                }
+        return array_map(function ($value) {
+            if (is_array($value) && 1 == count($value)) {
+                $value = $value[0];
+            }
 
-                return $value;
-            },
-            $parameters
-        );
+            return $value;
+        }, $parameters);
     }
 
     /**
@@ -209,8 +206,7 @@ class Parser implements ParserInterface
     protected static function parseEval($value)
     {
         $output = @eval("return {$value};");
-        
-        if (FALSE === $output) {
+        if (false === $output) {
             throw new ParserException("Raw value should be valid PHP. Invalid code '{$value}' given.");
         }
 
