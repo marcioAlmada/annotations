@@ -224,8 +224,12 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      
      public function offsetSet($key, $value)
      {
-         $this->replace([$key => $value]);
-         return true;
+        if (! $this->rules->isKeyValid($key)) {
+            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
+        }
+        $this->replace([$key => $value]);
+        
+        return true;
      }
      
      public function offsetUnset($key)
