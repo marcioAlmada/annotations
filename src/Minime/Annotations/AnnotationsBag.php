@@ -11,7 +11,7 @@ use Minime\Annotations\Interfaces\ParserRulesInterface;
  * @package Annotations
  *
  */
-class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializable
+class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \JsonSerializable
 {
 
     /**
@@ -34,11 +34,19 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
     public function __construct(array $attributes, ParserRulesInterface $rules)
     {
         $this->rules = $rules;
+        $this->replace($attributes);
+    }
+
+
+    public function replace(array $attributes)
+    {
         foreach (array_keys($attributes) as $key) {
             if ($this->rules->isKeyValid($key)) {
                 $this->attributes[$key] = $attributes[$key];
-            }
+            }            
         }
+        
+        return $this;
     }
 
     /**
@@ -175,8 +183,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
      */
     public function merge(AnnotationsBag $bag)
     {   
-        $attributes = array_merge($bag->export(), $this->attributes);
-        return new static($attributes, $this->rules);
+        return new static($bag->export() + $this->attributes, $this->rules);
     }
 
     /**
@@ -201,4 +208,30 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
     {
         return new \ArrayIterator($this->attributes);
     }
+    
+    /**
+     * ArrayAccess
+     */
+     public function offsetExists($key)
+     {
+         return $this->has($key);
+     }
+     
+     public function offsetGet($key)
+     {
+         return $this->get($key);
+     }
+     
+     public function offsetSet($key, $value)
+     {
+         $this->replace([$key => $value]);
+         return true;
+     }
+     
+     public function offsetUnset($key)
+     {
+         if (array_key_exists($key, $this->attributes)) {
+             unset($this->attributes[$key]);
+         }
+     }
 }
