@@ -75,6 +75,17 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
         return array_key_exists($key, $this->attributes);
     }
 
+
+    public function set($key, $name)
+    {
+        if (! $this->rules->isKeyValid($key)) {
+            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
+        }
+        $this->attributes[$key] = $value;
+        
+        return $this;
+    }
+
     /**
      * Retrieves a single annotation value
      * @param string $key A valid annotation tag, should match parser rules
@@ -224,10 +235,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      
      public function offsetSet($key, $value)
      {
-        if (! $this->rules->isKeyValid($key)) {
-            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
-        }
-        $this->replace([$key => $value]);
+        $this->set($key, $name);
         
         return true;
      }
