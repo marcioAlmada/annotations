@@ -72,6 +72,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $bag['fruit'] = 'orange';
         $this->assertEquals(1, count($bag));
         $this->assertSame('orange', $bag['fruit']);
+        $this->assertTrue(isset($bag['fruit']));
+        $this->assertFalse(isset($bag['cheese']));
         unset($bag['fruit']);
         $this->assertEquals(0, count($bag));
         $this->assertNull($bag['fruit']);
@@ -93,14 +95,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     {
         $bag = new AnnotationsBag([], $this->rules);
         $res = $bag[0];
-    }
-
-    public function testArrayAccessOffsetExistsBag()
-    {
-        $bag = new AnnotationsBag([], $this->rules);
-        $bag['fruit'] = 'orange';
-        $this->assertTrue(isset($bag['fruit']));
-        $this->assertFalse(isset($bag['cheese']));
     }
 
     /**
