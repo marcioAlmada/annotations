@@ -11,7 +11,7 @@ use Minime\Annotations\Interfaces\ParserRulesInterface;
  * @package Annotations
  *
  */
-class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializable
+class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \JsonSerializable
 {
 
     /**
@@ -34,15 +34,29 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
     public function __construct(array $attributes, ParserRulesInterface $rules)
     {
         $this->rules = $rules;
+        $this->replace($attributes);
+    }
+
+    /**
+    * replace a set of annotations values
+    * @param array $attributes
+    *
+    * @return self
+    */
+    public function replace(array $attributes)
+    {
         foreach (array_keys($attributes) as $key) {
             if ($this->rules->isKeyValid($key)) {
                 $this->attributes[$key] = $attributes[$key];
             }
         }
+
+        return $this;
     }
 
     /**
      * Unbox all annotations in the form of an associative array
+     *
      * @return array associative array of annotations
      */
     public function export()
@@ -54,7 +68,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
      * Checks if a given annotation is declared
      * @param string $key A valid annotation tag, should match parser rules
      *
-     * @throws \InvalidArgumentException If non string key is passed
+     * @throws \InvalidArgumentException If $key is not validated by the parserRules
      *
      * @return boolean
      */
@@ -68,7 +82,27 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
     }
 
     /**
+    * Set a single annotation value
+    * @param string $key a valid annotation tag, should match parser rules
+    * @param mixed  $value the param value
+    *
+    * @throws \InvalidArgumentException If $key is not validated by the parserRules
+    *
+    * @return self
+    */
+    public function set($key, $value)
+    {
+        if (! $this->rules->isKeyValid($key)) {
+            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
+        }
+        $this->attributes[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * Retrieves a single annotation value
+     *
      * @param string $key A valid annotation tag, should match parser rules
      *
      * @return mixed|null
@@ -84,6 +118,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
 
     /**
      * Retrieve annotation values as an array even if there's only one single value
+     *
+     * @param string $key A valid annotation tag, should match parser rules
      *
      * @return array
      */
@@ -112,12 +148,9 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
             throw new \InvalidArgumentException('Grep pattern must be a valid regexp string.');
         }
 
-        $results = array_intersect_key(
-            $this->attributes,
-            array_flip(
-                preg_grep('/'.$pattern.'/', array_keys($this->attributes))
-            )
-        );
+        $results = array_intersect_key($this->attributes, array_flip(
+            preg_grep('/'.$pattern.'/', array_keys($this->attributes))
+        ));
 
         return new static($results, $this->rules);
     }
@@ -145,22 +178,20 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
     public function useNamespace($pattern)
     {
         $pattern = trim($pattern);
-        if (!$this->rules->isNamespaceValid($pattern))
-        {
-            throw new \InvalidArgumentException('Namespace pattern must be a valid namespace string, according to parser rules.');
+        if (! $this->rules->isNamespaceValid($pattern)) {
+            throw new \InvalidArgumentException(
+                'Namespace pattern must be a valid namespace string, according to parser rules.'
+            );
         }
         $namespaceIdentifier = $this->rules->getNamespaceIdentifier();
         $length = strlen($pattern);
-        if ($namespaceIdentifier != $pattern[$length-1])
-        {
+        if ($namespaceIdentifier != $pattern[$length-1]) {
             $pattern .= $namespaceIdentifier;
             $length++;
         }
         $results = [];
-        foreach ($this->attributes as $key => $value)
-        {
-            if (strpos($key, $pattern) === 0)
-            {
+        foreach ($this->attributes as $key => $value) {
+            if (0 === strpos($key, $pattern)) {
                 $results[substr($key, $length)] = $value;
             }
         }
@@ -170,13 +201,13 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
 
     /**
      * Merge instances of AnnotationsBag
-     * @param  AnnotationsBag $bag The annotation bag to be merged
-     * @return self
+     * @param AnnotationsBag $bag The annotation bag to be merged
+     *
+     * @return Minime\Annotations\AnnotationsBag Annotations collection with merged results
      */
     public function merge(AnnotationsBag $bag)
-    {   
-        $attributes = array_merge($bag->export(), $this->attributes);
-        return new static($attributes, $this->rules);
+    {
+        return new static($this->attributes + $bag->export(), $this->rules);
     }
 
     /**
@@ -190,7 +221,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
     /**
      * JsonSerializable
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return $this->export();
     }
 
@@ -200,5 +232,39 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \JsonSerializabl
     public function getIterator()
     {
         return new \ArrayIterator($this->attributes);
+    }
+
+    /**
+    * ArrayAccess - Whether or not an offset exists.
+    */
+    public function offsetExists($key)
+    {
+        return $this->has($key);
+    }
+
+    /**
+    * ArrayAccess - Returns the value at specified offset.
+    */
+    public function offsetGet($key)
+    {
+        return $this->get($key);
+    }
+
+    /**
+    * ArrayAccess - Assigns a value to the specified offset.
+    */
+    public function offsetSet($key, $value)
+    {
+        $this->set($key, $value);
+
+        return true;
+    }
+
+    /**
+    * ArrayAccess - Unsets an offset.
+    */
+    public function offsetUnset($key)
+    {
+        unset($this->attributes[$key]);
     }
 }

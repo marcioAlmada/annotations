@@ -65,6 +65,38 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(null, $this->Bag->get('bar'));
     }
 
+    public function testArrayAccessBag()
+    {
+        $bag = new AnnotationsBag([], $this->rules);
+        $this->assertEquals(0, count($bag));
+        $bag['fruit'] = 'orange';
+        $this->assertEquals(1, count($bag));
+        $this->assertSame('orange', $bag['fruit']);
+        $this->assertTrue(isset($bag['fruit']));
+        $this->assertFalse(isset($bag['cheese']));
+        unset($bag['fruit']);
+        $this->assertEquals(0, count($bag));
+        $this->assertNull($bag['fruit']);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testArrayAccessInvalidSetterBag()
+    {
+        $bag = new AnnotationsBag([], $this->rules);
+        $bag[0] = 'orange';
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testArrayAccessInvalidGetterBag()
+    {
+        $bag = new AnnotationsBag([], $this->rules);
+        $res = $bag[0];
+    }
+
     /**
      * @test
      */
@@ -161,7 +193,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test     
+     * @test
      */
     public function merge()
     {
@@ -187,7 +219,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
         $MergedBag = $this->Bag->merge($Bag);
 
-        $this->assertCount(5,  $MergedBag);
+        $this->assertCount(5, $MergedBag);
         $this->assertSame('a', $MergedBag->get('alpha'));
         $this->assertSame('d', $MergedBag->get('delta'));
         $this->assertSame('e', $MergedBag->get('epsilon'));
@@ -233,10 +265,10 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test     
+     * @test
      */
     public function isJsonSerializable()
-    {           
+    {
         $this->assertSame(json_encode($this->Bag->export()), json_encode($this->Bag));
     }
 
