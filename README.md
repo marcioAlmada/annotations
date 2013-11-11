@@ -20,6 +20,7 @@ that react to metadata with great flexibility and no headache.
 - ~~[DONE]~~ Multiple value annotations
 - ~~[DONE]~~ Traits (for convenient integration)
 - ~~[DONE]~~ API to filter and traverse annotations
+- ~~[DONE]~~ Mutable AnnotationsBag (thanks to @nyamsprod)
 - [TODO] Cache support [#7](https://github.com/marcioAlmada/annotations/issues/7)
 - [TODO] Parser injection [#8](https://github.com/marcioAlmada/annotations/issues/8)
 
