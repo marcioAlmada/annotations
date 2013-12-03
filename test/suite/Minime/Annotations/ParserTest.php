@@ -10,12 +10,20 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     private $Fixture;
 
-    private $rules;
-
     public function setUp()
     {
-        $this->rules = new ParserRules;
         $this->Fixture = new AnnotationsFixture;
+    }
+
+    public function tearDown()
+    {
+        $this->Fixture = null;
+    }
+
+    private function getParser($fixture)
+    {
+        $reflection = new ReflectionProperty($this->Fixture, $fixture);
+        return new Parser($reflection->getDocComment(), new ParserRules);
     }
 
     /**
@@ -32,10 +40,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseEmptyFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'empty_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertSame([], $annotations->export());
+        $annotations = $this->getParser('empty_fixture')->parse();
+        $this->assertSame([], $annotations);
     }
 
     /**
@@ -43,10 +49,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseNullFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'null_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertSame([null, null, ''], $annotations->get('value'));
+        $annotations = $this->getParser('null_fixture')->parse();
+        $this->assertSame([null, null, ''], $annotations['value']);
     }
 
     /**
@@ -54,10 +58,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseBooleanFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'boolean_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertSame([true, false, true, false, "true", "false"], $annotations->get('value'));
+        $annotations = $this->getParser('boolean_fixture')->parse();
+        $this->assertSame([true, false, true, false, "true", "false"], $annotations['value']);
     }
 
     /**
@@ -65,13 +67,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseImplicitBooleanFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'implicit_boolean_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertSame(true, $annotations->get('alpha'));
-        $this->assertSame(true, $annotations->get('beta'));
-        $this->assertSame(true, $annotations->get('gamma'));
-        $this->assertSame(null, $annotations->get('delta'));
+        $annotations = $this->getParser('implicit_boolean_fixture')->parse();
+        $this->assertSame(true, $annotations['alpha']);
+        $this->assertSame(true, $annotations['beta']);
+        $this->assertSame(true, $annotations['gamma']);
+        $this->assertArrayNotHasKey('delta', $annotations);
     }
 
     /**
@@ -79,10 +79,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseStringFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'string_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertSame(['abc', 'abc', '123'], $annotations->get('value'));
+        $annotations = $this->getParser('string_fixture')->parse();
+        $this->assertSame(['abc', 'abc', '123'], $annotations['value']);
     }
 
     /**
@@ -90,10 +88,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseIntegerFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'integer_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertSame([123, 23, -23], $annotations->get('value'));
+        $annotations = $this->getParser('integer_fixture')->parse();
+        $this->assertSame([123, 23, -23], $annotations['value']);
     }
 
     /**
@@ -101,10 +97,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseFloatFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'float_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertSame([.45, 0.45, 45., -4.5], $annotations->get('value'));
+        $annotations = $this->getParser('float_fixture')->parse();
+        $this->assertSame([.45, 0.45, 45., -4.5], $annotations['value']);
     }
 
     /**
@@ -112,16 +106,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseJsonFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'json_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
+        $annotations = $this->getParser('json_fixture')->parse();
         $this->assertEquals(
             [
                 ["x", "y"],
                 json_decode('{"x": {"y": "z"}}'),
                 json_decode('{"x": {"y": ["z", "p"]}}')
             ],
-            $annotations->get('value')
+            $annotations['value']
         );
     }
 
@@ -130,16 +122,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseEvalFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'eval_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
+        $annotations = $this->getParser('eval_fixture')->parse();
         $this->assertEquals(
             [
                 86400000,
                 [1, 2, 3],
                 101000110111001100110100
             ],
-            $annotations->get('value')
+            $annotations['value']
         );
     }
 
@@ -148,11 +138,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseSingleValuesFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'single_values_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertEquals('foo', $annotations->get('param_a'));
-        $this->assertEquals('bar', $annotations->get('param_b'));
+        $annotations = $this->getParser('single_values_fixture')->parse();
+        $this->assertEquals('foo', $annotations['param_a']);
+        $this->assertEquals('bar', $annotations['param_b']);
     }
 
     /**
@@ -160,10 +148,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseMultipleValuesFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'multiple_values_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertEquals(['x', 'y', 'z'], $annotations->get('value'));
+        $annotations = $this->getParser('multiple_values_fixture')->parse();
+        $this->assertEquals(['x', 'y', 'z'], $annotations['value']);
     }
 
     /**
@@ -171,16 +157,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseParseSameLineFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'same_line_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertSame(true, $annotations->get('get'));
-        $this->assertSame(true, $annotations->get('post'));
-        $this->assertSame(true, $annotations->get('ajax'));
-        $this->assertSame(true, $annotations->get('alpha'));
-        $this->assertSame(true, $annotations->get('beta'));
-        $this->assertSame(true, $annotations->get('gamma'));
-        $this->assertSame(null, $annotations->get('undefined'));
+        $annotations = $this->getParser('same_line_fixture')->parse();
+        $this->assertSame(true, $annotations['get']);
+        $this->assertSame(true, $annotations['post']);
+        $this->assertSame(true, $annotations['ajax']);
+        $this->assertSame(true, $annotations['alpha']);
+        $this->assertSame(true, $annotations['beta']);
+        $this->assertSame(true, $annotations['gamma']);
+        $this->assertArrayNotHasKey('undefined', $annotations);
     }
 
     /**
@@ -188,13 +172,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function namespacedAnnotations()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'namespaced_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
+        $annotations = $this->getParser('namespaced_fixture')->parse();
 
-        $this->assertSame('cheers!', $annotations->get('path.to.the.treasure'));
-        $this->assertSame('the cake is a lie', $annotations->get('path.to.the.cake'));
-        $this->assertSame('foo', $annotations->get('another.path.to.cake'));
+        $this->assertSame('cheers!', $annotations['path.to.the.treasure']);
+        $this->assertSame('the cake is a lie', $annotations['path.to.the.cake']);
+        $this->assertSame('foo', $annotations['another.path.to.cake']);
     }
 
     /**
@@ -202,10 +184,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseStrongTypedFixture()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'strong_typed_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $declarations = $annotations->get('value');
+        $annotations = $this->getParser('strong_typed_fixture')->parse();
+        $declarations = $annotations['value'];
         $this->assertNotEmpty($declarations);
         $this->assertSame(
             [
@@ -216,7 +196,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             $declarations
         );
 
-        $declarations = $annotations->get('json_value');
+        $declarations = $annotations['json_value'];
         $this->assertEquals(
             [
             ["x", "y"], // json
@@ -232,10 +212,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function tolerateUnrecognizedTypes()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'non_recognized_type_fixture');
-        $res = (new Parser($reflection->getDocComment(), $this->rules))->parse();
-        $annotations = new AnnotationsBag($res, $this->rules);
-        $this->assertEquals("footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations->get('value'));
+        $annotations = $this->getParser('non_recognized_type_fixture')->parse();
+        $this->assertEquals("footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations['value']);
     }
 
     /**
@@ -244,8 +222,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function badJSONValue()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'bad_json_fixture');
-        (new Parser($reflection->getDocComment(), $this->rules))->parse();
+        $this->getParser('bad_json_fixture')->parse();
     }
 
     /**
@@ -254,8 +231,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function badEvalValue()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'bad_eval_fixture');
-        (new Parser($reflection->getDocComment(), $this->rules))->parse();
+        $this->getParser('bad_eval_fixture')->parse();
     }
 
     /**
@@ -264,8 +240,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function badIntegerValue()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'bad_integer_fixture');
-        (new Parser($reflection->getDocComment(), $this->rules))->parse();
+        $this->getParser('bad_integer_fixture')->parse();
     }
 
     /**
@@ -274,7 +249,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function badFloatValue()
     {
-        $reflection = new ReflectionProperty($this->Fixture, 'bad_float_fixture');
-        (new Parser($reflection->getDocComment(), $this->rules))->parse();
+        $this->getParser('bad_float_fixture')->parse();
     }
 }
