@@ -4,7 +4,7 @@ namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
-use StrScan\StringScanner;
+use Minime\Annotations\Scanner;
 
 /**
  *
@@ -62,36 +62,22 @@ class Parser implements ParserInterface
         array_walk(
             $lines,
             function ($line_string) use (&$parameters, $identifier, $pattern, $types_pattern) {
-                $line = new StringScanner($line_string);
-                if (! $line->skip('/(\*\s*)/')) { // tries to skip *s
-                    if ($line->skip('/(\/\*{2}\s*)/')) { // tries to skip /**s
-                        $remainder = trim(str_replace('*/', '', $line->getRemainder()));
-                        $line = new StringScanner($remainder);
-                    } else {
-                        $line->terminate(); // terminates earlier in case none of the skip strategies work
-                    }
-                }
+                $line = new Scanner($line_string);
+                $line->skipDocblockLineStart();
                 while (! $line->hasTerminated()) {
 
-                    $key = $line->scan($pattern);
+                    $key = $line->scanKey($pattern, $identifier);
                     if (null === $key) { // next line when no annotation is found
                         $line->terminate();
                         continue;
                     }
 
-                    $key = substr($key, strlen($identifier));
-
-                    $line->skip('/\s+/');
-                    if ('' == $line->peek() || $line->check('/\\'.$identifier.'/')) { // if implicit boolean
+                    if ($line->scanImplicitBoolean($identifier)) { // if implicit boolean
                         $parameters[$key][] = true;
                         continue;
                     }
-
-                    $type = 'dynamic';
-                    if ($line->check($types_pattern)) { // if strong typed
-                        $type = $line->scan('/\w+/');
-                        $line->skip('/\s+/');
-                    }
+                    
+                    $type = $line->scanType($types_pattern, 'dynamic');
 
                     $parameters[$key][] = self::parseValue($line->getRemainder(), $type);
                 }
