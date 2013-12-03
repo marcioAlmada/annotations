@@ -18,20 +18,28 @@ class Parser implements ParserInterface
 
     /**
      * The Doc block to parse
+     *
      * @var string
      */
     private $raw_doc_block;
 
     /**
      * The ParserRules object
+     *
      * @var ParserRulesInterface
      */
     private $rules;
 
+    /**
+     * The parsable type in a given docblock
+     *
+     * @var array
+     */
     protected $types = ['string', 'integer', 'float', 'json', 'eval'];
 
     /**
      * Parser constructor
+     *
      * @param string $raw_doc_block the doc block to parse
      */
     public function __construct($raw_doc_block, ParserRulesInterface $rules)
@@ -48,34 +56,41 @@ class Parser implements ParserInterface
     {
         $parameters = [];
         $identifier = $this->rules->getAnnotationIdentifier();
-        $pattern = $identifier.$this->rules->getAnnotationNameRegex();
-        $lines = array_map("rtrim", explode("\n", $this->raw_doc_block));
-        foreach ($lines as $line) {
-            $tokenizer = new StringScanner($line);
-            $tokenizer->skip('/\s+\*\s+/');
-            while (! $tokenizer->hasTerminated()) {
-                $key = $tokenizer->scan('/\\'.$pattern.'/');
-                if (! $key) { // next line when no annotation is found
-                    $tokenizer->terminate();
-                    continue;
-                }
+        $pattern = '/\\'.$identifier.$this->rules->getAnnotationNameRegex().'/';
+        $types_pattern = '/('.implode('|', $this->types).')/';
+        $lines = array_map('rtrim', explode("\n", $this->raw_doc_block));
+        array_walk(
+            $lines,
+            function ($line) use (&$parameters, $identifier, $pattern, $types_pattern) {
+                $line = new StringScanner($line);
+                $line->skip('/\s+\*\s+/');
+                while (! $line->hasTerminated()) {
+                    $key = $line->scan($pattern);
+                    if (! $key) { // next line when no annotation is found
+                        $line->terminate();
+                        continue;
+                    }
 
-                $key = str_replace($identifier, '', $key);
-                $tokenizer->skip('/\s+/');
-                if ('' == $tokenizer->peek() || $tokenizer->check('/\\'.$identifier.'/')) { // if implicit boolean
-                    $parameters[$key] = true;
-                    continue;
-                }
+                    $key = substr($key, strlen($identifier));
+                    if (! array_key_exists($key, $parameters)) {
+                        $parameters[$key] = [];
+                    }
 
-                $type = 'dynamic';
-                if ($tokenizer->check('/('. implode('|', $this->types) .')/')) { //if strong typed
-                    $type = $tokenizer->scan('/\w+/');
-                    $tokenizer->skip('/\s+/');
+                    $line->skip('/\s+/');
+                    if ('' == $line->peek() || $line->check('/\\'.$identifier.'/')) { // if implicit boolean
+                        $parameters[$key][] = true;
+                        continue;
+                    }
+
+                    $type = 'dynamic';
+                    if ($line->check($types_pattern)) { //if strong typed
+                        $type = $line->scan('/\w+/');
+                        $line->skip('/\s+/');
+                    }
+                    $parameters[$key][] = self::parseValue($line->getRemainder(), $type);
                 }
-                $value = $tokenizer->getRemainder();
-                $parameters[$key][] = self::parseValue($value, $type);
             }
-        }
+        );
 
         return self::condense($parameters);
     }
@@ -123,8 +138,7 @@ class Parser implements ParserInterface
     {
         try {
             return static::parseJson($value);
-        }
-        catch(ParserException $e) {
+        } catch (ParserException $e) {
             return $value;
         }
     }
