@@ -121,12 +121,12 @@ class Parser implements ParserInterface
      */
     protected static function parseDynamic($value)
     {
-        $json = json_decode($value);
-        if (JSON_ERROR_NONE == json_last_error()) {
-            return $json;
+        try {
+            return static::parseJson($value);
         }
-
-        return $value;
+        catch(ParserException $e) {
+            return $value;
+        }
     }
 
     /**
