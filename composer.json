@@ -1,8 +1,8 @@
 {
     "name": "minime/annotations",
     "type": "library",
-    "description": "Flexible PHP annotations library that gives you no headache.",
-    "keywords": ["php", "reflection", "annotations", "metadata"],
+    "description": "PHP annotations without the bureaucracy.",
+    "keywords": ["php", "reflection", "annotations", "metadata", "docblock"],
     "license": "MIT",
     "authors": [
         {
@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "strscan/strscan": "1.0.1"
+        "strscan/strscan": "~1.0"
     },
     "autoload": {
         "psr-0": { "Minime": "src" }

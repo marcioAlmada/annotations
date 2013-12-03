@@ -21,8 +21,8 @@ that react to metadata with great flexibility and no headache.
 - ~~[DONE]~~ Traits (for convenient integration)
 - ~~[DONE]~~ API to filter and traverse annotations
 - ~~[DONE]~~ Mutable AnnotationsBag (thanks to @nyamsprod)
-- [TODO] Cache support [#7](https://github.com/marcioAlmada/annotations/issues/7)
-- [TODO] Parser injection [#8](https://github.com/marcioAlmada/annotations/issues/8)
+- ~~[DROP]~~ Cache support (see [#7](https://github.com/marcioAlmada/annotations/issues/7))
+- ~~[DROP]~~ Parser injection (see [#8](https://github.com/marcioAlmada/annotations/issues/8))
 
 ## Installation
 
@@ -117,7 +117,7 @@ class WebService
 $annotations = (new WebService())->getClassAnnotations();
 ```
 
-#### Grep all annotations within 'response' namespace
+#### Retrieving all annotations within 'response' namespace
 
 ```php
 $annotations->useNamespace('response')->export();
@@ -129,7 +129,7 @@ $annotations->useNamespace('response')->export();
 // > }
 ```
 
-#### Chainning grep to get all annotations beginning with 'x' within 'response' namespace:
+#### Chainning with grep to get all annotations beginning with 'x' within 'response' namespace:
 
 ```php
 $annotations->useNamespace('response')->grep('^x')->export();
@@ -148,12 +148,20 @@ foreach($annotations->useNamespace('method') as $annotation => $value)
 }
 ```
 
-## Coming Soon
+## Want to contribute?
 
-* Annotations cache - any help?
-* Possibility to inject a custom parser
+Found a bug? Have an improvement? Take a look at the [issues](https://github.com/marcioAlmada/annotations/issues), there is always something to be done. Please, send pull requests to develop branch only.
 
-If you know a great cache library, come aboard!
+### Steps
+ 
+0. Fork [minime\annotations](https://github.com/marcioAlmada/annotations/fork)
+0. Clone forked repository
+0. Install composer dependencies `$ composer install --prefer-dist`
+0. Run unit tests `$ phpunit`
+0. Modify code: correct bug, implement features
+0. Back to step 4
+
+> PLEASE, be objective with pull requests. Avoid combos of improvements + doc + solve bugs + features within the same pull request.
 
 ## Copyright
 
