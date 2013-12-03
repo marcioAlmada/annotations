@@ -147,6 +147,15 @@ class AnnotationsFixture
      */
     private $namespaced_fixture;
 
+    /** @value foo */
+    private $inline_docblock_fixture;
+
+    /** @alpha */
+    private $inline_docblock_implicit_boolean_fixture;
+
+    /** @alpha @beta @gama */
+    private $inline_docblock_multiple_implicit_boolean_fixture;
+
     /**
      * @get @post @ajax
      * @postParam x

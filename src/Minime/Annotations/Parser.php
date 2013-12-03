@@ -58,23 +58,28 @@ class Parser implements ParserInterface
         $identifier = $this->rules->getAnnotationIdentifier();
         $pattern = '/\\'.$identifier.$this->rules->getAnnotationNameRegex().'/';
         $types_pattern = '/('.implode('|', $this->types).')/';
-        $lines = array_map('rtrim', explode("\n", $this->raw_doc_block));
+        $lines = array_map('trim', explode("\n", $this->raw_doc_block));
         array_walk(
             $lines,
-            function ($line) use (&$parameters, $identifier, $pattern, $types_pattern) {
-                $line = new StringScanner($line);
-                $line->skip('/\s+\*\s+/');
+            function ($line_string) use (&$parameters, $identifier, $pattern, $types_pattern) {
+                $line = new StringScanner($line_string);
+                if (! $line->skip('/(\*\s*)/')) { // tries to skip *s
+                    if ($line->skip('/(\/\*{2}\s*)/')) { // tries to skip /**s
+                        $remainder = trim(str_replace('*/', '', $line->getRemainder()));
+                        $line = new StringScanner($remainder);
+                    } else {
+                        $line->terminate(); // terminates earlier in case none of the skip strategies work
+                    }
+                }
                 while (! $line->hasTerminated()) {
+
                     $key = $line->scan($pattern);
-                    if (! $key) { // next line when no annotation is found
+                    if (null === $key) { // next line when no annotation is found
                         $line->terminate();
                         continue;
                     }
 
                     $key = substr($key, strlen($identifier));
-                    if (! array_key_exists($key, $parameters)) {
-                        $parameters[$key] = [];
-                    }
 
                     $line->skip('/\s+/');
                     if ('' == $line->peek() || $line->check('/\\'.$identifier.'/')) { // if implicit boolean
@@ -83,10 +88,11 @@ class Parser implements ParserInterface
                     }
 
                     $type = 'dynamic';
-                    if ($line->check($types_pattern)) { //if strong typed
+                    if ($line->check($types_pattern)) { // if strong typed
                         $type = $line->scan('/\w+/');
                         $line->skip('/\s+/');
                     }
+
                     $parameters[$key][] = self::parseValue($line->getRemainder(), $type);
                 }
             }
@@ -144,7 +150,7 @@ class Parser implements ParserInterface
     }
 
     /**
-     * Parse a given value
+     * Parse a given valueas string
      * @param string $value
      *
      * @return scalar|object

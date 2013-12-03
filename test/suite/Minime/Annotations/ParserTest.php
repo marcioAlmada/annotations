@@ -218,6 +218,23 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function parseInlineDocblocks()
+    {
+        $annotations = $this->getParser('inline_docblock_fixture')->parse();
+        $this->assertSame('foo', $annotations['value']);
+
+        $annotations = $this->getParser('inline_docblock_implicit_boolean_fixture')->parse();
+        $this->assertSame(true, $annotations['alpha']);
+
+        $annotations = $this->getParser('inline_docblock_multiple_implicit_boolean_fixture')->parse();
+        $this->assertSame(true, $annotations['alpha']);
+        $this->assertSame(true, $annotations['beta']);
+        $this->assertSame(true, $annotations['gama']);
+    }
+
+    /**
+     * @test
      * @expectedException Minime\Annotations\ParserException
      */
     public function badJSONValue()
