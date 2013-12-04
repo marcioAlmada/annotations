@@ -7,11 +7,11 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
     private $Bag;
 
-    private $rules;
+    private $Rules;
 
     public function setUp()
     {
-        $this->rules = new ParserRules;
+        $this->Rules = new ParserRules;
 
         $this->Bag = new AnnotationsBag(
             [
@@ -25,7 +25,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'config.container' => 'Some\Collection',
                 'config.export' => ['json', 'csv']
             ],
-            $this->rules
+            $this->Rules
         );
     }
 
@@ -44,7 +44,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function constructAcceptsOnlyArrays()
     {
-        new AnnotationsBag('', $this->rules);
+        new AnnotationsBag('', $this->Rules);
     }
 
     /**
@@ -52,8 +52,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function constructRemoveUncorrectIndex()
     {
-        $res = new AnnotationsBag([0 => true, 'post' => 20], $this->rules);
-        $this->assertSame($res->export(), ['post' => 20]);
+        $this->Bag = new AnnotationsBag([0 => true, 'post' => 20], $this->Rules);
+        $this->assertSame($this->Bag->export(), ['post' => 20]);
     }
 
     /**
@@ -67,16 +67,16 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
     public function testArrayAccessBag()
     {
-        $bag = new AnnotationsBag([], $this->rules);
-        $this->assertEquals(0, count($bag));
-        $bag['fruit'] = 'orange';
-        $this->assertEquals(1, count($bag));
-        $this->assertSame('orange', $bag['fruit']);
-        $this->assertTrue(isset($bag['fruit']));
-        $this->assertFalse(isset($bag['cheese']));
-        unset($bag['fruit']);
-        $this->assertEquals(0, count($bag));
-        $this->assertNull($bag['fruit']);
+        $this->Bag = new AnnotationsBag([], $this->Rules);
+        $this->assertEquals(0, count($this->Bag));
+        $this->Bag['fruit'] = 'orange';
+        $this->assertEquals(1, count($this->Bag));
+        $this->assertSame('orange', $this->Bag['fruit']);
+        $this->assertTrue(isset($this->Bag['fruit']));
+        $this->assertFalse(isset($this->Bag['cheese']));
+        unset($this->Bag['fruit']);
+        $this->assertEquals(0, count($this->Bag));
+        $this->assertNull($this->Bag['fruit']);
     }
 
     /**
@@ -84,8 +84,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function testArrayAccessInvalidSetterBag()
     {
-        $bag = new AnnotationsBag([], $this->rules);
-        $bag[0] = 'orange';
+        $this->Bag = new AnnotationsBag([], $this->Rules);
+        $this->Bag[0] = 'orange';
     }
 
     /**
@@ -93,8 +93,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function testArrayAccessInvalidGetterBag()
     {
-        $bag = new AnnotationsBag([], $this->rules);
-        $res = $bag[0];
+        $this->Bag = new AnnotationsBag([], $this->Rules);
+        $res = $this->Bag[0];
     }
 
     /**
@@ -124,7 +124,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'path.to.the.cake' => 'the cake is a lie',
                 'another.path.to.cake' => 'foo'
             ],
-            $this->rules
+            $this->Rules
         );
 
         $this->assertSame(
@@ -155,7 +155,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'another.path.to.cake' => 'foo',
                 'path.to.the.cake.another.path.to.the.cake' => 'the real cake',
             ],
-            $this->rules
+            $this->Rules
         );
 
         $this->assertSame(
@@ -203,7 +203,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'beta'  => 'b',
                 'gama'  => 'g'
             ],
-            $this->rules
+            $this->Rules
         );
 
         $Bag = new AnnotationsBag(
@@ -214,7 +214,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'delta'   => 'd',
                 'epsilon' => 'e',
             ],
-            $this->rules
+            $this->Rules
         );
 
         $MergedBag = $this->Bag->merge($Bag);
@@ -251,7 +251,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'max' => 2,
                 'medium' => 3
             ],
-            $this->rules
+            $this->Rules
         );
     }
 
