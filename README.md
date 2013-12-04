@@ -13,16 +13,17 @@ that react to metadata with great flexibility and no headache.
 ## Features & Roadmap
 
 - ~~[DONE]~~ Class, property and method annotations
-- ~~[DONE]~~ <b>Optional</b> strong typed annotations: float, integer, string, json
-- ~~[DONE]~~ Dynamic annotations (eval type)
 - ~~[DONE]~~ Namespaced annotations
-- ~~[DONE]~~ Implicit boolean annotations
-- ~~[DONE]~~ Multiple value annotations
-- ~~[DONE]~~ Traits (for convenient integration)
 - ~~[DONE]~~ API to filter and traverse annotations
-- ~~[DONE]~~ Mutable AnnotationsBag (thanks to @nyamsprod)
-- ~~[DROP]~~ Cache support (see [#7](https://github.com/marcioAlmada/annotations/issues/7))
-- ~~[DROP]~~ Parser injection (see [#8](https://github.com/marcioAlmada/annotations/issues/8))
+- ~~[DONE]~~ Traits (for convenient integration)
+- Parser
+    - ~~[DONE]~~ <b>Optional</b> strong typed annotations: float, integer, string, json
+    - ~~[DONE]~~ Dynamic annotations (eval type)
+    - ~~[DONE]~~ Implicit boolean annotations
+    - ~~[DONE]~~ Multiple value annotations
+    - ~~[DONE]~~ Inline Docblock support (see [#15](https://github.com/marcioAlmada/annotations/issues/16))
+    - [TODO] Multiline annotations value (see [#15](https://github.com/marcioAlmada/annotations/issues/16))
+    - [TODO] Parser improvements and optimizations
 
 ## Installation
 
