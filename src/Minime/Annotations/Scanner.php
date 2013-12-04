@@ -4,19 +4,29 @@ namespace Minime\Annotations;
 
 use StrScan\StringScanner;
 
+/**
+ * Represents a specialized StrScan\StringScanner. This class contains top level
+ * scan methods to facilitate annotations parsing.
+ *
+ * @package Annotations
+ * @author  Márcio Almada and the Minime Community
+ * @license MIT
+ *
+ */
 class Scanner extends StringScanner
 {
 
     public function skipDocblockLineStart()
     {
-        if(! $this->skipLineDocblockMiddle()) {
-            if(! $this->skipLineDocblockStart()) {
+        if (! $this->skipLineDocblockMiddle()) {
+            if (! $this->skipLineDocblockStart()) {
                 $this->terminate(); // terminates earlier in case none of the skip strategies work
             }
         }
     }
 
-    public function skipLineDocblockMiddle(){
+    public function skipLineDocblockMiddle()
+    {
         return $this->skip('/(\*\s*)/');
     }
 
@@ -27,6 +37,7 @@ class Scanner extends StringScanner
             $remainder = trim(str_replace('*/', '', $this->getRemainder()));
             $this->__construct($remainder);
         }
+
         return $signal;
     }
 
@@ -38,9 +49,9 @@ class Scanner extends StringScanner
     public function scanKey($pattern, $identifier)
     {
         $key = $this->scan($pattern);
-        if($key)
-        {
+        if ($key) {
             $this->skipBlankSpace();
+
             return substr($key, strlen($identifier));
         }
     }
@@ -57,6 +68,7 @@ class Scanner extends StringScanner
             $type = $this->scan('/\w+/');
             $this->skipBlankSpace();
         }
+
         return $type;
     }
 

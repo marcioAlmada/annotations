@@ -4,7 +4,7 @@ namespace Minime\Annotations\Fixtures;
 
 /**
  * A Common DockBlock
- * 
+ *
  * @get @post @ajax
  * @postParam x
  * @postParam y
@@ -134,7 +134,7 @@ class AnnotationsFixture
      * @value integer 045
      */
     private $bad_integer_fixture;
-    
+
     /**
      * @value float 2.1.3
      */
@@ -162,6 +162,6 @@ class AnnotationsFixture
      * @postParam y
      * @postParam z
      */
-    private function method_fixture(){}
+    private function method_fixture() {}
 
 }

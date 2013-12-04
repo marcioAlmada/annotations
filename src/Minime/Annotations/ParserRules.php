@@ -5,10 +5,11 @@ namespace Minime\Annotations;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
 
 /**
- *
  * An annotation parser rules
  *
  * @package Annotations
+ * @author  Márcio Almada and the Minime Community
+ * @license MIT
  *
  */
 class ParserRules implements ParserRulesInterface
@@ -25,7 +26,6 @@ class ParserRules implements ParserRulesInterface
      * @var string
      */
     private $annotationNameRegex = '[a-zA-Z\_\-][a-zA-Z0-9\_\-\.]*';
-
 
     /**
      * Namespace identifier

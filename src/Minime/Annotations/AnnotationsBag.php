@@ -5,10 +5,11 @@ namespace Minime\Annotations;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
 
 /**
- *
- * An annotation collection class.
+ * An annotation collection class
  *
  * @package Annotations
+ * @author  Márcio Almada and the Minime Community
+ * @license MIT
  *
  */
 class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \JsonSerializable

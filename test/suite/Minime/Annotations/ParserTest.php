@@ -23,6 +23,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     private function getParser($fixture)
     {
         $reflection = new ReflectionProperty($this->Fixture, $fixture);
+
         return new Parser($reflection->getDocComment(), new ParserRules);
     }
 

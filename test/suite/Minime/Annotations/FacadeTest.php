@@ -6,7 +6,7 @@ use \Minime\Annotations\Fixtures\AnnotationsFixture;
 
 class FacadeTest extends \PHPUnit_Framework_TestCase
 {
-    
+
     protected $Fixture;
 
     public function setUp()

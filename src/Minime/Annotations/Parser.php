@@ -7,10 +7,11 @@ use Minime\Annotations\Interfaces\ParserRulesInterface;
 use Minime\Annotations\Scanner;
 
 /**
- *
- * An Annotation Parser
+ * An Annotations parser
  *
  * @package Annotations
+ * @author  Márcio Almada and the Minime Community
+ * @license MIT
  *
  */
 class Parser implements ParserInterface
@@ -76,7 +77,7 @@ class Parser implements ParserInterface
                         $parameters[$key][] = true;
                         continue;
                     }
-                    
+
                     $type = $line->scanType($types_pattern, 'dynamic');
 
                     $parameters[$key][] = self::parseValue($line->getRemainder(), $type);
