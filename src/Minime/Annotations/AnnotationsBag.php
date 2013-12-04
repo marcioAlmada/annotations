@@ -159,10 +159,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     /**
      * Just an alias for AnnotationsBag::useNamespace.
      *
-     * @todo Remove this method in version 2.*
      * @deprecated
      * @param string $pattern namespace
-     *
      * @return Minime\Annotations\AnnotationsBag
      */
     public function grepNamespace($pattern)
