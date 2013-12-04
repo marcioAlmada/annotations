@@ -2,6 +2,11 @@
 
 namespace Minime\Annotations;
 
+use ReflectionClass;
+use ReflectionProperty;
+use ReflectionMethod;
+use Reflector;
+
 /**
  * A facade to facilitate annotations retrieval
  *
@@ -21,11 +26,7 @@ class Facade
      */
     public static function getClassAnnotations($class)
     {
-        $reflection = new \ReflectionClass($class);
-        $rules = new ParserRules;
-        $docblock = (new Parser($reflection->getDocComment(), $rules))->parse();
-
-        return new AnnotationsBag($docblock, $rules);
+        return static::getAnnotations(new ReflectionClass($class));
     }
 
     /**
@@ -38,11 +39,7 @@ class Facade
      */
     public static function getPropertyAnnotations($class, $property)
     {
-        $reflection = new \ReflectionProperty($class, $property);
-        $rules = new ParserRules();
-        $docblock = (new Parser($reflection->getDocComment(), $rules))->parse();
-
-        return new AnnotationsBag($docblock, $rules);
+        return static::getAnnotations(new ReflectionProperty($class, $property));
     }
 
     /**
@@ -55,10 +52,14 @@ class Facade
      */
     public static function getMethodAnnotations($class, $method)
     {
-        $reflection = new \ReflectionMethod($class, $method);
-        $rules = new ParserRules();
-        $docblock = (new Parser($reflection->getDocComment(), $rules))->parse();
+        return static::getAnnotations(new ReflectionMethod($class, $method));
+    }
 
-        return new AnnotationsBag($docblock, $rules);
+    protected static function getAnnotations(Reflector $Reflection)
+    {
+        $Rules = new ParserRules;
+        $annotations = (new Parser($Reflection->getDocComment(), $Rules))->parse();
+
+        return new AnnotationsBag($annotations, $Rules);
     }
 }
