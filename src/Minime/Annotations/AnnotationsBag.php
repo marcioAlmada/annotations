@@ -75,10 +75,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      */
     public function has($key)
     {
-        if (! $this->rules->isKeyValid($key)) {
-            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
-        }
-
+        $this->validateKeyOrFail($key);
         return array_key_exists($key, $this->attributes);
     }
 
@@ -93,9 +90,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     */
     public function set($key, $value)
     {
-        if (! $this->rules->isKeyValid($key)) {
-            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
-        }
+        $this->validateKeyOrFail($key);
         $this->attributes[$key] = $value;
 
         return $this;
@@ -262,5 +257,12 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     public function offsetUnset($key)
     {
         unset($this->attributes[$key]);
+    }
+
+    private function validateKeyOrFail($key)
+    {
+        if (! $this->rules->isKeyValid($key)) {
+            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
+        }
     }
 }
