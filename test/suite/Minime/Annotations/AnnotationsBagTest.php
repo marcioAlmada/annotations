@@ -177,19 +177,23 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException \InvalidArgumentException
+     * @dataProvider useNamespaceDataProvider
      */
-    public function useNamespaceWithInvalidArgument()
+    public function useNamespaceWithInvalidArgument($namespace)
     {
-        $this->Bag->useNamespace(0);
+        $this->Bag->useNamespace($namespace);
     }
 
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     */
-    public function useNamespaceWithInvalidArgument2()
+    public function useNamespaceDataProvider()
     {
-        $this->Bag->useNamespace('0');
+        return [
+            [0],
+            ['0'],
+            ['val.'],
+            ['.val'],
+            ['val.val.'],
+            ['.val.val']
+        ];
     }
 
     /**

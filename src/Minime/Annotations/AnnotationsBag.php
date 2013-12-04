@@ -183,11 +183,8 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
             );
         }
         $namespaceIdentifier = $this->rules->getNamespaceIdentifier();
-        $length = strlen($pattern);
-        if ($namespaceIdentifier != $pattern[$length-1]) {
-            $pattern .= $namespaceIdentifier;
-            $length++;
-        }
+        $length = strlen($pattern) + 1;
+        $pattern .= $namespaceIdentifier;
         $results = [];
         foreach ($this->attributes as $key => $value) {
             if (0 === strpos($key, $pattern)) {
