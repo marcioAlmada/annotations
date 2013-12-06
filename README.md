@@ -21,9 +21,9 @@ that react to metadata with great flexibility and no headache.
     - ~~[DONE]~~ Dynamic annotations (eval type)
     - ~~[DONE]~~ Implicit boolean annotations
     - ~~[DONE]~~ Multiple value annotations
-    - ~~[DONE]~~ Inline Docblock support (see [#15](https://github.com/marcioAlmada/annotations/issues/16))
-    - [TODO] Multiline annotations value (see [#15](https://github.com/marcioAlmada/annotations/issues/16))
-    - [TODO] Parser improvements and optimizations
+    - ~~[DONE]~~ Inline Docblock support (see [#15](https://github.com/marcioAlmada/annotations/issues/15))
+    - [TODO] Multiline annotations value (see [#16](https://github.com/marcioAlmada/annotations/issues/16))
+    - [TODO] Parser improvements and optimizations (see [#17](https://github.com/marcioAlmada/annotations/issues/17))
 
 ## Installation
 
