@@ -16,43 +16,18 @@ use StrScan\StringScanner;
 class Scanner extends StringScanner
 {
 
-    public function skipDocblockLineStart()
-    {
-        if (! $this->skipLineDocblockMiddle()) {
-            if (! $this->skipLineDocblockStart()) {
-                $this->terminate(); // terminates earlier in case none of the skip strategies work
-            }
-        }
-    }
-
-    public function skipLineDocblockMiddle()
-    {
-        return $this->skip('/(\*\s*)/');
-    }
-
-    public function skipLineDocblockStart()
-    {
-        $signal = $this->skip('/(\/\*{2}\s*)/');
-        if ($signal) { // tries to skip /**s
-            $remainder = trim(str_replace('*/', '', $this->getRemainder()));
-            $this->__construct($remainder);
-        }
-
-        return $signal;
-    }
-
     public function skipBlankSpace()
     {
         $this->skip('/\s+/');
     }
 
-    public function scanKey($pattern, $identifier)
+    public function scanKey($pattern)
     {
-        $key = $this->scan($pattern);
+        $key = $this->scan('/'.$pattern.'/');
         if ($key) {
             $this->skipBlankSpace();
 
-            return substr($key, strlen($identifier));
+            return $key;
         }
     }
 

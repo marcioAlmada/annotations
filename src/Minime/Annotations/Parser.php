@@ -56,34 +56,27 @@ class Parser implements ParserInterface
     public function parse()
     {
         $parameters = [];
-        $identifier = $this->rules->getAnnotationIdentifier();
-        $pattern = '/\\'.$identifier.$this->rules->getAnnotationNameRegex().'/';
+        $identifier_pattern = $this->rules->getAnnotationIdentifier();
+        $key_pattern = $this->rules->getAnnotationNameRegex();
+        $annotation_pattern = "/\\{$identifier_pattern}{$key_pattern}/";
+        $line_pattern = "/(?<={$identifier_pattern}){$key_pattern}(.*?)(?=\n|\s\*\/)/s";
         $types_pattern = '/('.implode('|', $this->types).')/';
-        $lines = array_map('trim', explode("\n", $this->raw_doc_block));
-        array_walk(
-            $lines,
-            function ($line_string) use (&$parameters, $identifier, $pattern, $types_pattern) {
-                $line = new Scanner($line_string);
-                $line->skipDocblockLineStart();
+        preg_match_all($line_pattern, $this->raw_doc_block, $tree);
+        foreach ($tree[0] as $line_string) {
+            $line = new Scanner($line_string);
+            $key = $line->scanKey($key_pattern);
+            if ($line->scanImplicitBoolean($identifier_pattern)) { // if implicit boolean
+                $parameters[$key][] = true;
                 while (! $line->hasTerminated()) {
-
-                    $key = $line->scanKey($pattern, $identifier);
-                    if (null === $key) { // next line when no annotation is found
-                        $line->terminate();
-                        continue;
-                    }
-
-                    if ($line->scanImplicitBoolean($identifier)) { // if implicit boolean
-                        $parameters[$key][] = true;
-                        continue;
-                    }
-
-                    $type = $line->scanType($types_pattern, 'dynamic');
-
-                    $parameters[$key][] = self::parseValue($line->getRemainder(), $type);
+                    $line->skip("/\\{$identifier_pattern}/");
+                    $key = $line->scanKey($key_pattern);
+                    $parameters[$key][] = true;
                 }
+                continue;
             }
-        );
+            $type = $line->scanType($types_pattern, 'dynamic');
+            $parameters[$key][] = self::parseValue($line->getRemainder(), $type);
+        }
 
         return self::condense($parameters);
     }
