@@ -58,7 +58,6 @@ class Parser implements ParserInterface
         $parameters = [];
         $identifier_pattern = $this->rules->getAnnotationIdentifier();
         $key_pattern = $this->rules->getAnnotationNameRegex();
-        $annotation_pattern = "/\\{$identifier_pattern}{$key_pattern}/";
         $line_pattern = "/(?<={$identifier_pattern}){$key_pattern}(.*?)(?=\n|\s\*\/)/s";
         $types_pattern = '/('.implode('|', $this->types).')/';
         preg_match_all($line_pattern, $this->raw_doc_block, $tree);
