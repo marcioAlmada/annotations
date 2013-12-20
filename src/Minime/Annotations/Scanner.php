@@ -26,9 +26,9 @@ class Scanner extends StringScanner
         $key = $this->scan('/'.$pattern.'/');
         if ($key) {
             $this->skipBlankSpace();
-
-            return $key;
         }
+        
+        return $key;
     }
 
     public function scanImplicitBoolean($identifier)
