@@ -110,7 +110,7 @@ class Parser implements ParserInterface
     {
         $method = 'parse'.ucfirst(strtolower($type));
 
-        return self::{$method}($value);
+        return self::$method($value);
     }
 
     /**
@@ -121,12 +121,19 @@ class Parser implements ParserInterface
      */
     protected static function parseDynamic($value)
     {
-        list($json, $error) = static::jsonDecode($value);
-        if (JSON_ERROR_NONE != $error) {
-            return $value;
+
+        list($json_decoded, $error) = static::jsonDecode($value);
+        if (JSON_ERROR_NONE === $error) {
+            return $json_decoded;
         }
 
-        return $json;
+        if (static::useJsoncStrategy()) {
+            if ($float = static::filterFloat($value)) {
+                return $float;
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -150,12 +157,16 @@ class Parser implements ParserInterface
      */
     protected static function parseInteger($value)
     {
-        $value = filter_var($value, FILTER_VALIDATE_INT);
-        if (false === $value) {
+        if (false === ($value = static::filterInteger($value))) {
             throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
         }
 
         return $value;
+    }
+
+    protected static function filterInteger($value)
+    {
+        return filter_var($value, FILTER_VALIDATE_INT);
     }
 
     /**
@@ -168,12 +179,16 @@ class Parser implements ParserInterface
      */
     protected static function parseFloat($value)
     {
-        $value = filter_var($value, FILTER_VALIDATE_FLOAT);
-        if (false === $value) {
+        if (false === ($value = static::filterFloat($value))) {
             throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
         }
 
         return $value;
+    }
+
+    protected static function filterFloat($value)
+    {
+        return filter_var($value, FILTER_VALIDATE_FLOAT);
     }
 
     /**
@@ -196,7 +211,18 @@ class Parser implements ParserInterface
 
     protected static function jsonDecode($value)
     {
-        return [json_decode($value), json_last_error()];
+        if (static::useJsoncStrategy()) { // routine for pecl-json-c
+            $json_decoded = json_decode($value, false, 512,  JSON_PARSER_NOTSTRICT);
+        } else { // legacy routine for superseded ext-json
+            $json_decoded = json_decode($value);
+        }
+
+        return [$json_decoded, json_last_error()];
+    }
+
+    protected static function useJsoncStrategy()
+    {
+        return defined('JSON_C_VERSION');
     }
 
     /**
