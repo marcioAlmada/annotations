@@ -19,11 +19,7 @@
 
     <filter>
         <whitelist>
-            <directory>./</directory>
-            <exclude>
-                <directory>./test</directory>
-                <directory>./vendor</directory>
-            </exclude>
+            <directory>src/</directory>
         </whitelist>
     </filter>
 
