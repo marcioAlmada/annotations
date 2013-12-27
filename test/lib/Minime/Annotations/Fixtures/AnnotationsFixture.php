@@ -126,6 +126,20 @@ class AnnotationsFixture
     private $strong_typed_fixture;
 
     /**
+     * @value string
+     * @value integer
+     * @value float
+     * @value json
+     * @value eval
+     * @value_with_trailing_space string   
+     * @value_with_trailing_space integer   
+     * @value_with_trailing_space float   
+     * @value_with_trailing_space json   
+     * @value_with_trailing_space eval   
+     */
+    private $reserved_words_as_value_fixture;
+
+    /**
      * @value footype Tolerate me. DockBlocks can't be evaluated rigidly.
      */
     private $non_recognized_type_fixture;

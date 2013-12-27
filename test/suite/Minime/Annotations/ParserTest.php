@@ -211,6 +211,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function parseReservedWordsAsValue()
+    {
+        $annotations = $this->getParser('reserved_words_as_value_fixture')->parse();
+        $expected = ['string','integer','float','json','eval'];
+        $this->assertSame($expected, $annotations['value']);
+        $this->assertSame($expected, $annotations['value_with_trailing_space']);
+    }
+
+    /**
+     * @test
+     */
     public function tolerateUnrecognizedTypes()
     {
         $annotations = $this->getParser('non_recognized_type_fixture')->parse();

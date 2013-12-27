@@ -74,7 +74,12 @@ class Parser implements ParserInterface
                 continue;
             }
             $type = $line->scanType($types_pattern, 'dynamic');
-            $parameters[$key][] = self::parseValue($line->getRemainder(), $type);
+            $remainder = $line->getRemainder();
+            if ($remainder === '') {
+                $parameters[$key][] = $type;
+                continue;
+            }
+            $parameters[$key][] = self::parseValue($remainder, $type);
         }
 
         return self::condense($parameters);
