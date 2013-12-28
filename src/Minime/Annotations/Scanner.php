@@ -27,7 +27,7 @@ class Scanner extends StringScanner
         if ($key) {
             $this->skipBlankSpace();
         }
-        
+
         return $key;
     }
 
@@ -36,15 +36,18 @@ class Scanner extends StringScanner
         return ('' == $this->peek() || $this->check('/\\'.$identifier.'/'));
     }
 
-    public function scanType($types_pattern, $fallback)
+    public function scanTypeAndValue($types_pattern, $fallback)
     {
         $type = $fallback;
         if ($this->check($types_pattern)) { // if strong typed
             $type = $this->scan('/\w+/');
             $this->skipBlankSpace();
+            $value = $this->getRemainder();
+        } else {
+            $value = $this->getRemainder();
         }
 
-        return $type;
+        return [$type, trim($value)];
     }
 
 }

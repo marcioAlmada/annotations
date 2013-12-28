@@ -59,7 +59,7 @@ class Parser implements ParserInterface
         $identifier_pattern = $this->rules->getAnnotationIdentifier();
         $key_pattern = $this->rules->getAnnotationNameRegex();
         $line_pattern = "/(?<={$identifier_pattern}){$key_pattern}(.*?)(?=\n|\s\*\/)/s";
-        $types_pattern = '/('.implode('|', $this->types).')/';
+        $types_pattern = '/('.implode('|', $this->types).')(\s)*(\S)+/';
         preg_match_all($line_pattern, $this->raw_doc_block, $tree);
         foreach ($tree[0] as $line_string) {
             $line = new Scanner($line_string);
@@ -73,13 +73,8 @@ class Parser implements ParserInterface
                 }
                 continue;
             }
-            $type = $line->scanType($types_pattern, 'dynamic');
-            $remainder = $line->getRemainder();
-            if ($remainder === '') {
-                $parameters[$key][] = $type;
-                continue;
-            }
-            $parameters[$key][] = self::parseValue($remainder, $type);
+            list($type, $value) = $line->scanTypeAndValue($types_pattern, 'dynamic');
+            $parameters[$key][] = self::parseValue($value, $type);
         }
 
         return self::condense($parameters);

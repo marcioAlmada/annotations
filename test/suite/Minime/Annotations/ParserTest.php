@@ -84,7 +84,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function parseStringFixture()
     {
         $annotations = $this->getParser('string_fixture')->parse();
-        $this->assertSame(['abc', 'abc', '123'], $annotations['value']);
+        $this->assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
     }
 
     /**
