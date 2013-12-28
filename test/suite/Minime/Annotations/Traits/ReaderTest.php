@@ -4,6 +4,9 @@ namespace Minime\Annotations\Traits;
 
 use \Minime\Annotations\Fixtures\AnnotationsFixture;
 
+/**
+ * @group facade
+ */
 class ReaderTest extends \PHPUnit_Framework_TestCase
 {
 

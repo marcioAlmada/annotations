@@ -5,6 +5,9 @@ namespace Minime\Annotations;
 use \Minime\Annotations\Fixtures\AnnotationsFixture;
 use \ReflectionProperty;
 
+/**
+ * @group parser
+ */
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
 

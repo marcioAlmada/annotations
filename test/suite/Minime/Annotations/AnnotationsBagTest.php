@@ -2,6 +2,9 @@
 
 namespace Minime\Annotations;
 
+/**
+ * @group bag
+ */
 class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 {
 

@@ -4,6 +4,9 @@ namespace Minime\Annotations;
 
 use \Minime\Annotations\Fixtures\AnnotationsFixture;
 
+/**
+ * @group facade
+ */
 class FacadeTest extends \PHPUnit_Framework_TestCase
 {
 
