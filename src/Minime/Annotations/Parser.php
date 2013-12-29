@@ -212,7 +212,7 @@ class Parser implements ParserInterface
     protected static function jsonDecode($value)
     {
         if (static::useJsoncStrategy()) { // routine for pecl-json-c
-            $json_decoded = json_decode($value, false, 512,  JSON_PARSER_NOTSTRICT);
+            $json_decoded = json_decode($value, false, 512, JSON_PARSER_NOTSTRICT);
         } else { // legacy routine for superseded ext-json
             $json_decoded = json_decode($value);
         }
@@ -222,7 +222,7 @@ class Parser implements ParserInterface
 
     protected static function useJsoncStrategy()
     {
-        return defined('JSON_C_VERSION');
+        return defined('JSON_PARSER_NOTSTRICT');
     }
 
     /**
