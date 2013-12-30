@@ -45,7 +45,7 @@ class Scanner extends StringScanner
      * @param string $pattern    variable regular expression pattern
      * @param string $source     single line string to be parsed
      */
-    public function __construct($identifier, $pattern, $source = '')
+    public function __construct($identifier = '', $pattern = '', $source = '')
     {
         $this->setIdentifier($identifier);
         $this->setPattern($pattern);
