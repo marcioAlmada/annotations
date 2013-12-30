@@ -42,9 +42,9 @@ class AnnotationsFixture
     private $implicit_boolean_fixture;
 
     /**
-     * @value abc   
-     * @value "abc"  
-     * @value "abc "  
+     * @value abc
+     * @value "abc"
+     * @value "abc "
      * @value "123"
      */
     private $string_fixture;
@@ -112,17 +112,17 @@ class AnnotationsFixture
 
     /**
      * @value string abc
-     * @value string  45  
+     * @value string  45
      * @value integer 45
-     * @value integer  -45  
+     * @value integer  -45
      * @value float   .45
      * @value float  0.45
      * @value float  45.
      * @value float -4.5
-     * @value float  4  
+     * @value float  4
      * @json_value json ["x", "y"]
      * @json_value json {"x": {"y": "z"}}
-     * @json_value json   {"x": {"y": ["z", "p"]}}  
+     * @json_value json   {"x": {"y": ["z", "p"]}}
      */
     private $strong_typed_fixture;
 
@@ -132,11 +132,11 @@ class AnnotationsFixture
      * @value float
      * @value json
      * @value eval
-     * @value_with_trailing_space string  
-     * @value_with_trailing_space  integer  
-     * @value_with_trailing_space float  
-     * @value_with_trailing_space  json  
-     * @value_with_trailing_space eval  
+     * @value_with_trailing_space string
+     * @value_with_trailing_space  integer
+     * @value_with_trailing_space float
+     * @value_with_trailing_space  json
+     * @value_with_trailing_space eval
      */
     private $reserved_words_as_value_fixture;
 
@@ -154,6 +154,11 @@ class AnnotationsFixture
      * @value float 2.1.3
      */
     private $bad_float_fixture;
+
+    /**
+     * @get @post @ajax float 2.1
+     */
+    private $bad_implicit_boolean_fixture;
 
     /**
      * @path.to.the.treasure "cheers!"
