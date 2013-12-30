@@ -77,9 +77,7 @@ class Parser implements ParserInterface
         preg_match_all("/^(\s+\*\s+|\/\*\*\s+)(".$pattern.".*)(\n|\s\*\/)/m", $this->raw_doc_block, $matches);
 
         $parameters = [];
-        $line = new Scanner;
-        $line->setIdentifier($identifier);
-        $line->setPattern('/\\'.$pattern.'/');
+        $line = new Scanner($identifier, '/\\'.$pattern.'/');
         foreach ($matches[2] as $row) {
             $this->extractData($line->setSource($row), $parameters);
         }

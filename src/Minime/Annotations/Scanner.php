@@ -17,19 +17,49 @@ use StrScan\StringScanner;
 class Scanner extends StringScanner
 {
 
+    /**
+     * Variable Identifier
+     *
+     * @var string
+     */
     protected $identifier;
 
+    /**
+     * Variable Identifier length
+     *
+     * @var integer
+     */
     protected $identifier_length;
 
+    /**
+     * Variable Regular expression pattern
+     *
+     * @var string
+     */
     protected $pattern;
 
     /**
+     * The constructor
+     *
+     * @param string $identifier variable identifier
+     * @param string $pattern    variable regular expression pattern
+     * @param string $source     single line string to be parsed
+     */
+    public function __construct($identifier, $pattern, $source = '')
+    {
+        $this->setIdentifier($identifier);
+        $this->setPattern($pattern);
+        parent::__construct($source);
+    }
+
+    /**
      * Source Setter
+     *
      * @param string $source the string to be parse
      *
      * @return self
      *
-     * @throws InvalidArgumentException If $source type is not a string
+     * @throws InvalidArgumentException If $source is not a string
      */
     public function setSource($source)
     {
@@ -47,6 +77,15 @@ class Scanner extends StringScanner
         return $this->reset();
     }
 
+    /**
+     * Scanner Variable Identifier setter
+     *
+     * @param string $identifier
+     *
+     * @return self
+     *
+     * @throws InvalidArgumentException If $identifier is not a string
+     */
     public function setIdentifier($identifier)
     {
         if (! is_string($identifier)) {
@@ -59,11 +98,25 @@ class Scanner extends StringScanner
         return $this;
     }
 
+    /**
+     * Identifier property getter
+     *
+     * @return string
+     */
     public function getIdentifier()
     {
         return $this->identifier;
     }
 
+    /**
+     * Scanner Variable Pattern setter
+     *
+     * @param string $pattern
+     *
+     * @return self
+     *
+     * @throws InvalidArgumentException If $identifier is not a string
+     */
     public function setPattern($pattern)
     {
         if (! is_string($pattern)) {
@@ -75,11 +128,21 @@ class Scanner extends StringScanner
         return $this;
     }
 
+    /**
+     * Pattern property getter
+     *
+     * @return string
+     */
     public function getPattern()
     {
         return $this->pattern;
     }
 
+    /**
+     * fetch the next available variable name
+     *
+     * @return string
+     */
     public function fetchVariableName()
     {
         $key = $this->scan($this->pattern);
@@ -87,11 +150,12 @@ class Scanner extends StringScanner
             return substr($key, $this->identifier_length);
         }
 
-        return false;
+        return null;
     }
 
     /**
      * Is the current value to extract is an implicit boolean
+     *
      * @param string $identifier
      *
      * @return boolean
