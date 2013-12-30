@@ -52,7 +52,11 @@ class Parser implements ParserInterface
     {
         $this->raw_doc_block = $raw_doc_block;
         $this->rules = $rules;
-        $this->types_pattern = '/('.implode('|', $this->types).')(\s)*(\S)+/';
+        $this->types_pattern = '/^('.implode('|', $this->types).')(\s)*(\S)+/';
+        $this->data_pattern = '/(?<=\\'
+            .$this->rules->getAnnotationIdentifier()
+            .')('.$this->rules->getAnnotationNameRegex()
+            .')([^@]*)/';
     }
 
     /**
@@ -62,14 +66,18 @@ class Parser implements ParserInterface
      */
     public function parse()
     {
-        $identifier = $this->rules->getAnnotationIdentifier();
-        $pattern = $identifier.$this->rules->getAnnotationNameRegex();
-        preg_match_all("/^(\s+\*\s+|\/\*\*\s+)(".$pattern.".*)(\n|\s\*\/)/m", $this->raw_doc_block, $matches);
+        preg_match_all(
+            "/^(\s+\*\s+|\/\*\*\s+)("
+            .$this->rules->getAnnotationIdentifier()
+            .$this->rules->getAnnotationNameRegex()
+            .".*)(\n|\s\*\/)/m",
+            $this->raw_doc_block,
+            $matches
+        );
 
         $parameters = [];
-        $line = new Scanner($identifier, '/\\'.$pattern.'/');
         foreach ($matches[2] as $row) {
-            $this->extractData($line->setSource($row), $parameters);
+            $this->extractData($row, $parameters);
         }
 
         foreach ($parameters as &$value) {
@@ -77,7 +85,7 @@ class Parser implements ParserInterface
                 $value = $value[0];
             }
         }
-        unset($value, $line);
+        unset($value);
 
         return $parameters;
     }
@@ -85,41 +93,38 @@ class Parser implements ParserInterface
     /**
      * Extract data from a single line and populate $parameters with the result
      *
-     * @param Scanner $line
-     * @param array   $parameters
-     * @param string  $identifier
-     * @param string  $pattern
+     * @param string $row
+     * @param array  $parameters
      */
-    protected function extractData(Scanner $line, array &$parameters)
+    protected function extractData($row, array &$parameters)
     {
-        while (! $line->hasTerminated() && ($key = $line->fetchVariableName())) {
-            $parameters[$key][] = $this->extractValue($line);
+        preg_match_all($this->data_pattern, $row, $found);
+        foreach ($found[2] as $key => $value) {
+            $parameters[$found[1][$key]][] = $this->extractValue($value);
         }
     }
 
     /**
      * Return a variable value from a string line
      *
-     * @param Scanner $line
-     * @param string  $identifier
+     * @param string $value
      *
      * @return mixed
      */
-    protected function extractValue(Scanner $line)
+    protected function extractValue($value)
     {
-        $line->skip('/\s+/');
-        if ($line->isImplicitBoolean()) {
+        $value = trim($value);
+        if ('' === $value) {
             return true;
         }
 
-        if (! $line->check($this->types_pattern)) {
-            return self::parseValue(trim($line->getRemainder()), 'dynamic');
+        if (! preg_match($this->types_pattern, $value, $matches)) {
+            return self::parseValue($value, 'dynamic');
         }
 
-        $type = $line->scan('/\w+/');
-        $line->skip('/\s+/');
+        $value = trim(substr($value, strlen($matches[1])));
 
-        return self::parseValue(trim($line->getRemainder()), $type);
+        return self::parseValue($value, $matches[1]);
     }
 
     /**
