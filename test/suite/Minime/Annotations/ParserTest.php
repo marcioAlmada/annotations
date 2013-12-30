@@ -248,6 +248,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(true, $annotations['gama']);
     }
 
+    public function testBadImplicitBooleanFixture()
+    {
+        $res = $this->getParser('bad_implicit_boolean_fixture')->parse();
+        $this->assertSame(['get' => true, 'post' => true, 'ajax' => 2.1], $res);
+    }
+
     /**
      * @test
      * @expectedException Minime\Annotations\ParserException
