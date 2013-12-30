@@ -2,6 +2,7 @@
 
 namespace Minime\Annotations;
 
+use InvalidArgumentException;
 use StrScan\StringScanner;
 
 /**
@@ -16,38 +17,87 @@ use StrScan\StringScanner;
 class Scanner extends StringScanner
 {
 
-    public function skipBlankSpace()
+    protected $identifier;
+
+    protected $identifier_length;
+
+    protected $pattern;
+
+    /**
+     * Source Setter
+     * @param string $source the string to be parse
+     *
+     * @return self
+     *
+     * @throws InvalidArgumentException If $source type is not a string
+     */
+    public function setSource($source)
     {
-        $this->skip('/\s+/');
+        if (! is_string($source)) {
+            throw new InvalidArgumentException('string expected, got `' . gettype($source) . '` instead');
+        }
+        mb_internal_encoding('UTF-8');
+        $this->source = $source;
+        $this->length = mb_strlen($source);
+        $this->head = 0;
+        $this->last = 0;
+        $this->captures = [];
+        $this->match = null;
+
+        return $this->reset();
     }
 
-    public function scanKey($pattern)
+    public function setIdentifier($identifier)
     {
-        $key = $this->scan('/'.$pattern.'/');
+        if (! is_string($identifier)) {
+            throw new InvalidArgumentException('Submitted parameters must be strings');
+        }
+
+        $this->identifier = $identifier;
+        $this->identifier_length = strlen($identifier);
+
+        return $this;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    public function setPattern($pattern)
+    {
+        if (! is_string($pattern)) {
+            throw new InvalidArgumentException('Submitted parameters must be strings');
+        }
+
+        $this->pattern = $pattern;
+
+        return $this;
+    }
+
+    public function getPattern()
+    {
+        return $this->pattern;
+    }
+
+    public function fetchVariableName()
+    {
+        $key = $this->scan($this->pattern);
         if ($key) {
-            $this->skipBlankSpace();
+            return substr($key, $this->identifier_length);
         }
 
-        return $key;
+        return false;
     }
 
-    public function scanImplicitBoolean($identifier)
+    /**
+     * Is the current value to extract is an implicit boolean
+     * @param string $identifier
+     *
+     * @return boolean
+     */
+    public function isImplicitBoolean()
     {
-        return ('' == $this->peek() || $this->check('/\\'.$identifier.'/'));
+        return '' == $this->peek() || $this->check('/\\'.$this->identifier.'/');
     }
-
-    public function scanTypeAndValue($types_pattern, $fallback)
-    {
-        $type = $fallback;
-        if ($this->check($types_pattern)) { // if strong typed
-            $type = $this->scan('/\w+/');
-            $this->skipBlankSpace();
-            $value = $this->getRemainder();
-        } else {
-            $value = $this->getRemainder();
-        }
-
-        return [$type, trim($value)];
-    }
-
 }
