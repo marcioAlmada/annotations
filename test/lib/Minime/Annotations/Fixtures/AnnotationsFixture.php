@@ -156,6 +156,11 @@ class AnnotationsFixture
     private $bad_float_fixture;
 
     /**
+     * @get @post @ajax float 2.1
+     */
+    private $bad_implicit_boolean_fixture;
+
+    /**
      * @path.to.the.treasure "cheers!"
      * @path.to.the.cake "the cake is a lie"
      * @another.path.to.cake "foo"
@@ -180,3 +185,4 @@ class AnnotationsFixture
     private function method_fixture() {}
 
 }
+
