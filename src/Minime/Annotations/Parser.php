@@ -44,13 +44,6 @@ class Parser implements ParserInterface
     protected $types_pattern;
 
     /**
-     * Json decode options
-     *
-     * @var integer
-     */
-    protected static $json_decode_options = 0;
-
-    /**
      * Parser constructor
      *
      * @param string $raw_doc_block the doc block to parse
@@ -60,9 +53,6 @@ class Parser implements ParserInterface
         $this->raw_doc_block = $raw_doc_block;
         $this->rules = $rules;
         $this->types_pattern = '/('.implode('|', $this->types).')(\s)*(\S)+/';
-        if (defined('JSON_PARSER_NOTSTRICT')) {
-            self::$json_decode_options |= JSON_PARSER_NOTSTRICT;
-        }
     }
 
     /**
@@ -158,7 +148,7 @@ class Parser implements ParserInterface
      */
     protected static function parseDynamic($value)
     {
-        $json = json_decode($value, false, 512, self::$json_decode_options);
+        $json = json_decode($value, false, 512, (defined('JSON_PARSER_NOTSTRICT')) ? JSON_PARSER_NOTSTRICT : 0);
         if (JSON_ERROR_NONE === json_last_error()) {
             return $json;
         } elseif (false !== ($float = filter_var($value, FILTER_VALIDATE_FLOAT))) {
@@ -227,7 +217,7 @@ class Parser implements ParserInterface
      */
     protected static function parseJson($value)
     {
-        $json = json_decode($value, false, 512, self::$json_decode_options);
+        $json = json_decode($value, false, 512, (defined('JSON_PARSER_NOTSTRICT')) ? JSON_PARSER_NOTSTRICT : 0);
         if (JSON_ERROR_NONE != json_last_error()) {
             throw new ParserException("Raw value must be a valid JSON string. Invalid value '{$value}' given.");
         }
