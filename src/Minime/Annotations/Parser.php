@@ -44,6 +44,20 @@ class Parser implements ParserInterface
     protected $types_pattern;
 
     /**
+     * The regex to extract data from a single line
+     *
+     * @var string
+     */
+    protected $data_pattern;
+
+    /**
+     * regular expression to parse the raw docblock
+     *
+     * @var string
+     */
+    protected $parser_pattern;
+
+    /**
      * Parser constructor
      *
      * @param string $raw_doc_block the doc block to parse
@@ -51,12 +65,12 @@ class Parser implements ParserInterface
     public function __construct($raw_doc_block, ParserRulesInterface $rules)
     {
         $this->raw_doc_block = $raw_doc_block;
-        $this->rules = $rules;
         $this->types_pattern = '/^('.implode('|', $this->types).')(\s)*(\S)+/';
-        $this->data_pattern = '/(?<=\\'
-            .$this->rules->getAnnotationIdentifier()
-            .')('.$this->rules->getAnnotationNameRegex()
-            .')([^@]*)/';
+        $this->rules = $rules;
+        $identifier = $rules->getAnnotationIdentifier();
+        $key_pattern = $rules->getAnnotationNameRegex();
+        $this->data_pattern = '/(?<=\\'.$identifier.')('.$key_pattern.')([^\\'.$identifier.']*)/';
+        $this->parser_pattern = "/^(\s+\*\s+|\/\*\*\s+)(".$identifier.$key_pattern.".*)(\n|\s\*\/)/m";
     }
 
     /**
@@ -66,14 +80,7 @@ class Parser implements ParserInterface
      */
     public function parse()
     {
-        preg_match_all(
-            "/^(\s+\*\s+|\/\*\*\s+)("
-            .$this->rules->getAnnotationIdentifier()
-            .$this->rules->getAnnotationNameRegex()
-            .".*)(\n|\s\*\/)/m",
-            $this->raw_doc_block,
-            $matches
-        );
+        preg_match_all($this->parser_pattern, $this->raw_doc_block, $matches);
 
         $parameters = [];
         foreach ($matches[2] as $row) {
