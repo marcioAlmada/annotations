@@ -65,6 +65,11 @@ class AnnotationsFixture
     private $float_fixture;
 
     /**
+     * @bar test@example.com @toto @tata @number float 2.1
+     */
+    private $identifier_parsing_fixture;
+
+    /**
      * @value ["x", "y"]
      * @value {"x": {"y": "z"}}
      * @value {"x": {"y": ["z", "p"]}}

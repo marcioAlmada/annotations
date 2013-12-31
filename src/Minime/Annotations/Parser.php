@@ -69,7 +69,7 @@ class Parser implements ParserInterface
         $this->rules = $rules;
         $identifier = $rules->getAnnotationIdentifier();
         $key_pattern = $rules->getAnnotationNameRegex();
-        $this->data_pattern = '/(?<=\\'.$identifier.')('.$key_pattern.')([^\\'.$identifier.']*)/';
+        $this->data_pattern = '/(?<=\\'.$identifier.')('.$key_pattern.')((?:(?!\s\\'.$identifier.').)*)/';
         $this->parser_pattern = "/^(\s+\*\s+|\/\*\*\s+)(".$identifier.$key_pattern.".*)(\n|\s\*\/)/m";
     }
 
