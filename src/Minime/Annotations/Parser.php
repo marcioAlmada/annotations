@@ -51,13 +51,6 @@ class Parser implements ParserInterface
     protected $data_pattern;
 
     /**
-     * regular expression to parse the raw docblock
-     *
-     * @var string
-     */
-    protected $parser_pattern;
-
-    /**
      * Parser constructor
      *
      * @param string $raw_doc_block the doc block to parse
@@ -68,9 +61,9 @@ class Parser implements ParserInterface
         $this->types_pattern = '/^('.implode('|', $this->types).')(\s)*(\S)+/';
         $this->rules = $rules;
         $identifier = $rules->getAnnotationIdentifier();
-        $key_pattern = $rules->getAnnotationNameRegex();
-        $this->data_pattern = '/(?<=\\'.$identifier.')('.$key_pattern.')((?:(?!\s\\'.$identifier.').)*)/';
-        $this->parser_pattern = "/^(\s+\*\s+|\/\*\*\s+)(".$identifier.$key_pattern.".*)(\n|\s\*\/)/m";
+        $this->data_pattern = '/(?<=\\'.$identifier.')('
+            .$rules->getAnnotationNameRegex()
+            .')((?:(?!\s\\'.$identifier.'|\s\*\/).)*)/';
     }
 
     /**
@@ -80,12 +73,8 @@ class Parser implements ParserInterface
      */
     public function parse()
     {
-        preg_match_all($this->parser_pattern, $this->raw_doc_block, $matches);
-
         $parameters = [];
-        foreach ($matches[2] as $row) {
-            $this->extractData($row, $parameters);
-        }
+        $this->extractData($this->raw_doc_block, $parameters);
 
         foreach ($parameters as &$value) {
             if (1 == count($value)) {
@@ -100,12 +89,12 @@ class Parser implements ParserInterface
     /**
      * Extract data from a single line and populate $parameters with the result
      *
-     * @param string $row
+     * @param string $str
      * @param array  $parameters
      */
-    protected function extractData($row, array &$parameters)
+    protected function extractData($str, array &$parameters)
     {
-        preg_match_all($this->data_pattern, $row, $found);
+        preg_match_all($this->data_pattern, $str, $found);
         foreach ($found[2] as $key => $value) {
             $parameters[$found[1][$key]][] = $this->extractValue($value);
         }
@@ -125,13 +114,13 @@ class Parser implements ParserInterface
             return true;
         }
 
-        if (! preg_match($this->types_pattern, $value, $matches)) {
+        if (! preg_match($this->types_pattern, $value, $found)) {
             return self::parseValue($value, 'dynamic');
         }
 
-        $value = trim(substr($value, strlen($matches[1])));
+        $value = trim(substr($value, strlen($found[1])));
 
-        return self::parseValue($value, $matches[1]);
+        return self::parseValue($value, $found[1]);
     }
 
     /**
