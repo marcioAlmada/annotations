@@ -131,8 +131,7 @@ class Parser implements ParserInterface
     /**
      * Parse a given undefined type value
      *
-     * @param string $value
-     *
+     * @param  string $value
      * @return mixed
      */
     protected static function parseDynamic($value)
@@ -150,8 +149,7 @@ class Parser implements ParserInterface
     /**
      * Parse a given valueas string
      *
-     * @param string $value
-     *
+     * @param  string $value
      * @return mixed
      */
     protected static function parseString($value)
@@ -162,10 +160,8 @@ class Parser implements ParserInterface
     /**
      * Filter a value to be an Integer
      *
-     * @param string $value
-     *
+     * @param  string          $value
      * @throws ParserException If $value is not an integer
-     *
      * @return integer
      */
     protected static function parseInteger($value)
@@ -180,10 +176,8 @@ class Parser implements ParserInterface
     /**
      * Filter a value to be a Float
      *
-     * @param string $value
-     *
+     * @param  string          $value
      * @throws ParserException If $value is not a float
-     *
      * @return float
      */
     protected static function parseFloat($value)
@@ -198,10 +192,8 @@ class Parser implements ParserInterface
     /**
      * Filter a value to be a Json
      *
-     * @param string $value
-     *
+     * @param  string          $value
      * @throws ParserException If $value is not a Json
-     *
      * @return mixed
      */
     protected static function parseJson($value)
