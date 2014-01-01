@@ -73,68 +73,56 @@ class Parser implements ParserInterface
      */
     public function parse()
     {
-        $parameters = [];
-        $this->extractData($this->raw_doc_block, $parameters);
-
-        foreach ($parameters as &$value) {
+        $annotations = $this->parseAnnotations($this->raw_doc_block);
+        foreach ($annotations as &$value) {
             if (1 == count($value)) {
                 $value = $value[0];
             }
         }
         unset($value);
 
-        return $parameters;
+        return $annotations;
     }
 
     /**
-     * Extract data from a single line and populate $parameters with the result
+     * Creates raw [annotation => value, [...]] tree
      *
-     * @param string $str
-     * @param array  $parameters
+     * @param  string $str
+     * @return array
      */
-    protected function extractData($str, array &$parameters)
+    protected function parseAnnotations($str)
     {
+        $annotations = [];
         preg_match_all($this->data_pattern, $str, $found);
         foreach ($found[2] as $key => $value) {
-            $parameters[$found[1][$key]][] = $this->extractValue($value);
+            $annotations[$found[1][$key]][] = $this->parseValue($value);
         }
+
+        return $annotations;
     }
 
     /**
-     * Return a variable value from a string line
+     * Parse a single annotation value
      *
-     * @param string $value
-     *
+     * @param  string          $value
+     * @param  string          $type  the type to parse the value against
+     * @throws ParserException If the type is not recognized
      * @return mixed
      */
-    protected function extractValue($value)
+    public function parseValue($value)
     {
         $value = trim($value);
-        if ('' === $value) {
+        if ('' === $value) { // implicit boolean
+
             return true;
         }
 
-        if (! preg_match($this->types_pattern, $value, $found)) {
-            return self::parseValue($value, 'dynamic');
+        $type = 'dynamic';
+        if (preg_match($this->types_pattern, $value, $found)) { // strong typed
+            $type = $found[1];
+            $value = trim(substr($value, strlen($type)));
         }
 
-        $value = trim(substr($value, strlen($found[1])));
-
-        return self::parseValue($value, $found[1]);
-    }
-
-    /**
-     * Parse a given value against a specific type
-     *
-     * @param string $value
-     * @param string $type  the type to parse the value against
-     *
-     * @throws ParserException If the type is not recognized
-     *
-     * @return mixed
-     */
-    protected static function parseValue($value, $type = 'string')
-    {
         $method = 'parse'.ucfirst(strtolower($type));
 
         return self::$method($value);
