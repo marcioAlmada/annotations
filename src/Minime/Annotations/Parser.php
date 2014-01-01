@@ -137,7 +137,7 @@ class Parser implements ParserInterface
      */
     protected static function parseDynamic($value)
     {
-        $json = json_decode($value, false, 512, (defined('JSON_PARSER_NOTSTRICT')) ? JSON_PARSER_NOTSTRICT : 0);
+        $json = static::jsonDecode($value);
         if (JSON_ERROR_NONE === json_last_error()) {
             return $json;
         } elseif (false !== ($float = filter_var($value, FILTER_VALIDATE_FLOAT))) {
@@ -206,7 +206,7 @@ class Parser implements ParserInterface
      */
     protected static function parseJson($value)
     {
-        $json = json_decode($value, false, 512, (defined('JSON_PARSER_NOTSTRICT')) ? JSON_PARSER_NOTSTRICT : 0);
+        $json = static::jsonDecode($value);
         if (JSON_ERROR_NONE != json_last_error()) {
             throw new ParserException("Raw value must be a valid JSON string. Invalid value '{$value}' given.");
         }
@@ -215,12 +215,28 @@ class Parser implements ParserInterface
     }
 
     /**
+     * Wrapper fo json_decode function that keeps parser portable
+     * between json-ext and pecl-json-c extensions
+     *
+     * @param  string $value json string
+     * @return mixed
+     */
+    public static function jsonDecode($value)
+    {
+        if (defined('JSON_PARSER_NOTSTRICT')) { // pecl-json-c ext
+            $decoded = json_decode($value, false, 512, JSON_PARSER_NOTSTRICT);
+        } else { // json-ext
+            $decoded = json_decode($value);
+        }
+
+        return $decoded;
+    }
+
+    /**
      * Filter a value to be a PHP eval
      *
-     * @param string $value
-     *
+     * @param  string          $value
      * @throws ParserException If $value is not a valid PHP code
-     *
      * @return mixed
      */
     protected static function parseEval($value)
