@@ -90,6 +90,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function parseIdentifierFixture()
+    {
+        $annotations = $this->getParser('identifier_parsing_fixture')->parse();
+        $this->assertSame(['bar' => 'test@example.com', 'toto' => true, 'tata' => true, 'number' => 2.1], $annotations);
+    }
+
+    /**
+     * @test
+     */
     public function parseIntegerFixture()
     {
         $annotations = $this->getParser('integer_fixture')->parse();

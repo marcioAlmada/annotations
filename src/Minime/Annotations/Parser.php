@@ -4,7 +4,6 @@ namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
-use Minime\Annotations\Scanner;
 
 /**
  * An Annotations parser
@@ -16,7 +15,6 @@ use Minime\Annotations\Scanner;
  */
 class Parser implements ParserInterface
 {
-
     /**
      * The Doc block to parse
      *
@@ -39,6 +37,20 @@ class Parser implements ParserInterface
     protected $types = ['string', 'integer', 'float', 'json', 'eval'];
 
     /**
+    * The regex equivalent of $types
+    *
+    * @var string
+    */
+    protected $types_pattern;
+
+    /**
+     * The regex to extract data from a single line
+     *
+     * @var string
+     */
+    protected $data_pattern;
+
+    /**
      * Parser constructor
      *
      * @param string $raw_doc_block the doc block to parse
@@ -46,65 +58,80 @@ class Parser implements ParserInterface
     public function __construct($raw_doc_block, ParserRulesInterface $rules)
     {
         $this->raw_doc_block = $raw_doc_block;
+        $this->types_pattern = '/^('.implode('|', $this->types).')(\s)*(\S)+/';
         $this->rules = $rules;
+        $identifier = $rules->getAnnotationIdentifier();
+        $this->data_pattern = '/(?<=\\'.$identifier.')('
+            .$rules->getAnnotationNameRegex()
+            .')((?:(?!\s\\'.$identifier.'|\s\*\/).)*)/';
     }
 
     /**
      * Parse a given docblock
-     * @return AnnotationsBag an AnnotationBag Object
+     *
+     * @return array
      */
     public function parse()
     {
         $parameters = [];
-        $identifier_pattern = $this->rules->getAnnotationIdentifier();
-        $key_pattern = $this->rules->getAnnotationNameRegex();
-        $line_pattern = "/(?<={$identifier_pattern}){$key_pattern}(.*?)(?=\n|\s\*\/)/s";
-        $types_pattern = '/('.implode('|', $this->types).')(\s)*(\S)+/';
-        preg_match_all($line_pattern, $this->raw_doc_block, $tree);
-        foreach ($tree[0] as $line_string) {
-            $line = new Scanner($line_string);
-            $key = $line->scanKey($key_pattern);
-            if ($line->scanImplicitBoolean($identifier_pattern)) { // if implicit boolean
-                $parameters[$key][] = true;
-                while (! $line->hasTerminated()) {
-                    $line->skip("/\\{$identifier_pattern}/");
-                    $key = $line->scanKey($key_pattern);
-                    $parameters[$key][] = true;
-                }
-                continue;
-            }
-            list($type, $value) = $line->scanTypeAndValue($types_pattern, 'dynamic');
-            $parameters[$key][] = self::parseValue($value, $type);
-        }
+        $this->extractData($this->raw_doc_block, $parameters);
 
-        return self::condense($parameters);
+        foreach ($parameters as &$value) {
+            if (1 == count($value)) {
+                $value = $value[0];
+            }
+        }
+        unset($value);
+
+        return $parameters;
     }
 
     /**
-     * Filter an array to converted to string a single value array
-     * @param array $parameters
+     * Extract data from a single line and populate $parameters with the result
      *
-     * @return array
+     * @param string $str
+     * @param array  $parameters
      */
-    protected static function condense(array $parameters)
+    protected function extractData($str, array &$parameters)
     {
-        return array_map(function ($value) {
-            if (is_array($value) && 1 == count($value)) {
-                $value = $value[0];
-            }
+        preg_match_all($this->data_pattern, $str, $found);
+        foreach ($found[2] as $key => $value) {
+            $parameters[$found[1][$key]][] = $this->extractValue($value);
+        }
+    }
 
-            return $value;
-        }, $parameters);
+    /**
+     * Return a variable value from a string line
+     *
+     * @param string $value
+     *
+     * @return mixed
+     */
+    protected function extractValue($value)
+    {
+        $value = trim($value);
+        if ('' === $value) {
+            return true;
+        }
+
+        if (! preg_match($this->types_pattern, $value, $found)) {
+            return self::parseValue($value, 'dynamic');
+        }
+
+        $value = trim(substr($value, strlen($found[1])));
+
+        return self::parseValue($value, $found[1]);
     }
 
     /**
      * Parse a given value against a specific type
+     *
      * @param string $value
      * @param string $type  the type to parse the value against
      *
      * @throws ParserException If the type is not recognized
      *
-     * @return scalar|object
+     * @return mixed
      */
     protected static function parseValue($value, $type = 'string')
     {
@@ -115,22 +142,18 @@ class Parser implements ParserInterface
 
     /**
      * Parse a given undefined type value
+     *
      * @param string $value
      *
-     * @return scalar|object
+     * @return mixed
      */
     protected static function parseDynamic($value)
     {
-
-        list($json_decoded, $error) = static::jsonDecode($value);
-        if (JSON_ERROR_NONE === $error) {
-            return $json_decoded;
-        }
-
-        if (static::useJsoncStrategy()) {
-            if ($float = static::filterFloat($value)) {
-                return $float;
-            }
+        $json = json_decode($value, false, 512, (defined('JSON_PARSER_NOTSTRICT')) ? JSON_PARSER_NOTSTRICT : 0);
+        if (JSON_ERROR_NONE === json_last_error()) {
+            return $json;
+        } elseif (false !== ($float = filter_var($value, FILTER_VALIDATE_FLOAT))) {
+            return $float;
         }
 
         return $value;
@@ -138,9 +161,10 @@ class Parser implements ParserInterface
 
     /**
      * Parse a given valueas string
+     *
      * @param string $value
      *
-     * @return scalar|object
+     * @return mixed
      */
     protected static function parseString($value)
     {
@@ -149,6 +173,7 @@ class Parser implements ParserInterface
 
     /**
      * Filter a value to be an Integer
+     *
      * @param string $value
      *
      * @throws ParserException If $value is not an integer
@@ -157,20 +182,16 @@ class Parser implements ParserInterface
      */
     protected static function parseInteger($value)
     {
-        if (false === ($value = static::filterInteger($value))) {
+        if (false === ($value = filter_var($value, FILTER_VALIDATE_INT))) {
             throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
         }
 
         return $value;
     }
 
-    protected static function filterInteger($value)
-    {
-        return filter_var($value, FILTER_VALIDATE_INT);
-    }
-
     /**
      * Filter a value to be a Float
+     *
      * @param string $value
      *
      * @throws ParserException If $value is not a float
@@ -179,54 +200,35 @@ class Parser implements ParserInterface
      */
     protected static function parseFloat($value)
     {
-        if (false === ($value = static::filterFloat($value))) {
+        if (false === ($value = filter_var($value, FILTER_VALIDATE_FLOAT))) {
             throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
         }
 
         return $value;
     }
 
-    protected static function filterFloat($value)
-    {
-        return filter_var($value, FILTER_VALIDATE_FLOAT);
-    }
-
     /**
      * Filter a value to be a Json
+     *
      * @param string $value
      *
      * @throws ParserException If $value is not a Json
      *
-     * @return scalar|object
+     * @return mixed
      */
     protected static function parseJson($value)
     {
-        list($json, $error) = static::jsonDecode($value);
-        if (JSON_ERROR_NONE != $error) {
+        $json = json_decode($value, false, 512, (defined('JSON_PARSER_NOTSTRICT')) ? JSON_PARSER_NOTSTRICT : 0);
+        if (JSON_ERROR_NONE != json_last_error()) {
             throw new ParserException("Raw value must be a valid JSON string. Invalid value '{$value}' given.");
         }
 
         return $json;
     }
 
-    protected static function jsonDecode($value)
-    {
-        if (static::useJsoncStrategy()) { // routine for pecl-json-c
-            $json_decoded = json_decode($value, false, 512, JSON_PARSER_NOTSTRICT);
-        } else { // legacy routine for superseded ext-json
-            $json_decoded = json_decode($value);
-        }
-
-        return [$json_decoded, json_last_error()];
-    }
-
-    protected static function useJsoncStrategy()
-    {
-        return defined('JSON_PARSER_NOTSTRICT');
-    }
-
     /**
      * Filter a value to be a PHP eval
+     *
      * @param string $value
      *
      * @throws ParserException If $value is not a valid PHP code
