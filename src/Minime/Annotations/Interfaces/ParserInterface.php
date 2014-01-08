@@ -17,5 +17,5 @@ interface ParserInterface
      * @return array
      *
      */
-    public function parse();
+    public function parse($str);
 }
