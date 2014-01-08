@@ -16,13 +16,6 @@ use Minime\Annotations\Interfaces\ParserRulesInterface;
 class Parser implements ParserInterface
 {
     /**
-     * The Doc block to parse
-     *
-     * @var string
-     */
-    private $raw_doc_block;
-
-    /**
      * The ParserRules object
      *
      * @var ParserRulesInterface
@@ -53,11 +46,10 @@ class Parser implements ParserInterface
     /**
      * Parser constructor
      *
-     * @param string $raw_doc_block the doc block to parse
+     * @param ParserRulesInterface $rules the ParserRules object
      */
-    public function __construct($raw_doc_block, ParserRulesInterface $rules)
+    public function __construct(ParserRulesInterface $rules)
     {
-        $this->raw_doc_block = $raw_doc_block;
         $this->types_pattern = '/^('.implode('|', $this->types).')(\s)*(\S)+/';
         $this->rules = $rules;
         $identifier = $rules->getAnnotationIdentifier();
@@ -69,11 +61,13 @@ class Parser implements ParserInterface
     /**
      * Parse a given docblock
      *
+     * @param string $str the string to be parsed
+     *
      * @return array
      */
-    public function parse()
+    public function parse($str)
     {
-        $annotations = $this->parseAnnotations($this->raw_doc_block);
+        $annotations = $this->parseAnnotations($str);
         foreach ($annotations as &$value) {
             if (1 == count($value)) {
                 $value = $value[0];
@@ -87,7 +81,8 @@ class Parser implements ParserInterface
     /**
      * Creates raw [annotation => value, [...]] tree
      *
-     * @param  string $str
+     * @param string $str
+     *
      * @return array
      */
     protected function parseAnnotations($str)
@@ -104,10 +99,12 @@ class Parser implements ParserInterface
     /**
      * Parse a single annotation value
      *
-     * @param  string          $value
-     * @param  string          $type  the type to parse the value against
-     * @throws ParserException If the type is not recognized
+     * @param string $value
+     * @param string $type  the type to parse the value against
+     *
      * @return mixed
+     *
+     * @throws ParserException If the type is not recognized
      */
     public function parseValue($value)
     {

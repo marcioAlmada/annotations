@@ -58,7 +58,7 @@ class Facade
     protected static function getAnnotations(Reflector $Reflection)
     {
         $Rules = new ParserRules;
-        $annotations = (new Parser($Reflection->getDocComment(), $Rules))->parse();
+        $annotations = (new Parser($Rules))->parse($Reflection->getDocComment());
 
         return new AnnotationsBag($annotations, $Rules);
     }
