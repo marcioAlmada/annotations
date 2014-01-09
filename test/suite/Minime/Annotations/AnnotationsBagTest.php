@@ -202,13 +202,11 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function merge()
+    public function union()
     {
         $this->Bag = new AnnotationsBag(
             [
                 'alpha' => 'a',
-                'beta'  => 'b',
-                'gama'  => 'g'
             ],
             $this->Rules
         );
@@ -216,8 +214,37 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $Bag = new AnnotationsBag(
             [
                 'alpha'   => 'x',
-                'beta'    => 'x',
-                'gama'    => 'x',
+                'delta'   => 'd',
+                'epsilon' => 'e',
+            ],
+            $this->Rules
+        );
+
+        $UnionBag = $this->Bag->union($Bag);
+
+        $this->assertCount(3,  $UnionBag);
+        $this->assertSame('a', $UnionBag->get('alpha'));
+        $this->assertSame('d', $UnionBag->get('delta'));
+        $this->assertSame('e', $UnionBag->get('epsilon'));
+
+        $this->assertNotSame($this->Bag, $this->Bag->union($Bag));
+    }
+
+    /**
+     * @deprecated
+     */
+    public function merge()
+    {
+        $this->Bag = new AnnotationsBag(
+            [
+                'alpha' => 'a',
+            ],
+            $this->Rules
+        );
+
+        $Bag = new AnnotationsBag(
+            [
+                'alpha'   => 'x',
                 'delta'   => 'd',
                 'epsilon' => 'e',
             ],
@@ -226,7 +253,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
         $MergedBag = $this->Bag->merge($Bag);
 
-        $this->assertCount(5, $MergedBag);
+        $this->assertCount(3, $MergedBag);
         $this->assertSame('a', $MergedBag->get('alpha'));
         $this->assertSame('d', $MergedBag->get('delta'));
         $this->assertSame('e', $MergedBag->get('epsilon'));

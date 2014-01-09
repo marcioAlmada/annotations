@@ -191,14 +191,22 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     }
 
     /**
-     * Merge instances of AnnotationsBag
-     * @param AnnotationsBag $bag The annotation bag to be merged
-     *
-     * @return Minime\Annotations\AnnotationsBag Annotations collection with merged results
+     * Performs union operations against a given AnnotationsBag
+     * 
+     * @param AnnotationsBag $bag The annotation bag to be united
+     * @return Minime\Annotations\AnnotationsBag Annotations collection with union results
+     */
+    public function union(AnnotationsBag $bag)
+    {
+        return new static($this->attributes + $bag->export(), $this->rules);
+    }
+
+    /**
+     * @deprecated
      */
     public function merge(AnnotationsBag $bag)
     {
-        return new static($this->attributes + $bag->export(), $this->rules);
+        return $this->union($bag);
     }
 
     /**
