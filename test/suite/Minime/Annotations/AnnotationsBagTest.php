@@ -231,6 +231,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
      * @deprecated
      */
     public function merge()
