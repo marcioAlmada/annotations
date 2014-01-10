@@ -85,6 +85,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $annotations = $this->getParser('string_fixture')->parse();
         $this->assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
+        $this->assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
     }
 
     /**
@@ -183,6 +184,26 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function parseMultilineValueFixture()
+    {
+        $annotations = $this->getParser('multiline_value_fixture')->parse();
+        $string = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n"
+                  ."Etiam malesuada mauris justo, at sodales nisi accumsan sit amet.\n\n"
+                  ."Morbi imperdiet lacus non purus suscipit convallis.\n"
+                  ."Suspendisse egestas orci a felis imperdiet, non consectetur est suscipit.";
+        $this->assertSame($string, $annotations['multiline_string']);
+
+        $cowsay = "------\n< moo >\n------ \n        \   ^__^\n         ".
+                  "\  (oo)\_______\n            (__)\       )\/\\\n                ".
+                  "||----w |\n                ||     ||";
+        $this->assertSame($cowsay, $annotations['multiline_indented_string']);
+
+        $this->assertEquals(json_decode('{"x": {"y": ["z", "p"]}}'), $annotations['multiline_json']);
+    }
+
+    /**
+     * @test
+     */
     public function namespacedAnnotations()
     {
         $annotations = $this->getParser('namespaced_fixture')->parse();
@@ -237,7 +258,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function tolerateUnrecognizedTypes()
     {
         $annotations = $this->getParser('non_recognized_type_fixture')->parse();
-        $this->assertEquals("footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations['value']);
+        $this->assertEquals(
+          "footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations['value']);
     }
 
     /**

@@ -132,6 +132,34 @@ class AnnotationsFixture
     private $strong_typed_fixture;
 
     /**
+     * @multiline_string Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+     * Etiam malesuada mauris justo, at sodales nisi accumsan sit amet.
+     * 
+     * Morbi imperdiet lacus non purus suscipit convallis.
+     * Suspendisse egestas orci a felis imperdiet, non consectetur est suscipit.
+     *
+     * @multiline_indented_string
+     * ------
+     * < moo >
+     * ------ 
+     *         \   ^__^
+     *          \  (oo)\_______
+     *             (__)\       )\/\
+     *                 ||----w |
+     *                 ||     ||
+     *
+     * 
+     * @multiline_json json {
+     *     "x": {
+     *         "y": [
+     *             "z", "p"
+     *         ]
+     *     }
+     * }
+     */
+    private $multiline_value_fixture;
+
+    /**
      * @value string
      * @value integer
      * @value float
