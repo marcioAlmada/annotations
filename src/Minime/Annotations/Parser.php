@@ -53,7 +53,8 @@ class Parser implements ParserInterface
     /**
      * Parser constructor
      *
-     * @param string $raw_doc_block the doc block to parse
+     * @param string               $raw_doc_block the doc block to parse
+     * @param ParserRulesInterface $rules
      */
     public function __construct($raw_doc_block, ParserRulesInterface $rules)
     {
@@ -105,7 +106,6 @@ class Parser implements ParserInterface
      * Parse a single annotation value
      *
      * @param  string          $value
-     * @param  string          $type  the type to parse the value against
      * @throws ParserException If the type is not recognized
      * @return mixed
      */

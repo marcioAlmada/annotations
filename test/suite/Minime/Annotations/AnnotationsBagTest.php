@@ -53,7 +53,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function constructRemoveUncorrectIndex()
+    public function constructRemoveIncorrectIndex()
     {
         $this->Bag = new AnnotationsBag([0 => true, 'post' => 20], $this->Rules);
         $this->assertSame($this->Bag->export(), ['post' => 20]);

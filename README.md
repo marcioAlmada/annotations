@@ -130,7 +130,7 @@ $annotations->useNamespace('response')->export();
 // > }
 ```
 
-#### Chainning with grep to get all annotations beginning with 'x' within 'response' namespace:
+#### Chaining with grep to get all annotations beginning with 'x' within 'response' namespace:
 
 ```php
 $annotations->useNamespace('response')->grep('^x')->export();

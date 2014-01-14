@@ -37,7 +37,7 @@ trait Reader
     /**
      * Retrieve all annotations from a given method of current class
      *
-     * @param  string                            $property Method name
+     * @param  string                            $method Method name
      * @return Minime\Annotations\AnnotationsBag Annotations collection
      */
     public function getMethodAnnotations($method)
