@@ -36,7 +36,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parserRequiredAParserRules()
     {
-        new Parser('hellow world!');
+        new Parser('hello world!');
     }
 
     /**

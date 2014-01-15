@@ -46,7 +46,7 @@ class Facade
      * Retrieve all annotations from a given method of a class
      *
      * @param  string                            $class    Full qualified class name
-     * @param  string                            $property Method name
+     * @param  string                            $method Method name
      * @return Minime\Annotations\AnnotationsBag Annotations collection
      * @throws \\ReflectionException             If method is undefined
      */
