@@ -6,24 +6,26 @@ Minime \ Annotations
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/marcioAlmada/annotations/badges/quality-score.png?s=dba04c50549638ca00a6f22ff35903066f351909)](https://scrutinizer-ci.com/g/marcioAlmada/annotations/)
 [![Latest Stable Version](https://poser.pugx.org/minime/annotations/v/stable.png)](https://packagist.org/packages/minime/annotations)
 [![Total Downloads](https://poser.pugx.org/minime/annotations/downloads.png)](https://packagist.org/packages/minime/annotations)
+[![License](https://poser.pugx.org/minime/annotations/license.png)](https://packagist.org/packages/minime/annotations)
 
-Minime\Annotations is a very simple PHP library that lets you create APIs
-that react to metadata with great flexibility and no headache.
+Minime\Annotations a PHP annotations library that lets you create APIs
+that react to metadata with great flexibility.
 
 ## Features & Roadmap
 
+- [TODO] HHVM compatibility support (see [#19](https://github.com/marcioAlmada/annotations/issues/19))
+- [TODO] Concrete annotations (see [#18](https://github.com/marcioAlmada/annotations/issues/18))
 - ~~[DONE]~~ Class, property and method annotations
 - ~~[DONE]~~ Namespaced annotations
 - ~~[DONE]~~ API to filter and traverse annotations
 - ~~[DONE]~~ Traits (for convenient integration)
-- Parser
-    - ~~[DONE]~~ <b>Optional</b> strong typed annotations: float, integer, string, json
-    - ~~[DONE]~~ Dynamic annotations (eval type)
-    - ~~[DONE]~~ Implicit boolean annotations
-    - ~~[DONE]~~ Multiple value annotations
-    - ~~[DONE]~~ Inline Docblock support (see [#15](https://github.com/marcioAlmada/annotations/issues/15))
-    - [TODO] Multiline annotations value (see [#16](https://github.com/marcioAlmada/annotations/issues/16))
-    - [TODO] Parser improvements and optimizations (see [#17](https://github.com/marcioAlmada/annotations/issues/17))
+- ~~[DONE]~~ <b>Optional</b> strong typed annotations: float, integer, string, json
+- ~~[DONE]~~ Dynamic annotations (eval type)
+- ~~[DONE]~~ Implicit boolean annotations
+- ~~[DONE]~~ Multiple value annotations
+- ~~[DONE]~~ Inline Docblock support (see [#15](https://github.com/marcioAlmada/annotations/issues/15))
+- ~~[DONE]~~ Multiline annotations (see [#16](https://github.com/marcioAlmada/annotations/issues/16))
+- ~~[DONE]~~ Parser improvements and optimizations (see [#17](https://github.com/marcioAlmada/annotations/issues/17))
 
 ## Installation
 
@@ -149,11 +151,11 @@ foreach($annotations->useNamespace('method') as $annotation => $value)
 }
 ```
 
-## Want to contribute?
+## Contributions
 
 Found a bug? Have an improvement? Take a look at the [issues](https://github.com/marcioAlmada/annotations/issues), there is always something to be done. Please, send pull requests to develop branch only.
 
-### Steps
+### Guide
  
 0. Fork [minime\annotations](https://github.com/marcioAlmada/annotations/fork)
 0. Clone forked repository
