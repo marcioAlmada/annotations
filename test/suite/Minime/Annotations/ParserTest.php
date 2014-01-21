@@ -150,6 +150,36 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function parseConcreteFixture()
+    {
+        $annotations = $this->getParser('concrete_fixture')->parse();
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationConstructInjection',
+          $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection']
+        );
+        $this->assertSame(
+          '{"foo":"bar"}',
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'])
+        );
+        $this->assertSame(
+          '{"foo":"bar"}',
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'])
+        );
+    }
+
+    /**
+     * @test
+     * @expectedException Minime\Annotations\ParserException
+     */
+    public function parseInvalidConcreteFixture()
+    {
+        $annotations = $this->getParser('bad_concrete_fixture')->parse();
+    }
+
+
+    /**
+     * @test
+     */
     public function parseSingleValuesFixture()
     {
         $annotations = $this->getParser('single_values_fixture')->parse();
