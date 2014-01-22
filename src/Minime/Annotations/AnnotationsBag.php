@@ -136,7 +136,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      * Filters annotations based on a regexp
      * @param  string                            $pattern Valid regexp
      * @throws \InvalidArgumentException         If non valid regexp is passed
-     * @return Minime\Annotations\AnnotationsBag Annotations collection with filtered results
+     * @return \Minime\Annotations\AnnotationsBag Annotations collection with filtered results
      */
     public function grep($pattern)
     {
@@ -156,7 +156,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      *
      * @deprecated
      * @param string $pattern namespace
-     * @return Minime\Annotations\AnnotationsBag
+     * @return \Minime\Annotations\AnnotationsBag
      */
     public function grepNamespace($pattern)
     {
@@ -167,7 +167,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      * Isolates a given namespace of annotations.
      * @param string $pattern namespace
      *
-     * @return Minime\Annotations\AnnotationsBag
+     * @return \Minime\Annotations\AnnotationsBag
      */
     public function useNamespace($pattern)
     {
@@ -194,7 +194,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
      * Performs union operations against a given AnnotationsBag
      * 
      * @param AnnotationsBag $bag The annotation bag to be united
-     * @return Minime\Annotations\AnnotationsBag Annotations collection with union results
+     * @return \Minime\Annotations\AnnotationsBag Annotations collection with union results
      */
     public function union(AnnotationsBag $bag)
     {
