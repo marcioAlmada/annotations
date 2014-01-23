@@ -59,7 +59,7 @@ class Parser implements ParserInterface
     public function __construct($raw_doc_block, ParserRulesInterface $rules)
     {
         $this->raw_doc_block = preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $raw_doc_block);
-        $this->types_pattern = '/^('.implode('|', $this->types).')(\s)*(\S)+/';
+        $this->types_pattern = '/^('.implode('|', $this->types).')(\s+)/';
         $this->rules = $rules;
         $identifier = $rules->getAnnotationIdentifier();
         $this->data_pattern = '/(?<=\\'.$identifier.')('
