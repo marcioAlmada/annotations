@@ -1,7 +1,7 @@
 {
     "name": "minime/annotations",
     "type": "library",
-    "description": "PHP annotations without the bureaucracy.",
+    "description": "Easy PHP annotations.",
     "keywords": ["php", "reflection", "annotations", "metadata", "docblock"],
     "license": "MIT",
     "authors": [
@@ -13,8 +13,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "ext-json":"*",
-        "strscan/strscan": "~1.0"
+        "ext-json":"*"
     },
     "autoload": {
         "psr-0": { "Minime": "src" }
