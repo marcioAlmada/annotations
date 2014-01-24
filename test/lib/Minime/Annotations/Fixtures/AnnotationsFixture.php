@@ -205,6 +205,15 @@ class AnnotationsFixture
     private $inline_docblock_multiple_implicit_boolean_fixture;
 
     /**
+     * @type stringed
+     * @type integers
+     * @type floated
+     * @type jsonable
+     * @type evaluated
+     */
+    private $i32_fixture;
+
+    /**
      * @get @post @ajax
      * @postParam x
      * @postParam y

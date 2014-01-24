@@ -313,5 +313,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function badFloatValue()
     {
         $this->getParser('bad_float_fixture')->parse();
+    } 
+
+    /**
+     * @test for issue #32
+     * @link https://github.com/marcioAlmada/annotations/issues/32
+     */
+    public function i32() {
+      $annotations = $this->getParser('i32_fixture')->parse();
+      $this->assertSame(['stringed', 'integers', 'floated', 'jsonable', 'evaluated'], $annotations['type']);
     }
 }
