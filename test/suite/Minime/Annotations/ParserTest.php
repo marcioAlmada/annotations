@@ -158,8 +158,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
           $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection']
         );
         $this->assertSame(
-          '{"foo":"bar"}',
+          '{"foo":"bar","bar":"baz"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'])
+        );
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationSetterInjection',
+          $annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection']
         );
         $this->assertSame(
           '{"foo":"bar"}',
@@ -170,12 +174,20 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException Minime\Annotations\ParserException
+     * @dataProvider invalidConcreteFixtureProvider
      */
-    public function parseInvalidConcreteFixture()
+    public function parseInvalidConcreteFixture($fixture)
     {
-        $annotations = $this->getParser('bad_concrete_fixture')->parse();
+        $annotations = $this->getParser($fixture)->parse();
     }
 
+    public function invalidConcreteFixtureProvider()
+    {
+      return [
+        ['bad_concrete_fixture_I'],
+        ['bad_concrete_fixture_II']
+      ];
+    }
 
     /**
      * @test

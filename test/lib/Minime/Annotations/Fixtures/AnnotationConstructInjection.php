@@ -6,9 +6,11 @@ class AnnotationConstructInjection
 {
 
     public $foo;
+    public $bar;
 
-    public function __construct($foo, $bar = null)
+    public function __construct($foo, $bar = 'baz')
     {
         $this->foo = $foo;
+        $this->bar = $bar;
     }
 }

@@ -25,7 +25,7 @@ class ParserRules implements ParserRulesInterface
      * Annotation Name Regular Expression
      * @var string
      */
-    private $annotationNameRegex = '[a-zA-Z\_\-][a-zA-Z0-9\_\-\.]*';
+    private $annotationNameRegex = '[a-zA-Z\_\-][a-zA-Z0-9\_\-\.\\\]*';
 
     /**
      * Namespace identifier
@@ -37,7 +37,7 @@ class ParserRules implements ParserRulesInterface
      * Namespace regex
      * @var string
      */
-    private $namespaceRegex = '[a-zA-Z\_\-]+(\.([a-zA-Z0-9\_\-]+))*';
+    private $namespaceRegex = '[a-zA-Z\_\-]+(\.([a-zA-Z0-9\_\-\\\]+))*';
 
     /**
      * Valid a key according to internal rules
