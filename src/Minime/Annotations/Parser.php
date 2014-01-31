@@ -2,6 +2,7 @@
 
 namespace Minime\Annotations;
 
+use ReflectionClass;
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
 
@@ -31,10 +32,18 @@ class Parser implements ParserInterface
 
     /**
      * The parsable type in a given docblock
+     * declared in a ['token' => 'symbol'] associative array
      *
      * @var array
      */
-    protected $types = ['string', 'integer', 'float', 'json', 'eval'];
+    protected $types = [
+        'integer'  => 'integer',
+        'string'   => 'string',
+        'float'    => 'float',
+        'json'     => 'json',
+        'eval'     => 'eval',
+        'concrete' => '->'
+    ];
 
     /**
     * The regex equivalent of $types
@@ -96,7 +105,7 @@ class Parser implements ParserInterface
         $annotations = [];
         preg_match_all($this->data_pattern, $str, $found);
         foreach ($found[2] as $key => $value) {
-            $annotations[$found[1][$key]][] = $this->parseValue($value);
+            $annotations[$found[1][$key]][] = $this->parseValue($value, $found[1][$key]);
         }
 
         return $annotations;
@@ -109,23 +118,24 @@ class Parser implements ParserInterface
      * @throws ParserException If the type is not recognized
      * @return mixed
      */
-    public function parseValue($value)
+    public function parseValue($value, $key = null)
     {
         $value = trim($value);
         if ('' === $value) { // implicit boolean
 
             return true;
         }
-
         $type = 'dynamic';
         if (preg_match($this->types_pattern, $value, $found)) { // strong typed
             $type = $found[1];
             $value = trim(substr($value, strlen($type)));
         }
-
+        if (in_array($type, $this->types)) {
+            $type = array_search($type, $this->types);
+        }
         $method = 'parse'.ucfirst(strtolower($type));
 
-        return self::$method($value);
+        return self::$method($value, $key);
     }
 
     /**
@@ -240,4 +250,33 @@ class Parser implements ParserInterface
 
         return $output;
     }
+
+    /**
+     * Process a value to be a concrete annotation
+     *
+     * @param  string $value json string
+     * @param  string $class name of concrete annotation type (class)
+     * @return object
+     */
+    public function parseConcrete($value, $class)
+    {
+        if (!class_exists($class)) {
+            throw new ParserException("Concrete annotation expects {$class} to be a valid class.");
+        }
+        $parsed_value = static::parseJson($value);
+        if (is_scalar($parsed_value)) {
+            throw new ParserException("Json value for annotation({$class}) must be of type array or object.");
+        } elseif ( is_array($parsed_value) ) {
+            $reflect  = new ReflectionClass($class);
+            $instance = $reflect->newInstanceArgs($parsed_value);
+        } elseif ( is_object($parsed_value) ) {
+            $instance = new $class();
+            array_walk($parsed_value, function ($value, $property) use ($instance) {
+                $instance->{'set'. ucfirst($property)}($value);
+            });
+        }
+
+        return $instance;
+    }
+
 }

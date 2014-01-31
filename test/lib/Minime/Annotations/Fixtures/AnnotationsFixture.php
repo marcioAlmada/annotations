@@ -77,6 +77,22 @@ class AnnotationsFixture
     private $json_fixture;
 
     /**
+     * @Minime\Annotations\Fixtures\AnnotationConstructInjection -> [ "bar" ]
+     * @Minime\Annotations\Fixtures\AnnotationSetterInjection    -> { "foo" : "bar" }
+     */
+    private $concrete_fixture;
+
+    /**
+     * @Minime\Annotations\Fixtures\AnnotationConstructInjection -> "bar"
+     */
+    private $bad_concrete_fixture_I;
+
+    /**
+     * @SomeUndefinedClass -> []
+     */
+    private $bad_concrete_fixture_II;
+
+    /**
      * @value json {"x" : ["y"}
      */
     private $bad_json_fixture;

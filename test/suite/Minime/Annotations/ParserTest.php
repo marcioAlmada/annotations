@@ -150,6 +150,48 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function parseConcreteFixture()
+    {
+        $annotations = $this->getParser('concrete_fixture')->parse();
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationConstructInjection',
+          $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection']
+        );
+        $this->assertSame(
+          '{"foo":"bar","bar":"baz"}',
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'])
+        );
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationSetterInjection',
+          $annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection']
+        );
+        $this->assertSame(
+          '{"foo":"bar"}',
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'])
+        );
+    }
+
+    /**
+     * @test
+     * @expectedException Minime\Annotations\ParserException
+     * @dataProvider invalidConcreteFixtureProvider
+     */
+    public function parseInvalidConcreteFixture($fixture)
+    {
+        $annotations = $this->getParser($fixture)->parse();
+    }
+
+    public function invalidConcreteFixtureProvider()
+    {
+      return [
+        ['bad_concrete_fixture_I'],
+        ['bad_concrete_fixture_II']
+      ];
+    }
+
+    /**
+     * @test
+     */
     public function parseSingleValuesFixture()
     {
         $annotations = $this->getParser('single_values_fixture')->parse();
