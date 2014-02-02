@@ -141,7 +141,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             [
                 86400000,
                 [1, 2, 3],
-                101000110111001100110100
+                '37b51d194a7513e45b56f6524f2d51f2'
             ],
             $annotations['value']
         );

@@ -13,8 +13,8 @@ that react to metadata with great flexibility.
 
 ## Features & Roadmap
 
-- [TODO] HHVM compatibility support (see [#19](https://github.com/marcioAlmada/annotations/issues/19))
 - [TODO] Concrete annotations (see [#18](https://github.com/marcioAlmada/annotations/issues/18))
+- ~~[DONE]~~ HHVM compatibility support (see [#19](https://github.com/marcioAlmada/annotations/issues/19))
 - ~~[DONE]~~ Class, property and method annotations
 - ~~[DONE]~~ Namespaced annotations
 - ~~[DONE]~~ API to filter and traverse annotations

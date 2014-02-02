@@ -271,9 +271,10 @@ class Parser implements ParserInterface
             $instance = $reflect->newInstanceArgs($parsed_value);
         } elseif ( is_object($parsed_value) ) {
             $instance = new $class();
-            array_walk($parsed_value, function ($value, $property) use ($instance) {
-                $instance->{'set'. ucfirst($property)}($value);
-            });
+            foreach($parsed_value as $property => $value) {
+                $setter = 'set' . ucfirst($property);
+                $instance->$setter($value);
+            }
         }
 
         return $instance;

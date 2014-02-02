@@ -100,7 +100,7 @@ class AnnotationsFixture
     /**
      * @value eval (1000 * 24 * 60 * 60)
      * @value eval range(1, 3)
-     * @value eval base_convert('A37334', 16, 2)
+     * @value eval md5('bar')
      */
     private $eval_fixture;
 
