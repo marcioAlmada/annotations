@@ -12,7 +12,7 @@ namespace Minime\Annotations\Interfaces;
 interface ParserInterface
 {
     /**
-     * uses the parserRules object to parse the given string
+     * parses a docblock string
      *
      * @return array
      *

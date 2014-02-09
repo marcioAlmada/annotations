@@ -2,7 +2,6 @@
 
 namespace Minime\Annotations;
 
-use ReflectionClass;
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
 
@@ -37,12 +36,12 @@ class Parser implements ParserInterface
      * @var array
      */
     protected $types = [
-        'integer'  => 'integer',
-        'string'   => 'string',
-        'float'    => 'float',
-        'json'     => 'json',
-        'eval'     => 'eval',
-        'concrete' => '->'
+        'Integer'  => 'integer',
+        'String'   => 'string',
+        'Float'    => 'float',
+        'Json'     => 'json',
+        'PHP'      => 'eval',
+        'Concrete' => '->'
     ];
 
     /**
@@ -125,7 +124,7 @@ class Parser implements ParserInterface
 
             return true;
         }
-        $type = 'dynamic';
+        $type = 'Dynamic';
         if (preg_match($this->types_pattern, $value, $found)) { // strong typed
             $type = $found[1];
             $value = trim(substr($value, strlen($type)));
@@ -133,151 +132,8 @@ class Parser implements ParserInterface
         if (in_array($type, $this->types)) {
             $type = array_search($type, $this->types);
         }
-        $method = 'parse'.ucfirst(strtolower($type));
-
-        return self::$method($value, $key);
-    }
-
-    /**
-     * Parse a given undefined type value
-     *
-     * @param  string $value
-     * @return mixed
-     */
-    protected static function parseDynamic($value)
-    {
-        $json = static::jsonDecode($value);
-        if (JSON_ERROR_NONE === json_last_error()) {
-            return $json;
-        } elseif (false !== ($float = filter_var($value, FILTER_VALIDATE_FLOAT))) {
-            return $float;
-        }
-
-        return $value;
-    }
-
-    /**
-     * Parse a given valueas string
-     *
-     * @param  string $value
-     * @return mixed
-     */
-    protected static function parseString($value)
-    {
-        return $value;
-    }
-
-    /**
-     * Filter a value to be an Integer
-     *
-     * @param  string          $value
-     * @throws ParserException If $value is not an integer
-     * @return integer
-     */
-    protected static function parseInteger($value)
-    {
-        if (false === ($value = filter_var($value, FILTER_VALIDATE_INT))) {
-            throw new ParserException("Raw value must be integer. Invalid value '{$value}' given.");
-        }
-
-        return $value;
-    }
-
-    /**
-     * Filter a value to be a Float
-     *
-     * @param  string          $value
-     * @throws ParserException If $value is not a float
-     * @return float
-     */
-    protected static function parseFloat($value)
-    {
-        if (false === ($value = filter_var($value, FILTER_VALIDATE_FLOAT))) {
-            throw new ParserException("Raw value must be float. Invalid value '{$value}' given.");
-        }
-
-        return $value;
-    }
-
-    /**
-     * Filter a value to be a Json
-     *
-     * @param  string          $value
-     * @throws ParserException If $value is not a Json
-     * @return mixed
-     */
-    protected static function parseJson($value)
-    {
-        $json = static::jsonDecode($value);
-        if (JSON_ERROR_NONE != json_last_error()) {
-            throw new ParserException("Raw value must be a valid JSON string. Invalid value '{$value}' given.");
-        }
-
-        return $json;
-    }
-
-    /**
-     * Wrapper fo json_decode function that keeps parser portable
-     * between json-ext and pecl-json-c extensions
-     *
-     * @param  string $value json string
-     * @return mixed
-     */
-    public static function jsonDecode($value)
-    {
-        if (defined('JSON_PARSER_NOTSTRICT')) { // pecl-json-c ext
-            $decoded = json_decode($value, false, 512, JSON_PARSER_NOTSTRICT);
-        } else { // json-ext
-            $decoded = json_decode($value);
-        }
-
-        return $decoded;
-    }
-
-    /**
-     * Filter a value to be a PHP eval
-     *
-     * @param  string          $value
-     * @throws ParserException If $value is not a valid PHP code
-     * @return mixed
-     */
-    protected static function parseEval($value)
-    {
-        $output = @eval("return {$value};");
-        if (false === $output) {
-            throw new ParserException("Raw value should be valid PHP. Invalid code '{$value}' given.");
-        }
-
-        return $output;
-    }
-
-    /**
-     * Process a value to be a concrete annotation
-     *
-     * @param  string $value json string
-     * @param  string $class name of concrete annotation type (class)
-     * @return object
-     */
-    public function parseConcrete($value, $class)
-    {
-        if (!class_exists($class)) {
-            throw new ParserException("Concrete annotation expects {$class} to be a valid class.");
-        }
-        $parsed_value = static::parseJson($value);
-        if (is_scalar($parsed_value)) {
-            throw new ParserException("Json value for annotation({$class}) must be of type array or object.");
-        } elseif ( is_array($parsed_value) ) {
-            $reflect  = new ReflectionClass($class);
-            $instance = $reflect->newInstanceArgs($parsed_value);
-        } elseif ( is_object($parsed_value) ) {
-            $instance = new $class();
-            foreach($parsed_value as $property => $value) {
-                $setter = 'set' . ucfirst($property);
-                $instance->$setter($value);
-            }
-        }
-
-        return $instance;
+        $typeParser = "Minime\\Annotations\\Types\\". $type;
+        return (new $typeParser)->parse($value, $key);
     }
 
 }
