@@ -4,6 +4,14 @@ namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\ParserRulesInterface;
 
+use InvalidArgumentException;
+use IteratorAggregate;
+use Countable;
+use ArrayAccess;
+use JsonSerializable;
+use ArrayIterator;
+use RegexIterator;
+
 /**
  * An annotation collection class
  *
@@ -12,7 +20,7 @@ use Minime\Annotations\Interfaces\ParserRulesInterface;
  * @license MIT
  *
  */
-class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \JsonSerializable
+class AnnotationsBag implements IteratorAggregate, Countable, ArrayAccess, JsonSerializable
 {
 
     /**
@@ -141,7 +149,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     public function grep($pattern)
     {
         if (! is_string($pattern)) {
-            throw new \InvalidArgumentException('Grep pattern must be a valid regexp string.');
+            throw new InvalidArgumentException('Grep pattern must be a valid regexp string.');
         }
 
         $results = array_intersect_key($this->attributes, array_flip(
@@ -173,21 +181,13 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     {
         $pattern = trim($pattern);
         if (! $this->rules->isNamespaceValid($pattern)) {
-            throw new \InvalidArgumentException(
-                'Namespace pattern must be a valid namespace string, according to parser rules.'
-            );
+            throw new InvalidArgumentException('Namespace pattern must be a valid namespace string, according to parser rules.');
         }
-        $namespaceIdentifier = $this->rules->getNamespaceIdentifier();
-        $length = strlen($pattern) + 1;
-        $pattern .= $namespaceIdentifier;
-        $results = [];
-        foreach ($this->attributes as $key => $value) {
-            if (0 === strpos($key, $pattern)) {
-                $results[substr($key, $length)] = $value;
-            }
-        }
+        $namespace_pattern = "/^" . preg_quote($pattern) . "({$this->rules->getNamespaceIdentifier()})/";
+        $iterator = new RegexIterator($this->getIterator(), $namespace_pattern, RegexIterator::REPLACE, RegexIterator::USE_KEY);
+        $iterator->replacement = '';
 
-        return new static($results, $this->rules);
+        return new static(iterator_to_array($iterator), $this->rules);
     }
 
     /**
@@ -230,7 +230,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     */
     public function getIterator()
     {
-        return new \ArrayIterator($this->attributes);
+        return new ArrayIterator($this->attributes);
     }
 
     /**
@@ -270,7 +270,7 @@ class AnnotationsBag implements \IteratorAggregate, \Countable, \ArrayAccess, \J
     private function validateKeyOrFail($key)
     {
         if (! $this->rules->isKeyValid($key)) {
-            throw new \InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
+            throw new InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
         }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Minime\Annotations;
 
+use Minime\Annotations\Fixtures\AnnotationConstructInjection;
+
 /**
  * @group bag
  */
@@ -26,7 +28,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'val.min' => 6,
                 'val.regex' => "/[A-z0-9\_\-]+/",
                 'config.container' => 'Some\Collection',
-                'config.export' => ['json', 'csv']
+                'config.export' => ['json', 'csv'],
+                'Minime\Annotations\Fixtures\AnnotationConstructInjection' => new AnnotationConstructInjection('foo')
             ],
             $this->Rules
         );
@@ -279,15 +282,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         foreach ($this->Bag as $annotation => $value) {
             $this->assertEquals($value, $this->Bag->get($annotation));
         }
-
-        $this->Bag = new AnnotationsBag(
-            [
-                'min' => 1,
-                'max' => 2,
-                'medium' => 3
-            ],
-            $this->Rules
-        );
     }
 
     /**
@@ -295,8 +289,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function isCountable()
     {
-        $this->assertCount(9, $this->Bag->export());
-        $this->assertCount(9, $this->Bag);
+        $this->assertCount(10, $this->Bag->export());
+        $this->assertCount(10, $this->Bag);
     }
 
     /**
@@ -327,6 +321,24 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         // this value is not set
         $this->assertSame([], $this->Bag->getAsArray('foo'));
         $this->assertCount(0, $this->Bag->getAsArray('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function concreteAnnotationRetrieval()
+    {
+        $this->assertInstanceOf(
+            '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
+            $this->Bag->get('Minime\Annotations\Fixtures\AnnotationConstructInjection')
+        );
+
+        $this->assertCount(1, $this->Bag->grep('Minime\\\Annotations')->export());
+
+        $this->assertInstanceOf(
+            '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
+            $this->Bag->useNamespace('Minime\Annotations\Fixtures')->get('AnnotationConstructInjection')
+        );
     }
 
     /**

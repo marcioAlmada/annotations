@@ -31,13 +31,13 @@ class ParserRules implements ParserRulesInterface
      * Namespace identifier
      * @var string
      */
-    private $namespaceIdentifier = '.';
+    private $namespaceIdentifier = '\.|\\\\';
 
     /**
      * Namespace regex
      * @var string
      */
-    private $namespaceRegex = '[a-zA-Z\_\-]+(\.([a-zA-Z0-9\_\-\\\]+))*';
+    private $namespaceRegex = '[a-zA-Z\_\-\\\]+(\.([a-zA-Z0-9\_\-]+))*';
 
     /**
      * Valid a key according to internal rules
