@@ -155,38 +155,45 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $annotations = $this->getParser('concrete_fixture')->parse();
         $this->assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationConstructInjection',
-          $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection']
+          $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][0]
+        );
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationConstructInjection',
+          $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][1]
         );
         $this->assertSame(
           '{"foo":"bar","bar":"baz"}',
-          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'])
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][0])
+        );
+        $this->assertSame(
+          '{"foo":"bar","bar":"baz"}',
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][1])
         );
         $this->assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationSetterInjection',
-          $annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection']
+          $annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][0]
+        );
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationSetterInjection',
+          $annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][1]
         );
         $this->assertSame(
           '{"foo":"bar"}',
-          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'])
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][0])
+        );
+        $this->assertSame(
+          '{"foo":"bar"}',
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][1])
         );
     }
 
     /**
      * @test
      * @expectedException Minime\Annotations\ParserException
-     * @dataProvider invalidConcreteFixtureProvider
      */
-    public function parseInvalidConcreteFixture($fixture)
+    public function parseInvalidConcreteFixture()
     {
-        $annotations = $this->getParser($fixture)->parse();
-    }
-
-    public function invalidConcreteFixtureProvider()
-    {
-      return [
-        ['bad_concrete_fixture_I'],
-        ['bad_concrete_fixture_II']
-      ];
+        $this->getParser('bad_concrete_fixture')->parse();
     }
 
     /**

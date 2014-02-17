@@ -20,31 +20,41 @@ class Concrete implements TypeInterface
     public function parse($value, $class = null)
     {
         if (!class_exists($class)) {
-            throw new ParserException("Concrete annotation expects {$class} to be a valid class.");
+            throw new ParserException("Concrete annotation expects {$class} to exist.");
         }
-        $parsed = (new Json)->parse($value);
-        switch ( gettype($parsed) ) {
-            default:
-                throw new ParserException("Json value for annotation({$class}) must be of type array or object.");
-            case 'array':
-                return $this->doConstructStrategy($class, $parsed);
-            case 'object':
-                return $this->doSetterInjectionStrategy($class, $parsed);
+        $prototype = (new Json)->parse($value);
+        if ('object' !== gettype($prototype)) {
+            throw new ParserException("Json value for annotation({$class}) must be of type object.");
         }
+
+        return $this->makeInstance($class, $prototype);
     }
 
-    public function doConstructStrategy($class, $args)
+    public function makeInstance($class, \stdClass $prototype)
     {
-            $reflect  = new ReflectionClass($class);
+        $reflection = (new ReflectionClass($class));
+        if (isset($prototype->__construct)) {
+            if(is_array($prototype->__construct)) {
+                $instance = $reflection->newInstanceArgs( $prototype->__construct );
+            } else {
+                $instance = $reflection->newInstance( $prototype->__construct );
+            }
+            unset($prototype->__construct);
+        } else {
+            $instance = $reflection->newInstance();
+        }
 
-            return $reflect->newInstanceArgs($args);
+        return $this->doMethodConfiguration($instance, $prototype);
     }
 
-    public function doSetterInjectionStrategy($class, \stdClass $prototype)
+    public function doMethodConfiguration($instance, \stdClass $prototype)
     {
-        $instance = new $class();
-        foreach ($prototype as $property => $value) {
-            $instance->{ 'set' . ucfirst($property) }($value);
+        foreach ($prototype as $method => $value) {
+            if(is_array($value)) {
+                call_user_func_array([$instance, $method], $value);
+            } else {
+                $instance->{ $method }($value);
+            }
         }
 
         return $instance;
