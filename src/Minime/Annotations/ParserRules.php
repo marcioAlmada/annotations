@@ -25,7 +25,7 @@ class ParserRules implements ParserRulesInterface
      * Annotation Name Regular Expression
      * @var string
      */
-    private $annotationNameRegex = '[a-zA-Z\_\-][a-zA-Z0-9\_\-\.\\\]*';
+    private $annotationNameRegex = '[a-zA-Z\_\-\\\][a-zA-Z0-9\_\-\.\\\]*';
 
     /**
      * Namespace identifier
@@ -95,5 +95,18 @@ class ParserRules implements ParserRulesInterface
     public function getNamespaceRegex()
     {
         return $this->namespaceRegex;
+    }
+
+    /**
+     * Makes `@\My\Namespaced\Class` equivalent of `@My\Namespaced\Class`
+     * @return string
+     */
+    public function sanitizeKey($key)
+    {
+        if (0 === strpos($key, '\\')) {
+            $key = substr($key, 1);
+        }
+
+        return $key;
     }
 }

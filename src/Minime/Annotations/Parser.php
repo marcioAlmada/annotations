@@ -104,7 +104,7 @@ class Parser implements ParserInterface
         $annotations = [];
         preg_match_all($this->data_pattern, $str, $found);
         foreach ($found[2] as $key => $value) {
-            $annotations[$found[1][$key]][] = $this->parseValue($value, $found[1][$key]);
+            $annotations[ $this->rules->sanitizeKey($found[1][$key]) ][] = $this->parseValue($value, $found[1][$key]);
         }
 
         return $annotations;
@@ -133,6 +133,7 @@ class Parser implements ParserInterface
             $type = array_search($type, $this->types);
         }
         $typeParser = "Minime\\Annotations\\Types\\". $type;
+
         return (new $typeParser)->parse($value, $key);
     }
 

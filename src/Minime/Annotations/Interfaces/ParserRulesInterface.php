@@ -58,4 +58,10 @@ interface ParserRulesInterface
      * @return string
      */
     public function getNamespaceRegex();
+
+    /**
+     * Deals with special cases involving annotation keys
+     * @return string
+     */
+    public function sanitizeKey($key);
 }

@@ -190,10 +190,20 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException Minime\Annotations\ParserException
+     * @dataProvider invalidConcreteAnnotationFixtureProvider
      */
-    public function parseInvalidConcreteFixture()
+    public function parseInvalidConcreteFixture($fixture)
     {
-        $this->getParser('bad_concrete_fixture')->parse();
+        $this->getParser($fixture)->parse();
+    }
+
+    public function invalidConcreteAnnotationFixtureProvider()
+    {
+      return [
+        ['bad_concrete_fixture'],
+        ['bad_concrete_fixture_root_schema'],
+        ['bad_concrete_fixture_method_schema']
+      ];
     }
 
     /**
