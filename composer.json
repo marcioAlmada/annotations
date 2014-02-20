@@ -16,6 +16,6 @@
         "ext-json":"*"
     },
     "autoload": {
-        "psr-0": { "Minime": "src" }
+        "psr-4": { "Minime\\Annotations\\": "src/" }
     }
 }

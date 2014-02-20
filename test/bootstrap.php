@@ -1,4 +1,4 @@
 <?php
 
 $loader = require __DIR__.'/../vendor/autoload.php';
-$loader->add('Minime', __DIR__ . '/lib');
+$loader->addPsr4('Minime\\Annotations\\', __DIR__ . '/lib');
