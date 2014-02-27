@@ -1,8 +1,8 @@
 {
     "name": "minime/annotations",
     "type": "library",
-    "description": "Easy PHP annotations.",
-    "keywords": ["php", "reflection", "annotations", "metadata", "docblock"],
+    "description": "The KISS PHP annotations library",
+    "keywords": ["php", "annotations", "reflection", "metadata", "docblock"],
     "license": "MIT",
     "authors": [
         {
