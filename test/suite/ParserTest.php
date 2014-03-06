@@ -34,9 +34,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException PHPUnit_Framework_Error
      */
-    public function parserRequiredAParserRules()
+    public function parserRequiresParserRules()
     {
-        new Parser('hello world!');
+        new Parser();
     }
 
     /**
@@ -263,7 +263,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function namespacedAnnotations()
+    public function parseNamespacedAnnotations()
     {
         $annotations = $this->getParser('namespaced_fixture')->parse();
 
@@ -342,7 +342,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException Minime\Annotations\ParserException
      */
-    public function badJSONValue()
+    public function exceptionWithBadJsonValue()
     {
         $this->getParser('bad_json_fixture')->parse();
     }
@@ -351,7 +351,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException Minime\Annotations\ParserException
      */
-    public function badEvalValue()
+    public function exceptionWithBadEvalValue()
     {
         $this->getParser('bad_eval_fixture')->parse();
     }
@@ -360,7 +360,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException Minime\Annotations\ParserException
      */
-    public function badIntegerValue()
+    public function exceptionWithBadIntegerValue()
     {
         $this->getParser('bad_integer_fixture')->parse();
     }
@@ -369,7 +369,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException Minime\Annotations\ParserException
      */
-    public function badFloatValue()
+    public function exceptionWithBadFloatValue()
     {
         $this->getParser('bad_float_fixture')->parse();
     } 
@@ -378,7 +378,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @test for issue #32
      * @link https://github.com/marcioAlmada/annotations/issues/32
      */
-    public function i32() {
+    public function issue32() {
       $annotations = $this->getParser('i32_fixture')->parse();
       $this->assertSame(['stringed', 'integers', 'floated', 'jsonable', 'evaluated'], $annotations['type']);
     }
