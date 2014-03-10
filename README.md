@@ -8,28 +8,26 @@ Minime \ Annotations
 [![Total Downloads](https://poser.pugx.org/minime/annotations/downloads.png)](https://packagist.org/packages/minime/annotations)
 [![License](https://poser.pugx.org/minime/annotations/license.png)](https://packagist.org/packages/minime/annotations)
 
-Minime\Annotations a PHP annotations library that lets you create APIs
-that react to metadata with great flexibility.
+Minime\Annotations is the first KISS PHP annotations library.
 
 ## Features & Roadmap
-
-- [TODO] Concrete annotations (see [#18](https://github.com/marcioAlmada/annotations/issues/18))
-- ~~[DONE]~~ HHVM compatibility support (see [#19](https://github.com/marcioAlmada/annotations/issues/19))
+- [TODO] v2.0.0
+- ~~[DONE]~~ HHVM support (see [#19](https://github.com/marcioAlmada/annotations/issues/19))
+- ~~[DONE]~~ Concrete annotations (see [#18](https://github.com/marcioAlmada/annotations/issues/18))
+- ~~[DONE]~~ Parser improvements and optimizations (see [#17](https://github.com/marcioAlmada/annotations/issues/17))
 - ~~[DONE]~~ Class, property and method annotations
-- ~~[DONE]~~ Namespaced annotations
 - ~~[DONE]~~ API to filter and traverse annotations
 - ~~[DONE]~~ Traits (for convenient integration)
+- ~~[DONE]~~ Namespaced annotations
 - ~~[DONE]~~ <b>Optional</b> strong typed annotations: float, integer, string, json
 - ~~[DONE]~~ Dynamic annotations (eval type)
 - ~~[DONE]~~ Implicit boolean annotations
 - ~~[DONE]~~ Multiple value annotations
 - ~~[DONE]~~ Inline Docblock support (see [#15](https://github.com/marcioAlmada/annotations/issues/15))
 - ~~[DONE]~~ Multiline annotations (see [#16](https://github.com/marcioAlmada/annotations/issues/16))
-- ~~[DONE]~~ Parser improvements and optimizations (see [#17](https://github.com/marcioAlmada/annotations/issues/17))
 
-## Installation
+## Composer Installation
 
-Manually update `composer.json` with:
 ```json
 {
   "require": {
@@ -38,29 +36,64 @@ Manually update `composer.json` with:
 }
 ```
 
-Or just use your terminal: `composer require minime/annotations:~1.12` :8ball:
+Through terminal: `composer require minime/annotations:~1.12` :8ball:
 
 
-## Basic Usage
+## The Syntax
 
-### Using as a trait
+Annotations are declared through a very simple DSL: `@<optional-namespace>.<annotation-name> <optional-type> <value>`. Examples below:
 
-The trait approach is useful for self / internal reflection:
+```lisp
+/**
+ * Basic docblock showing DSL syntax recognized by Minime\Annotations\Parser
+ *
+ * @implicit-boolean
+ * @explicit-boolean true
+ * @explicit-boolean false
+ *
+ * @implicit-string-annotation  hello world!
+ * @explicit-string-annotation "hello world!"
+ * @string-strong-typed-annotation string 123456
+ *
+ * @integer-annotation 15
+ * @integer-strong-typed-annotation integer 15
+ *
+ * @float-annotation   0.15
+ * @float-strong-typed float 15
+ *
+ * @json-annotation { "foo" : ["bar", "baz"] }
+ * @strong-typed-json-annotation json ["I", "must", "be", "valid", "json"]
+ * 
+ * @namespaced.annotation hello!
+ *
+ * @multiline-annotation {
+ *   "foo" : [
+ *      "bar", "baz"
+ *    ]
+ * }
+ *
+ * @Class\Based\Annotation -> {}
+ */
+```
+ For detailed information, please see the the internal docs.
+
+## Retrieveing Annotations
+
+### Using Traits
+
+The trait approach is useful when your API needs classes with self/internal inspection capabilities:
 
 ```php
 /**
  * @get @post @delete
  * @entity bar
  * @has-many Baz
- * @accept json ["json", "xml", "csv"]
- * @max integer 45
- * @delta float .45
+ * @accept ["json", "xml", "csv"]
+ * @max 45
+ * @delta .45
  * @cache-duration eval 1000 * 24 * 60 * 60
  */
-class FooController
-{
-    use Minime\Annotations\Traits\Reader;
-}
+class Foo { use Minime\Annotations\Traits\Reader; }
 
 $foo = new Foo();
 $annotations = $foo->getClassAnnotations();
@@ -80,14 +113,14 @@ $annotations->get('cache-duration')    // > int(86400000)
 $annotations->get('undefined')  // > null
 ```
 
-Getting annotations from property and methods is easy too:
+Get annotations from property and methods as easily with:
 
 ```php
-$foo->getPropertyAnnotations('property_name');
-$foo->getMethodAnnotations('method_name');
+$foo->getPropertyAnnotations('property_name')->...;
+$foo->getMethodAnnotations('method_name')->...;
 ```
 
-### Using the facade
+### Using The Facade
 
 The facade is useful when you want to inspect classes out of your logic domain:
 
@@ -101,7 +134,7 @@ Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
 
 ### Grepping and traversing
 
-Let's suppose you want to pick just a group of annotations:
+Annotations will grow and you will need to manage them. That's why we give you an `AnnotationsBag` so you can easily "query" the desired annotations namespace or go wild with some regex:
 
 ```php
 /**
@@ -112,18 +145,17 @@ Let's suppose you want to pick just a group of annotations:
  * @method.get
  * @method.post
  */
-class WebService
-{
-    use Minime\Annotations\Traits\Reader;
-}
+class Foo {}
 
-$annotations = (new WebService())->getClassAnnotations();
+$AnnotationsBag = Facade::getClassAnnotations('Foo');
 ```
 
-#### Retrieving all annotations within 'response' namespace
+#### Namespacing
+
+Retrieving all annotations within 'response' namespace:
 
 ```php
-$annotations->useNamespace('response')->export();
+$AnnotationsBag->useNamespace('response')->export();
 // > array(3){
 // >    ["xml"]  => (bool) TRUE,
 // >    ["xls"]  => (bool) TRUE,
@@ -132,10 +164,12 @@ $annotations->useNamespace('response')->export();
 // > }
 ```
 
-#### Chaining with grep to get all annotations beginning with 'x' within 'response' namespace:
+#### Piping
+
+You can easily "pipe" filters. This time we will "grep" all annotations beginning with "x" and within "response" namespace:
 
 ```php
-$annotations->useNamespace('response')->grep('^x')->export();
+$AnnotationsBag->useNamespace('response')->grep('^x')->export();
 // > array(3){
 // >    ["xml"]  => (bool) TRUE,
 // >    ["xls"]  => (bool) TRUE
@@ -145,11 +179,23 @@ $annotations->useNamespace('response')->grep('^x')->export();
 #### Traversing results
 
 ```php
-foreach($annotations->useNamespace('method') as $annotation => $value)
+foreach($annotations_bag->useNamespace('method') as $annotation => $value)
 {
     // some behavior
 }
 ```
+
+## Concrete Annotations
+
+Sometimes you need your annotations to encapsulate logic and you can only do it by mapping instructions to formal PHP classes. These kind of "concrete" typed annotations can be declared with the `->` (arrow symbol):
+
+```php
+/**
+ * @Model\Field\Validation -> {"rules" : { "required" : true, "max-length" : 100 }}
+ */
+```
+
+In the example above: when prompted, the annotation parser will instantiate a `new \Model\Field\Validation()` following the declared JSON prototype `{ "rules" : {...} }`. Voilà! Instantly classy annotations.
 
 ## Contributions
 
@@ -159,12 +205,12 @@ Found a bug? Have an improvement? Take a look at the [issues](https://github.com
  
 0. Fork [minime\annotations](https://github.com/marcioAlmada/annotations/fork)
 0. Clone forked repository
-0. Install composer dependencies `$ composer install --prefer-dist`
+0. Install composer dependencies `$ composer install`
 0. Run unit tests `$ phpunit`
 0. Modify code: correct bug, implement features
 0. Back to step 4
 
-> PLEASE, be objective with pull requests. Avoid combos of improvements + doc + solve bugs + features within the same pull request.
+> PLEASE, be as objective as possible. Avoid combos of improvements + doc + solve bugs + features within the same pull request.
 
 ## Copyright
 
