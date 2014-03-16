@@ -43,7 +43,7 @@ Through terminal: `composer require minime/annotations:~1.12` :8ball:
 
 Annotations are declared through a very simple DSL: `@<optional-namespace>.<annotation-name> <optional-type> <value>`. Examples below:
 
-```lisp
+```php
 /**
  * Basic docblock showing DSL syntax recognized by Minime\Annotations\Parser
  *
@@ -134,7 +134,7 @@ Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
 
 ### Grepping and traversing
 
-Annotations will grow and you will need to manage them. That's why we give you an `AnnotationsBag` so you can easily "query" the desired annotations namespace or go wild with some regex:
+Annotations will grow and you will need to manage them. That's why we give you an `AnnotationsBag` so you can easily "query" annotations by namespace or go crazy with some regex:
 
 ```php
 /**
