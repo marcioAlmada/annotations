@@ -55,7 +55,13 @@ class Facade
         return static::getAnnotations(new ReflectionMethod($class, $method));
     }
 
-    protected static function getAnnotations(Reflector $Reflection)
+    /**
+     * Retrieve annotations from docblock of a given reflector
+     *
+     * @param  Reflector                          $Reflection Reflector object
+     * @return \Minime\Annotations\AnnotationsBag Annotations collection
+     */
+    public static function getAnnotations(Reflector $Reflection)
     {
         $Rules = new ParserRules;
         $annotations = (new Parser($Reflection->getDocComment(), $Rules))->parse();
