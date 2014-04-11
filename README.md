@@ -87,7 +87,7 @@ Annotations are declared through a very simple DSL: `@<optional-namespace>.<anno
 ```
 For detailed information, please read below.
 
-## Retrieveing Annotations
+## Retrieving Annotations
 
 ### Using Traits
 
