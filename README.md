@@ -45,7 +45,7 @@ Annotations are declared through a very simple DSL: `@<optional-namespace>.<anno
 
 ```php
 /**
- * Basic docblock showing DSL syntax recognized by Minime\Annotations\Parser
+ * Basic docblock showing DSL syntax recognized by the default Minime\Annotations\Parser
  *
  * @implicit-boolean
  * @explicit-boolean true
@@ -66,16 +66,26 @@ Annotations are declared through a very simple DSL: `@<optional-namespace>.<anno
  * 
  * @namespaced.annotation hello!
  *
- * @multiline-annotation {
+ * @multiline-json-annotation {
  *   "foo" : [
  *      "bar", "baz"
  *    ]
  * }
  *
- * @Class\Based\Annotation -> {}
+ * @multiline-indented-string-annotation
+ *   ------
+ *   < moo >
+ *   ------ 
+ *         \   ^__^
+ *          \  (oo)\_______
+ *             (__)\       )\/\
+ *                 ||----w |
+ *                 ||     ||
+ * 
+ * @Concrete\Class\Based\Annotation -> { "foo" : ["bar"] }
  */
 ```
- For detailed information, please see the the internal docs.
+For detailed information, please read below.
 
 ## Retrieveing Annotations
 
@@ -134,7 +144,7 @@ Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
 
 ### Grepping and traversing
 
-Annotations will grow and you will need to manage them. That's why we give you an `AnnotationsBag` so you can easily "query" annotations by namespace or go crazy with some regex:
+Annotations will grow and you will need to manage them. That's why we give you an `AnnotationsBag` so you can easily organize and pick annotations by name, namespace or go crazy with some regex:
 
 ```php
 /**
@@ -152,7 +162,7 @@ $AnnotationsBag = Facade::getClassAnnotations('Foo');
 
 #### Namespacing
 
-Retrieving all annotations within 'response' namespace:
+Retrieving all annotations within "response" namespace:
 
 ```php
 $AnnotationsBag->useNamespace('response')->export();
@@ -166,7 +176,7 @@ $AnnotationsBag->useNamespace('response')->export();
 
 #### Piping
 
-You can easily "pipe" filters. This time we will "grep" all annotations beginning with "x" and within "response" namespace:
+You can easily "pipe" filters. This time we will grep all annotations beginning with "x" and within "response" namespace:
 
 ```php
 $AnnotationsBag->useNamespace('response')->grep('^x')->export();
@@ -199,7 +209,7 @@ In the example above: when prompted, the annotation parser will instantiate a `n
 
 ## Contributions
 
-Found a bug? Have an improvement? Take a look at the [issues](https://github.com/marcioAlmada/annotations/issues), there is always something to be done. Please, send pull requests to develop branch only.
+Found a bug? Have an improvement? Take a look at the [issues](https://github.com/marcioAlmada/annotations/issues). Please, send pull requests to develop branch only.
 
 ### Guide
  
