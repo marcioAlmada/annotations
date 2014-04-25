@@ -134,22 +134,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function parseEvalFixture()
-    {
-        $annotations = $this->getParser('eval_fixture')->parse();
-        $this->assertEquals(
-            [
-                86400000,
-                [1, 2, 3],
-                '37b51d194a7513e45b56f6524f2d51f2'
-            ],
-            $annotations['value']
-        );
-    }
-
-    /**
-     * @test
-     */
     public function parseConcreteFixture()
     {
         $annotations = $this->getParser('concrete_fixture')->parse();
@@ -306,7 +290,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function parseReservedWordsAsValue()
     {
         $annotations = $this->getParser('reserved_words_as_value_fixture')->parse();
-        $expected = ['string','integer','float','json','eval'];
+        $expected = ['string','integer','float','json'];
         $this->assertSame($expected, $annotations['value']);
         $this->assertSame($expected, $annotations['value_with_trailing_space']);
     }
@@ -351,15 +335,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException Minime\Annotations\ParserException
      */
-    public function exceptionWithBadEvalValue()
-    {
-        $this->getParser('bad_eval_fixture')->parse();
-    }
-
-    /**
-     * @test
-     * @expectedException Minime\Annotations\ParserException
-     */
     public function exceptionWithBadIntegerValue()
     {
         $this->getParser('bad_integer_fixture')->parse();
@@ -380,6 +355,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function issue32() {
       $annotations = $this->getParser('i32_fixture')->parse();
-      $this->assertSame(['stringed', 'integers', 'floated', 'jsonable', 'evaluated'], $annotations['type']);
+      $this->assertSame(['stringed', 'integers', 'floated', 'jsonable'], $annotations['type']);
     }
 }

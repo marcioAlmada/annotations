@@ -106,18 +106,6 @@ class AnnotationsFixture
     private $bad_json_fixture;
 
     /**
-     * @value eval (1000 * 24 * 60 * 60)
-     * @value eval range(1, 3)
-     * @value eval md5('bar')
-     */
-    private $eval_fixture;
-
-    /**
-     * @value eval $
-     */
-    private $bad_eval_fixture;
-
-    /**
      * @param_a foo
      * @param_b bar
      */
@@ -188,12 +176,10 @@ class AnnotationsFixture
      * @value integer
      * @value float
      * @value json
-     * @value eval
      * @value_with_trailing_space string  
      * @value_with_trailing_space  integer  
      * @value_with_trailing_space float  
      * @value_with_trailing_space  json  
-     * @value_with_trailing_space eval  
      */
     private $reserved_words_as_value_fixture;
 
@@ -233,7 +219,6 @@ class AnnotationsFixture
      * @type integers
      * @type floated
      * @type jsonable
-     * @type evaluated
      */
     private $i32_fixture;
 

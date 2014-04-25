@@ -40,7 +40,6 @@ class Parser implements ParserInterface
         'String'   => 'string',
         'Float'    => 'float',
         'Json'     => 'json',
-        'PHP'      => 'eval',
         'Concrete' => '->'
     ];
 
