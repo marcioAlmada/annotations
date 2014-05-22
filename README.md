@@ -39,54 +39,6 @@ Minime\Annotations is the first KISS PHP annotations library.
 Through terminal: `composer require minime/annotations:~1.12` :8ball:
 
 
-## The Syntax
-
-Annotations are declared through a very simple DSL: `@<optional-namespace>.<annotation-name> <optional-type> <value>`. Examples below:
-
-```php
-/**
- * Basic docblock showing DSL syntax recognized by the default Minime\Annotations\Parser
- *
- * @implicit-boolean
- * @explicit-boolean true
- * @explicit-boolean false
- *
- * @implicit-string-annotation  hello world!
- * @explicit-string-annotation "hello world!"
- * @string-strong-typed-annotation string 123456
- *
- * @integer-annotation 15
- * @integer-strong-typed-annotation integer 15
- *
- * @float-annotation   0.15
- * @float-strong-typed float 15
- *
- * @json-annotation { "foo" : ["bar", "baz"] }
- * @strong-typed-json-annotation json ["I", "must", "be", "valid", "json"]
- * 
- * @namespaced.annotation hello!
- *
- * @multiline-json-annotation {
- *   "foo" : [
- *      "bar", "baz"
- *    ]
- * }
- *
- * @multiline-indented-string-annotation
- *   ------
- *   < moo >
- *   ------ 
- *         \   ^__^
- *          \  (oo)\_______
- *             (__)\       )\/\
- *                 ||----w |
- *                 ||     ||
- * 
- * @Concrete\Class\Based\Annotation -> { "foo" : ["bar"] }
- */
-```
-For detailed information, please read below.
-
 ## Retrieving Annotations
 
 ### Using Traits
@@ -176,7 +128,8 @@ $AnnotationsBag->useNamespace('response')->export();
 
 #### Piping
 
-You can easily "pipe" filters. This time we will grep all annotations beginning with "x" and within "response" namespace:
+You can easily "pipe" filters. This time we will grep all annotations beginning
+with "x" and within "response" namespace:
 
 ```php
 $AnnotationsBag->useNamespace('response')->grep('^x')->export();
@@ -197,19 +150,91 @@ foreach($annotations_bag->useNamespace('method') as $annotation => $value)
 
 ## Concrete Annotations
 
-Sometimes you need your annotations to encapsulate logic and you can only do it by mapping instructions to formal PHP classes. These kind of "concrete" typed annotations can be declared with the `->` (arrow symbol):
+Sometimes you need your annotations to encapsulate logic and you can only do it
+by mapping instructions to formal PHP classes. Assuming the class below will be used as an annotation type:
+
+```php
+namespace Field;
+
+class Validation
+{
+    public function  required($required = false);
+    public function  min($lengh);
+    public function  pattern($regex);
+}
+```
+
+Concrete typed annotations can be declared with the `->` (arrow symbol):
 
 ```php
 /**
- * @Model\Field\Validation -> {"rules" : { "required" : true, "max-length" : 100 }}
+ * @Field\Validation -> {"required": [true], "min": [4],  "pattern": ["/^[a-z0-9_-]+$/"]}
+ */
+    public $username;
+```
+
+In the example above: when prompted, the annotation parser will instantiate a `new \Model\Field\Validation()`
+following the declared JSON prototype `{ "required": ... }`. Voilà! Instant classy annotations.
+
+## Syntax Refference
+
+Annotations are declared through a very simple DSL:
+
+```
+/**
+ * @<optional-namespace>.<annotation-name> <optional-type> <value>
  */
 ```
 
-In the example above: when prompted, the annotation parser will instantiate a `new \Model\Field\Validation()` following the declared JSON prototype `{ "rules" : {...} }`. Voilà! Instantly classy annotations.
+Examples below:
+
+```php
+/**
+ * Basic docblock showing DSL syntax recognized by the default Minime\Annotations\Parser
+ *
+ * @implicit-boolean
+ * @explicit-boolean true
+ * @explicit-boolean false
+ *
+ * @implicit-string-annotation  hello world!
+ * @explicit-string-annotation "hello world!"
+ * @string-strong-typed-annotation string 123456
+ *
+ * @integer-annotation 15
+ * @integer-strong-typed-annotation integer 15
+ *
+ * @float-annotation   0.15
+ * @float-strong-typed float 15
+ *
+ * @json-annotation { "foo" : ["bar", "baz"] }
+ * @strong-typed-json-annotation json ["I", "must", "be", "valid", "json"]
+ * 
+ * @namespaced.annotation hello!
+ *
+ * @multiline-json-annotation {
+ *   "foo" : [
+ *      "bar", "baz"
+ *    ]
+ * }
+ *
+ * @multiline-indented-string-annotation
+ *   ------
+ *   < moo >
+ *   ------ 
+ *         \   ^__^
+ *          \  (oo)\_______
+ *             (__)\       )\/\
+ *                 ||----w |
+ *                 ||     ||
+ * 
+ * @Concrete\Class\Based\Annotation -> { "foo" : ["bar"] }
+ */
+```
 
 ## Contributions
 
-Found a bug? Have an improvement? Take a look at the [issues](https://github.com/marcioAlmada/annotations/issues). Please, send pull requests to develop branch only.
+Found a bug? Have an improvement? Take a look at the [issues](https://github.com/marcioAlmada/annotations/issues).
+Please, send pull requests to develop branch only.
 
 ### Guide
  
@@ -220,11 +245,8 @@ Found a bug? Have an improvement? Take a look at the [issues](https://github.com
 0. Modify code: correct bug, implement features
 0. Back to step 4
 
-> PLEASE, be as objective as possible. Avoid combos of improvements + doc + solve bugs + features within the same pull request.
-
 ## Copyright
 
 Copyright (c) 2014 Márcio Almada. Distributed under the terms of an MIT-style license. See LICENSE for details.
 
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/marcioAlmada/annotations/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Gitter chat](https://badges.gitter.im/marcioAlmada/annotations.png)](https://gitter.im/marcioAlmada/annotations)
