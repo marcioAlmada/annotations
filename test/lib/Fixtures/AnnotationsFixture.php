@@ -12,9 +12,6 @@ namespace Minime\Annotations\Fixtures;
  */
 class AnnotationsFixture
 {
-
-    use \Minime\Annotations\Traits\Reader;
-
     private $empty_fixture;
 
     /**
