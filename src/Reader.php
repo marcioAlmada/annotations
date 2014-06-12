@@ -4,6 +4,11 @@ namespace Minime\Annotations;
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ReaderInterface;
 
+/**
+ * This class is the primary entry point to read annotations
+ *
+ * @package Minime\Annotations
+ */
 class Reader implements ReaderInterface
 {
     /**
