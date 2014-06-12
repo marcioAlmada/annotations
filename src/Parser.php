@@ -130,4 +130,11 @@ class Parser implements ParserInterface
         return (new $typeParser)->parse($value, $key);
     }
 
+    /**
+     * @return \Minime\Annotations\Interfaces\ParserRulesInterface
+     */
+    public function getRules()
+    {
+        return $this->rules;
+    }
 }

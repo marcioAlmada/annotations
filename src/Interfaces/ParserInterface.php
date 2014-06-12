@@ -23,4 +23,9 @@ interface ParserInterface
      * @return array
      */
     public function parse($docBlock);
+
+    /**
+     * @return ParserRulesInterface
+     */
+    public function getRules();
 }
