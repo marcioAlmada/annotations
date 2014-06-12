@@ -106,8 +106,8 @@ class Parser implements ParserInterface
     /**
      * Parse a single annotation value
      *
-     * @param  string          $value
-     * @throws ParserException If the type is not recognized
+     * @param string $value
+     * @param string $key
      * @return mixed
      */
     public function parseValue($value, $key = null)
