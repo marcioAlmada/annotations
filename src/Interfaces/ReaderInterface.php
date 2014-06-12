@@ -41,7 +41,7 @@ interface ReaderInterface
      * Retrieve annotations from docblock of a given reflector
      *
      * @param  \Reflector                          $Reflection Reflector object
-     * @return \Minime\Annotations\AnnotationsBag Annotations collection
+     * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
      */
     public function getAnnotations(\Reflector $Reflection);
 }
