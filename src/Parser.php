@@ -16,18 +16,11 @@ use Minime\Annotations\Interfaces\ParserRulesInterface;
 class Parser implements ParserInterface
 {
     /**
-     * The Doc block to parse
-     *
-     * @var string
-     */
-    private $raw_doc_block;
-
-    /**
      * The ParserRules object
      *
      * @var ParserRulesInterface
      */
-    private $rules;
+    protected $rules;
 
     /**
      * The parsable type in a given docblock
@@ -60,12 +53,10 @@ class Parser implements ParserInterface
     /**
      * Parser constructor
      *
-     * @param string               $raw_doc_block the doc block to parse
      * @param ParserRulesInterface $rules
      */
-    public function __construct($raw_doc_block, ParserRulesInterface $rules)
+    public function __construct(ParserRulesInterface $rules)
     {
-        $this->raw_doc_block = preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $raw_doc_block);
         $this->types_pattern = '/^('.implode('|', $this->types).')(\s+)/';
         $this->rules = $rules;
         $identifier = $rules->getAnnotationIdentifier();
@@ -77,11 +68,14 @@ class Parser implements ParserInterface
     /**
      * Parse a given docblock
      *
+     * @param string $docBlock
      * @return array
      */
-    public function parse()
+    public function parse($docBlock)
     {
-        $annotations = $this->parseAnnotations($this->raw_doc_block);
+        $docBlock = preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $docBlock);
+
+        $annotations = $this->parseAnnotations($docBlock);
         foreach ($annotations as &$value) {
             if (1 == count($value)) {
                 $value = $value[0];

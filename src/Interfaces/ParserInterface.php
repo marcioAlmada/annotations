@@ -12,10 +12,15 @@ namespace Minime\Annotations\Interfaces;
 interface ParserInterface
 {
     /**
-     * parses a docblock string
-     *
-     * @return array
-     *
+     * @param ParserRulesInterface $parserRules
      */
-    public function parse();
+    public function __construct(ParserRulesInterface $parserRules);
+
+    /**
+     * Parses a docblock string
+     *
+     * @param string $docBlock
+     * @return array
+     */
+    public function parse($docBlock);
 }
