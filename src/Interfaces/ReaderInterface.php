@@ -12,8 +12,8 @@ interface ReaderInterface
      * Retrieve all annotations from a given class
      *
      * @param  mixed                              $class Full qualified class name or object
-     * @return \Minime\Annotations\AnnotationsBag Annotations collection
-     * @throws \\ReflectionException              If class is not found
+     * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
+     * @throws \ReflectionException              If class is not found
      */
     public function getClassAnnotations($class);
 
@@ -22,8 +22,8 @@ interface ReaderInterface
      *
      * @param  mixed                              $class Full qualified class name or object
      * @param  string                             $property Property name
-     * @return \Minime\Annotations\AnnotationsBag Annotations collection
-     * @throws \\ReflectionException              If property is undefined
+     * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
+     * @throws \ReflectionException              If property is undefined
      */
     public function getPropertyAnnotations($class, $property);
 
@@ -32,8 +32,8 @@ interface ReaderInterface
      *
      * @param  mixed                              $class Full qualified class name or object
      * @param  string                             $method Method name
-     * @return \Minime\Annotations\AnnotationsBag Annotations collection
-     * @throws \\ReflectionException              If method is undefined
+     * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
+     * @throws \ReflectionException              If method is undefined
      */
     public function getMethodAnnotations($class, $method);
 
