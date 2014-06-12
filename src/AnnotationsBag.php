@@ -2,13 +2,10 @@
 
 namespace Minime\Annotations;
 
+use Minime\Annotations\Interfaces\AnnotationsBagInterface;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
 
 use InvalidArgumentException;
-use IteratorAggregate;
-use Countable;
-use ArrayAccess;
-use JsonSerializable;
 use ArrayIterator;
 use RegexIterator;
 
@@ -20,7 +17,7 @@ use RegexIterator;
  * @license MIT
  *
  */
-class AnnotationsBag implements IteratorAggregate, Countable, ArrayAccess, JsonSerializable
+class AnnotationsBag implements AnnotationsBagInterface
 {
 
     /**
