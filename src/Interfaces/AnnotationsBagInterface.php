@@ -3,7 +3,6 @@ namespace Minime\Annotations\Interfaces;
 
 use Minime\Annotations\AnnotationsBag;
 
-
 /**
  * An annotation collection interface
  *
@@ -25,14 +24,14 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
     /**
      * Performs union operations against a given AnnotationsBag
      *
-     * @param  AnnotationsBag $bag The annotation bag to be united
+     * @param  AnnotationsBag                     $bag The annotation bag to be united
      * @return \Minime\Annotations\AnnotationsBag Annotations collection with union results
      */
     public function union(AnnotationsBag $bag);
 
     /**
      * Filters annotations based on a regexp
-     * @param  string $pattern Valid regexp
+     * @param  string                             $pattern Valid regexp
      * @throws \InvalidArgumentException          If non valid regexp is passed
      * @return \Minime\Annotations\AnnotationsBag Annotations collection with filtered results
      */
@@ -59,7 +58,7 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
      * Just an alias for AnnotationsBag::useNamespace.
      *
      * @deprecated
-     * @param  string $pattern namespace
+     * @param  string                             $pattern namespace
      * @return \Minime\Annotations\AnnotationsBag
      */
     public function grepNamespace($pattern);
@@ -81,8 +80,8 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
 
     /**
      * Set a single annotation value
-     * @param string $key a valid annotation tag, should match parser rules
-     * @param mixed $value the param value
+     * @param string $key   a valid annotation tag, should match parser rules
+     * @param mixed  $value the param value
      *
      * @throws \InvalidArgumentException If $key is not validated by the parserRules
      *

@@ -68,7 +68,7 @@ class Parser implements ParserInterface
     /**
      * Parse a given docblock
      *
-     * @param string $docBlock
+     * @param  string $docBlock
      * @return array
      */
     public function parse($docBlock)
@@ -106,8 +106,8 @@ class Parser implements ParserInterface
     /**
      * Parse a single annotation value
      *
-     * @param string $value
-     * @param string $key
+     * @param  string $value
+     * @param  string $key
      * @return mixed
      */
     public function parseValue($value, $key = null)

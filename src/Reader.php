@@ -27,9 +27,9 @@ class Reader implements ReaderInterface
     /**
      * Retrieve all annotations from a given class
      *
-     * @param  mixed $class Full qualified class name or object
+     * @param  mixed                                                  $class Full qualified class name or object
      * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
-     * @throws \ReflectionException              If class is not found
+     * @throws \ReflectionException                                   If class is not found
      */
     public function getClassAnnotations($class)
     {
@@ -39,10 +39,10 @@ class Reader implements ReaderInterface
     /**
      * Retrieve all annotations from a given property of a class
      *
-     * @param  mixed $class Full qualified class name or object
-     * @param  string $property Property name
+     * @param  mixed                                                  $class    Full qualified class name or object
+     * @param  string                                                 $property Property name
      * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
-     * @throws \ReflectionException              If property is undefined
+     * @throws \ReflectionException                                   If property is undefined
      */
     public function getPropertyAnnotations($class, $property)
     {
@@ -52,10 +52,10 @@ class Reader implements ReaderInterface
     /**
      * Retrieve all annotations from a given method of a class
      *
-     * @param  mixed $class Full qualified class name or object
-     * @param  string $method Method name
+     * @param  mixed                                                  $class  Full qualified class name or object
+     * @param  string                                                 $method Method name
      * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
-     * @throws \ReflectionException              If method is undefined
+     * @throws \ReflectionException                                   If method is undefined
      */
     public function getMethodAnnotations($class, $method)
     {
@@ -65,12 +65,13 @@ class Reader implements ReaderInterface
     /**
      * Retrieve annotations from docblock of a given reflector
      *
-     * @param  \Reflector $Reflection Reflector object
+     * @param  \Reflector                                             $Reflection Reflector object
      * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
      */
     public function getAnnotations(\Reflector $Reflection)
     {
         $array = $this->parser->parse($Reflection->getDocComment());
+
         return new AnnotationsBag($array, $this->parser->getRules());
     }
 }

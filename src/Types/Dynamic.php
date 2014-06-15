@@ -3,7 +3,6 @@
 namespace Minime\Annotations\Types;
 
 use Minime\Annotations\Interfaces\TypeInterface;
-use Minime\Annotations\Types\Json;
 
 class Dynamic implements TypeInterface
 {

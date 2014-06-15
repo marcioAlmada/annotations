@@ -19,7 +19,7 @@ interface ParserInterface
     /**
      * Parses a docblock string
      *
-     * @param string $docBlock
+     * @param  string $docBlock
      * @return array
      */
     public function parse($docBlock);

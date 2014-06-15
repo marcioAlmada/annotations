@@ -28,14 +28,16 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     private function getDocblock($fixture)
     {
         $reflection = new ReflectionProperty($this->Fixture, $fixture);
+
         return $reflection->getDocComment();
     }
 
     private function getParser()
     {
-        if($this->parser) {
+        if ($this->parser) {
             return $this->parser;
         }
+
         return $this->parser = new Parser(new ParserRules);
     }
 
@@ -356,13 +358,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function exceptionWithBadFloatValue()
     {
         $this->getParser()->parse($this->getDocblock('bad_float_fixture'));
-    } 
+    }
 
     /**
      * @test for issue #32
      * @link https://github.com/marcioAlmada/annotations/issues/32
      */
-    public function issue32() {
+    public function issue32()
+    {
       $annotations = $this->getParser()->parse($this->getDocblock('i32_fixture'));
       $this->assertSame(['stringed', 'integers', 'floated', 'jsonable'], $annotations['type']);
     }

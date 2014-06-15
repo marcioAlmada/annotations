@@ -5,7 +5,6 @@ namespace Minime\Annotations\Types;
 use stdClass;
 use ReflectionClass;
 use Minime\Annotations\Interfaces\TypeInterface;
-use Minime\Annotations\Types\Json;
 use Minime\Annotations\ParserException;
 
 class Concrete implements TypeInterface

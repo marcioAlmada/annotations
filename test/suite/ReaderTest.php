@@ -18,6 +18,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
     private function getReader()
     {
         $parser = new Parser(new ParserRules());
+
         return new Reader($parser);
     }
 
@@ -46,4 +47,4 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $annotations = $this->getReader()->getMethodAnnotations($this->fixture, 'method_fixture');
         $this->assertTrue($annotations->get('post'));
     }
-} 
+}
