@@ -11,8 +11,9 @@ class Float implements TypeInterface
     /**
      * Filter a value to be a Float
      *
-     * @param  string          $value
-     * @throws ParserException If $value is not a float
+     * @param  string $value
+     * @param null $annotation Unused
+     * @throws \Minime\Annotations\ParserException
      * @return float
      */
     public function parse($value, $annotation = null)

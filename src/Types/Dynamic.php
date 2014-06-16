@@ -11,6 +11,7 @@ class Dynamic implements TypeInterface
      * Parse a given undefined type value
      *
      * @param  string $value
+     * @param null $annotation Unused
      * @return mixed
      */
     public function parse($value, $annotation = null)

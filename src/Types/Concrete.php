@@ -15,6 +15,7 @@ class Concrete implements TypeInterface
      *
      * @param  string $value json string
      * @param  string $class name of concrete annotation type (class)
+     * @throws \Minime\Annotations\ParserException
      * @return object
      */
     public function parse($value, $class = null)

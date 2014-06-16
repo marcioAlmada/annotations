@@ -173,6 +173,7 @@ class AnnotationsBag implements AnnotationsBagInterface
      * Isolates a given namespace of annotations.
      * @param string $pattern namespace
      *
+     * @throws \InvalidArgumentException
      * @return \Minime\Annotations\AnnotationsBag
      */
     public function useNamespace($pattern)
