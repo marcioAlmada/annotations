@@ -11,7 +11,7 @@ class String implements TypeInterface
      * Parse a given value as string
      *
      * @param  string $value
-     * @param null $annotation
+     * @param null $annotation Unused
      * @return mixed
      */
     public function parse($value, $annotation = null)
