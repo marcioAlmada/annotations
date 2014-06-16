@@ -99,6 +99,7 @@ class ParserRules implements ParserRulesInterface
 
     /**
      * Makes `@\My\Namespaced\Class` equivalent of `@My\Namespaced\Class`
+     * @param string $key
      * @return string
      */
     public function sanitizeKey($key)

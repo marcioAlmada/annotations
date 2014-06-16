@@ -11,8 +11,9 @@ class Json implements TypeInterface
     /**
      * Filter a value to be a Json
      *
-     * @param  string          $value
-     * @throws ParserException If $value is not a Json
+     * @param  string $value
+     * @param null $annotation
+     * @throws \Minime\Annotations\ParserException
      * @return mixed
      */
     public function parse($value, $annotation = null)

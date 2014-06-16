@@ -11,8 +11,9 @@ class Integer implements TypeInterface
     /**
      * Filter a value to be an Integer
      *
-     * @param  string          $value
-     * @throws ParserException If $value is not an integer
+     * @param  string $value
+     * @param null $annotation Unused
+     * @throws \Minime\Annotations\ParserException
      * @return integer
      */
     public function parse($value, $annotation = null)
