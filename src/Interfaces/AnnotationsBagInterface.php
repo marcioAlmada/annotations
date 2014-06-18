@@ -27,7 +27,7 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
      * @param  AnnotationsBag                     $bag The annotation bag to be united
      * @return \Minime\Annotations\AnnotationsBag Annotations collection with union results
      */
-    public function union(AnnotationsBag $bag);
+    public function union(AnnotationsBagInterface $bag);
 
     /**
      * Filters annotations based on a regexp
@@ -55,15 +55,6 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
     public function replace(array $attributes);
 
     /**
-     * Just an alias for AnnotationsBag::useNamespace.
-     *
-     * @deprecated
-     * @param  string                             $pattern namespace
-     * @return \Minime\Annotations\AnnotationsBag
-     */
-    public function grepNamespace($pattern);
-
-    /**
      * Checks if a given annotation is declared
      * @param string $key A valid annotation tag, should match parser rules
      *
@@ -72,11 +63,6 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
      * @return boolean
      */
     public function has($key);
-
-    /**
-     * @deprecated
-     */
-    public function merge(AnnotationsBag $bag);
 
     /**
      * Set a single annotation value

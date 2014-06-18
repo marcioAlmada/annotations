@@ -44,11 +44,11 @@ class AnnotationsBag implements AnnotationsBagInterface
     }
 
     /**
-    * replace a set of annotations values
-    * @param array $attributes
-    *
-    * @return self
-    */
+     * replace a set of annotations values
+     * @param array $attributes
+     *
+     * @return self
+     */
     public function replace(array $attributes)
     {
         foreach (array_keys($attributes) as $key) {
@@ -86,14 +86,14 @@ class AnnotationsBag implements AnnotationsBagInterface
     }
 
     /**
-    * Set a single annotation value
-    * @param string $key a valid annotation tag, should match parser rules
-    * @param mixed  $value the param value
-    *
-    * @throws \InvalidArgumentException If $key is not validated by the parserRules
-    *
-    * @return self
-    */
+     * Set a single annotation value
+     * @param string $key a valid annotation tag, should match parser rules
+     * @param mixed  $value the param value
+     *
+     * @throws \InvalidArgumentException If $key is not validated by the parserRules
+     *
+     * @return self
+     */
     public function set($key, $value)
     {
         $this->validateKeyOrFail($key);
@@ -158,18 +158,6 @@ class AnnotationsBag implements AnnotationsBagInterface
     }
 
     /**
-     * Just an alias for AnnotationsBag::useNamespace.
-     *
-     * @deprecated
-     * @param  string                             $pattern namespace
-     * @return \Minime\Annotations\AnnotationsBag
-     */
-    public function grepNamespace($pattern)
-    {
-        return $this->useNamespace($pattern);
-    }
-
-    /**
      * Isolates a given namespace of annotations.
      * @param string $pattern namespace
      *
@@ -195,22 +183,14 @@ class AnnotationsBag implements AnnotationsBagInterface
      * @param  AnnotationsBag                     $bag The annotation bag to be united
      * @return \Minime\Annotations\AnnotationsBag Annotations collection with union results
      */
-    public function union(AnnotationsBag $bag)
+    public function union(AnnotationsBagInterface $bag)
     {
         return new static($this->attributes + $bag->export(), $this->rules);
     }
 
     /**
-     * @deprecated
+     * Countable
      */
-    public function merge(AnnotationsBag $bag)
-    {
-        return $this->union($bag);
-    }
-
-    /**
-    * Countable
-    */
     public function count()
     {
         return count($this->attributes);
@@ -225,32 +205,32 @@ class AnnotationsBag implements AnnotationsBagInterface
     }
 
     /**
-    * IteratorAggregate
-    */
+     * IteratorAggregate
+     */
     public function getIterator()
     {
         return new ArrayIterator($this->attributes);
     }
 
     /**
-    * ArrayAccess - Whether or not an offset exists.
-    */
+     * ArrayAccess - Whether or not an offset exists.
+     */
     public function offsetExists($key)
     {
         return $this->has($key);
     }
 
     /**
-    * ArrayAccess - Returns the value at specified offset.
-    */
+     * ArrayAccess - Returns the value at specified offset.
+     */
     public function offsetGet($key)
     {
         return $this->get($key);
     }
 
     /**
-    * ArrayAccess - Assigns a value to the specified offset.
-    */
+     * ArrayAccess - Assigns a value to the specified offset.
+     */
     public function offsetSet($key, $value)
     {
         $this->set($key, $value);
@@ -259,8 +239,8 @@ class AnnotationsBag implements AnnotationsBagInterface
     }
 
     /**
-    * ArrayAccess - Unsets an offset.
-    */
+     * ArrayAccess - Unsets an offset.
+     */
     public function offsetUnset($key)
     {
         unset($this->attributes[$key]);

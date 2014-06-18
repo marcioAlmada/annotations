@@ -122,36 +122,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function grepNamespace()
-    {
-        $this->Bag = new AnnotationsBag(
-            [
-                'path.to.the.treasure' => 'cheers!',
-                'path.to.the.cake' => 'the cake is a lie',
-                'another.path.to.cake' => 'foo'
-            ],
-            $this->Rules
-        );
-
-        $this->assertSame(
-            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie'],
-            $this->Bag->grepNamespace('path.to.the')->export()
-        );
-
-        // chained namespace grep
-        $this->assertSame(
-            ['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie'],
-            $this->Bag->grepNamespace('path')->grepNamespace('to')->export()
-        );
-        $this->assertSame(
-            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie'],
-            $this->Bag->grepNamespace('path')->grepNamespace('to')->grepNamespace('the')->export()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function useNamespace()
     {
         $this->Bag = new AnnotationsBag(
@@ -183,14 +153,14 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException \InvalidArgumentException
-     * @dataProvider useNamespaceDataProvider
+     * @dataProvider invalidNamespaceDataProvider
      */
     public function useNamespaceWithInvalidArgument($namespace)
     {
         $this->Bag->useNamespace($namespace);
     }
 
-    public function useNamespaceDataProvider()
+    public function invalidNamespaceDataProvider()
     {
         return [
             [0],
@@ -235,43 +205,11 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @deprecated
-     */
-    public function merge()
-    {
-        $this->Bag = new AnnotationsBag(
-            [
-                'alpha' => 'a',
-            ],
-            $this->Rules
-        );
-
-        $Bag = new AnnotationsBag(
-            [
-                'alpha'   => 'x',
-                'delta'   => 'd',
-                'epsilon' => 'e',
-            ],
-            $this->Rules
-        );
-
-        $MergedBag = $this->Bag->merge($Bag);
-
-        $this->assertCount(3, $MergedBag);
-        $this->assertSame('a', $MergedBag->get('alpha'));
-        $this->assertSame('d', $MergedBag->get('delta'));
-        $this->assertSame('e', $MergedBag->get('epsilon'));
-
-        $this->assertNotSame($this->Bag, $this->Bag->merge($Bag));
-    }
-
-    /**
-     * @test
      * @expectedException PHPUnit_Framework_Error
      */
-    public function mergeAcceptsOnlyAnnotationsBag()
+    public function unionAcceptsOnlyAnnotationsBag()
     {
-        $this->Bag->merge(0);
+        $this->Bag->union(0);
     }
 
     /**
@@ -326,7 +264,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function concreteAnnotationRetrieval()
+    public function concreteAnnotationSupport()
     {
         $this->assertInstanceOf(
             '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
