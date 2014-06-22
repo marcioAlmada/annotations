@@ -15,6 +15,9 @@
         "php": ">=5.4.0",
         "ext-json":"*"
     },
+    "require-dev": {
+        "mockery/mockery": "dev-master"
+    },
     "autoload": {
         "psr-4": { "Minime\\Annotations\\": "src/" }
     },
