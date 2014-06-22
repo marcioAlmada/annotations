@@ -17,5 +17,8 @@
     },
     "autoload": {
         "psr-4": { "Minime\\Annotations\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Minime\\Annotations\\Fixtures\\": "test/fixtures/" }
     }
 }
