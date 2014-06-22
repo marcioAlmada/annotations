@@ -1,8 +1,11 @@
 <?php
+
 namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ReaderInterface;
+use Minime\Annotations\Interfaces\CacheInterface;
+use Minime\Annotations\Cache\FileCache;
 
 /**
  * This class is the primary entry point to read annotations
@@ -17,11 +20,17 @@ class Reader implements ReaderInterface
     protected $parser;
 
     /**
+     * @var Interfaces\CacheInterface
+     */
+    protected $cache;
+
+    /**
      * @param ParserInterface $parser
      */
-    public function __construct(ParserInterface $parser)
+    public function __construct(ParserInterface $parser, CacheInterface $cache = null)
     {
         $this->parser = $parser;
+        $this->cache  = $cache;
     }
 
     /**
@@ -70,8 +79,19 @@ class Reader implements ReaderInterface
      */
     public function getAnnotations(\Reflector $Reflection)
     {
-        $array = $this->parser->parse($Reflection->getDocComment());
+        $doc = $Reflection->getDocComment();
+        if($this->cache) {
+            $key = $this->cache->getKey($doc);
+            $ast = $this->cache->get($key);
+            if(! $ast) {
+                $ast = $this->parser->parse($doc);
+                $this->cache->set($key, $ast);
+            }
+        }
+        else {
+            $ast = $this->parser->parse($doc);
+        }
 
-        return new AnnotationsBag($array, $this->parser->getRules());
+        return new AnnotationsBag($ast, $this->parser->getRules());
     }
 }
