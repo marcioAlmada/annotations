@@ -212,6 +212,11 @@ class AnnotationsFixture
     private $inline_docblock_multiple_implicit_boolean_fixture;
 
     /**
+     * @foo . ' " \' \" ` { } \{ \} ( ) \( \) ; : \ áḉõ²¬¢£³°§
+     */
+    private $serialize_fixture;
+
+    /**
      * @type stringed
      * @type integers
      * @type floated

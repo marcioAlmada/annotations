@@ -67,6 +67,11 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $reader->getPropertyAnnotations($this->fixtureClass, 'namespaced_fixture')->export()
         );
 
+        $this->assertSame(
+            $reader->getPropertyAnnotations($this->fixtureClass, 'serialize_fixture')->export(),
+            $reader->getPropertyAnnotations($this->fixtureClass, 'serialize_fixture')->export()
+        );
+
         $this->assertEquals(
             $reader->getPropertyAnnotations($this->fixtureClass, 'json_fixture')->export(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'json_fixture')->export()
