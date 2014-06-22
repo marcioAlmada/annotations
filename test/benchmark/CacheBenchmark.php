@@ -14,13 +14,16 @@
 
 namespace Minime\Annotations;
 
+if(extension_loaded('xdebug'))
+    echo "\033[31m### XDebug extension is enabled!\033[0m You might get very inaccurate performance numbers.\n\n";
+
 include __DIR__ . '/../../vendor/autoload.php';
 
 // get cli options
 $options = getopt('r:');
-$iterations = (isset($options['r'])) ? (int) $options['r'] : 600;
+$iterations = (isset($options['r'])) ? (int) $options['r'] : 1000;
 
-echo "Running \033[32m ",  $iterations, "\033[0m iterations for each cache handler...\n\n";
+echo "### Running \033[32m",  $iterations, "\033[0m iterations for each cache handler...\n\n";
 
 // get global start time
 $start = microtime(true);
@@ -33,7 +36,7 @@ benchmark($iterations, new Cache\MemoryCache());
 // get global end time
 $end = microtime(true);
 
-echo "\nFinished benchmark in\033[32m ",  $end - $start, "\033[0m seconds.\n";
+echo "\n### Finished benchmark in\033[32m ",  $end - $start, "\033[0m seconds.\n";
 
 /**
  * Runs a benchmark for a given cache handler
@@ -41,8 +44,9 @@ echo "\nFinished benchmark in\033[32m ",  $end - $start, "\033[0m seconds.\n";
  * @param  integer                                     $iterations how many times to iterate benchmark
  * @param  Minime\Annotations\interface\CacheInterface $cache
  */
-function benchmark($iterations = 600, Interfaces\CacheInterface $cache = null)
+function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
 {
+    static $id = 1;
     $startTime = microtime(true);
     $reader = new Reader(new Parser(new ParserRules()), $cache);
 
@@ -63,9 +67,10 @@ function benchmark($iterations = 600, Interfaces\CacheInterface $cache = null)
     }
     echo "\033[1A";
     $endTime = microtime(true);
-    $msg = "Read took \033[32m" . ($endTime - $startTime) . " seconds\033[0m";
+    $msg = "{$id}) Read took \033[32m" . ($endTime - $startTime) . " seconds\033[0m";
     if($cache) $msg .= " with \033[33m\\" .get_class($cache) . "\033[0m";
     else $msg .= " without cache!";
     echo "\n", $msg, "\n";
 
+    $id++;
 }
