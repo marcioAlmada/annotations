@@ -8,6 +8,8 @@ class FileCache implements CacheInterface
 {
     protected $path;
 
+    protected $extension = 'annotations';
+
     public function __construct($path = null)
     {
 
@@ -51,14 +53,14 @@ class FileCache implements CacheInterface
 
     public function clear()
     {
-        foreach (glob($this->path . '*{.annotations}', GLOB_BRACE | GLOB_NOSORT) as $file) {
+        foreach (glob($this->path . "*{.{$this->extension}}", GLOB_BRACE | GLOB_NOSORT) as $file) {
             unlink($file);
         }
     }
 
     protected function getFileName($key)
     {
-        return $this->path . $key . '.annotations';
+        return $this->path . $key . '.' . $this->extension;
     }
 
 }
