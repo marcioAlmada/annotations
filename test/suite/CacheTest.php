@@ -42,4 +42,58 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @dataProvider cacheProvider
+     */
+    public function testCacheHandlers(CacheInterface $cache)
+    {
+        $reader = $this->getReader($cache);
+        
+        $cache->clear();
+
+        $this->assertSame(
+            $reader->getPropertyAnnotations($this->fixtureClass, 'integer_fixture')->export(),
+            $reader->getPropertyAnnotations($this->fixtureClass, 'integer_fixture')->export()
+        );
+
+        $this->assertSame(
+            $reader->getPropertyAnnotations($this->fixtureClass, 'float_fixture')->export(),
+            $reader->getPropertyAnnotations($this->fixtureClass, 'float_fixture')->export()
+        );
+
+        $this->assertSame(
+            $reader->getPropertyAnnotations($this->fixtureClass, 'namespaced_fixture')->export(),
+            $reader->getPropertyAnnotations($this->fixtureClass, 'namespaced_fixture')->export()
+        );
+
+        $this->assertEquals(
+            $reader->getPropertyAnnotations($this->fixtureClass, 'json_fixture')->export(),
+            $reader->getPropertyAnnotations($this->fixtureClass, 'json_fixture')->export()
+        );
+
+        $this->assertEquals(
+            $reader->getPropertyAnnotations($this->fixtureClass, 'strong_typed_fixture')->export(),
+            $reader->getPropertyAnnotations($this->fixtureClass, 'strong_typed_fixture')->export()
+        );
+
+        $this->assertEquals(
+            $reader->getPropertyAnnotations($this->fixtureClass, 'multiline_value_fixture')->export(),
+            $reader->getPropertyAnnotations($this->fixtureClass, 'multiline_value_fixture')->export()
+        );
+
+        $this->assertEquals(
+            $reader->getPropertyAnnotations($this->fixtureClass, 'concrete_fixture')->export(),
+            $reader->getPropertyAnnotations($this->fixtureClass, 'concrete_fixture')->export()
+        );
+
+        $cache->clear();
+    }
+
+    public function cacheProvider()
+    {
+        return [
+            [new FileCache(__DIR__ . '/../../build/')],
+            [new MemoryCache()],
+        ];
+    }
 }
