@@ -22,7 +22,7 @@ class FileCache implements CacheInterface
 
         if (! is_dir($this->path) || ! is_writable($this->path) || ! is_readable($this->path)) {
             throw new \InvalidArgumentException("Cache path is not a writable/readable directory: {$this->path}.");
-        }   
+        }
 
     }
 
@@ -43,7 +43,6 @@ class FileCache implements CacheInterface
     {
         $file = $this->getFileName($key);
         if (file_exists($file)) {
-
             return unserialize(file_get_contents($file));
         }
 

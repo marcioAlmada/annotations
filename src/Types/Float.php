@@ -11,8 +11,8 @@ class Float implements TypeInterface
     /**
      * Filter a value to be a Float
      *
-     * @param  string $value
-     * @param null $annotation Unused
+     * @param  string                              $value
+     * @param  null                                $annotation Unused
      * @throws \Minime\Annotations\ParserException
      * @return float
      */

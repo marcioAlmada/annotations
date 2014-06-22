@@ -4,11 +4,11 @@
  * Cache benchmark
  *
  * Usage:
- * 
+ *
  * php tests/benchmark/CacheBenchmark.php -r <iterations>
  *
  * Options:
- * 
+ *
  * -r <integer> how many iterations each benchmark should have, default is 5000
  */
 
@@ -40,7 +40,7 @@ echo "\n### Finished benchmark in\033[32m ",  $end - $start, "\033[0m seconds.\n
 
 /**
  * Runs a benchmark for a given cache handler
- * 
+ *
  * @param  integer                                     $iterations how many times to iterate benchmark
  * @param  Minime\Annotations\interface\CacheInterface $cache
  */
@@ -57,9 +57,9 @@ function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
     $properties = $reflection->getProperties(\ReflectionProperty::IS_PRIVATE);
     $i = 0;
 
-    while($i++ < $iterations) {
-        array_walk($properties, function($property) use ($reader, $class){
-            if( false === strpos($property->getName(), 'bad_')) {
+    while ($i++ < $iterations) {
+        array_walk($properties, function ($property) use ($reader, $class) {
+            if ( false === strpos($property->getName(), 'bad_')) {
                 $reader->getPropertyAnnotations($class, $property->getName());
             }
         });

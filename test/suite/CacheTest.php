@@ -9,17 +9,18 @@ use Minime\Annotations\Cache\FileCache;
 use Minime\Annotations\Cache\MemoryCache;
 use Minime\Annotations\Fixtures\AnnotationsFixture;
 
-
 class CacheTest extends \PHPUnit_Framework_TestCase
 {
 
     protected $fixtureClass = 'Minime\Annotations\Fixtures\AnnotationsFixture';
 
-    public function tearDown() {
+    public function tearDown()
+    {
         Mockery::close();
     }
 
-    public function getReader(CacheInterface $cache) {
+    public function getReader(CacheInterface $cache)
+    {
         return new Reader(new Parser(new ParserRules()), $cache);
     }
 
@@ -28,7 +29,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $key = md5('/** @value foo */');
         $ast = ['value' => 'foo'];
 
-        $cache = Mockery::mock('Minime\Annotations\Interfaces\CacheInterface', function($mock) use ($key, $ast){
+        $cache = Mockery::mock('Minime\Annotations\Interfaces\CacheInterface', function ($mock) use ($key, $ast) {
             $mock->shouldReceive('getKey')->twice()->andReturn($key);
             $mock->shouldReceive('get')->twice()->andReturn(false, $ast, $ast);
             $mock->shouldReceive('set')->once()->with($key, $ast);
@@ -48,7 +49,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     public function testCacheHandlers(CacheInterface $cache)
     {
         $reader = $this->getReader($cache);
-        
+
         $cache->clear();
 
         $this->assertSame(

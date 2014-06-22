@@ -1,4 +1,5 @@
 <?php
+
 namespace Minime\Annotations\Interfaces;
 
 /**

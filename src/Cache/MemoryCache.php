@@ -23,7 +23,6 @@ class MemoryCache implements CacheInterface
     public function get($key)
     {
         if (array_key_exists($key, $this->annotations)) {
-
             return $this->annotations[$key];
         }
 

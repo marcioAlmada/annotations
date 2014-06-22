@@ -11,8 +11,8 @@ class Integer implements TypeInterface
     /**
      * Filter a value to be an Integer
      *
-     * @param  string $value
-     * @param null $annotation Unused
+     * @param  string                              $value
+     * @param  null                                $annotation Unused
      * @throws \Minime\Annotations\ParserException
      * @return integer
      */

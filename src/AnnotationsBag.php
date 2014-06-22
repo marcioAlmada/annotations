@@ -87,7 +87,7 @@ class AnnotationsBag implements AnnotationsBagInterface
 
     /**
      * Set a single annotation value
-     * @param string $key a valid annotation tag, should match parser rules
+     * @param string $key   a valid annotation tag, should match parser rules
      * @param mixed  $value the param value
      *
      * @throws \InvalidArgumentException If $key is not validated by the parserRules

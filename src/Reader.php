@@ -5,7 +5,6 @@ namespace Minime\Annotations;
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ReaderInterface;
 use Minime\Annotations\Interfaces\CacheInterface;
-use Minime\Annotations\Cache\FileCache;
 
 /**
  * This class is the primary entry point to read annotations
@@ -80,15 +79,14 @@ class Reader implements ReaderInterface
     public function getAnnotations(\Reflector $Reflection)
     {
         $doc = $Reflection->getDocComment();
-        if($this->cache) {
+        if ($this->cache) {
             $key = $this->cache->getKey($doc);
             $ast = $this->cache->get($key);
-            if(! $ast) {
+            if (! $ast) {
                 $ast = $this->parser->parse($doc);
                 $this->cache->set($key, $ast);
             }
-        }
-        else {
+        } else {
             $ast = $this->parser->parse($doc);
         }
 

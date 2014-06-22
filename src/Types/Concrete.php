@@ -13,8 +13,8 @@ class Concrete implements TypeInterface
     /**
      * Process a value to be a concrete annotation
      *
-     * @param  string $value json string
-     * @param  string $class name of concrete annotation type (class)
+     * @param  string                              $value json string
+     * @param  string                              $class name of concrete annotation type (class)
      * @throws \Minime\Annotations\ParserException
      * @return object
      */
@@ -36,7 +36,7 @@ class Concrete implements TypeInterface
 
     public function makeInstance($class, stdClass $prototype)
     {
-        $reflection = (new ReflectionClass($class));
+        $reflection = new ReflectionClass($class);
         if (isset($prototype->__construct)) {
             $instance = $reflection->newInstanceArgs($prototype->__construct);
             unset($prototype->__construct);

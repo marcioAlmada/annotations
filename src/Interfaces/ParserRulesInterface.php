@@ -61,7 +61,7 @@ interface ParserRulesInterface
 
     /**
      * Deals with special cases involving annotation keys
-     * @param string $key
+     * @param  string $key
      * @return string
      */
     public function sanitizeKey($key);
