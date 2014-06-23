@@ -26,10 +26,19 @@ class Reader implements ReaderInterface
     /**
      * @param ParserInterface $parser
      */
-    public function __construct(ParserInterface $parser, CacheInterface $cache = null)
+    public function __construct(ParserInterface $parser)
     {
         $this->parser = $parser;
-        $this->cache  = $cache;
+    }
+
+    public function setCache(CacheInterface $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    public function getCache()
+    {
+        return $this->cache;
     }
 
     /**

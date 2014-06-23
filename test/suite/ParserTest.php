@@ -2,7 +2,7 @@
 
 namespace Minime\Annotations;
 
-use \Minime\Annotations\Fixtures\AnnotationsFixture;
+use Minime\Annotations\Fixtures\AnnotationsFixture;
 use Minime\Annotations\Interfaces\ParserInterface;
 use \ReflectionProperty;
 
@@ -12,6 +12,7 @@ use \ReflectionProperty;
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
     private $Fixture;
+
     /** @var  ParserInterface */
     private $parser;
 
@@ -61,7 +62,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @requires PHP 5.5
      */
     public function parseNullFixture()
     {

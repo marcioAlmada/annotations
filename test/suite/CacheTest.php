@@ -19,9 +19,9 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         Mockery::close();
     }
 
-    public function getReader(CacheInterface $cache)
+    public function getReader()
     {
-        return new Reader(new Parser(new ParserRules()), $cache);
+        return new Reader(new Parser(new ParserRules()));
     }
 
     public function testReaderCacheInteraction()
@@ -35,7 +35,8 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('set')->once()->with($key, $ast);
         });
 
-        $reader = $this->getReader($cache);
+        $reader = $this->getReader();
+        $reader->setCache($cache);
 
         $this->assertSame(
             $reader->getPropertyAnnotations($this->fixtureClass, 'inline_docblock_fixture')->get('value'),
@@ -48,9 +49,10 @@ class CacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testCacheHandlers(CacheInterface $cache)
     {
-        $reader = $this->getReader($cache);
+        $reader = $this->getReader();
+        $reader->setCache($cache);
 
-        $cache->clear();
+        $reader->getCache()->clear();
 
         $this->assertSame(
             $reader->getPropertyAnnotations($this->fixtureClass, 'integer_fixture')->export(),
@@ -92,7 +94,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $reader->getPropertyAnnotations($this->fixtureClass, 'concrete_fixture')->export()
         );
 
-        $cache->clear();
+        $reader->getCache()->clear();
     }
 
     public function cacheProvider()
