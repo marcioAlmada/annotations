@@ -4,7 +4,6 @@ namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\AnnotationsBagInterface;
 use Minime\Annotations\Interfaces\ParserRulesInterface;
-
 use InvalidArgumentException;
 use ArrayIterator;
 use RegexIterator;
