@@ -48,9 +48,12 @@ function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
 {
     static $id = 1;
     $startTime = microtime(true);
-    $reader = new Reader(new Parser(new ParserRules()), $cache);
+    $reader = new Reader(new Parser(new ParserRules()));
 
-    if($cache) $cache->clear();
+    if($cache) {
+        $cache->clear();
+        $reader->setCache($cache);
+    }
 
     $class = 'Minime\Annotations\Fixtures\AnnotationsFixture';
     $reflection = new \ReflectionClass($class);
@@ -68,8 +71,8 @@ function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
     echo "\033[1A";
     $endTime = microtime(true);
     $msg = "{$id}) Read took \033[32m" . ($endTime - $startTime) . " seconds\033[0m";
-    if($cache) $msg .= " with \033[33m\\" .get_class($cache) . "\033[0m";
-    else $msg .= " without cache!";
+    if($cache) $msg .= " with \033[33m\\" .get_class($cache) . "\033[0m;";
+    else $msg .= " without cache;";
     echo "\n", $msg, "\n";
 
     $id++;
