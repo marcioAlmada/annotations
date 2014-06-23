@@ -61,11 +61,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @requires PHP 5.5
      */
     public function parseNullFixture()
     {
         $annotations = $this->getParser()->parse($this->getDocblock('null_fixture'));
-        $this->assertSame([null, null, ''], $annotations['value']);
+        $this->assertSame([null, ''], $annotations['value']);
     }
 
     /**
@@ -74,7 +75,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function parseBooleanFixture()
     {
         $annotations = $this->getParser()->parse($this->getDocblock('boolean_fixture'));
-        $this->assertSame([true, false, true, false, "true", "false"], $annotations['value']);
+        $this->assertSame([true, false, "true", "false"], $annotations['value']);
     }
 
     /**

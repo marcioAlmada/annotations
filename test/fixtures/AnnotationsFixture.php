@@ -16,14 +16,11 @@ class AnnotationsFixture
 
     /**
      * @value null
-     * @value NULL
      * @value ""
      */
     private $null_fixture;
 
     /**
-     * @value TRUE
-     * @value FALSE
      * @value true
      * @value false
      * @value "true"
