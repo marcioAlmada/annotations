@@ -36,7 +36,7 @@ class MemoryCache implements CacheInterface
             return $this->annotations[$key];
         }
 
-        return false;
+        return [];
     }
 
     public function clear()

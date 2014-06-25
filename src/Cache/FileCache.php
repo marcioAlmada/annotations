@@ -65,7 +65,7 @@ class FileCache implements CacheInterface
             return unserialize(file_get_contents($file));
         }
 
-        return false;
+        return [];
     }
 
     public function clear()
