@@ -245,6 +245,12 @@ class AnnotationsBag implements AnnotationsBagInterface
         unset($this->attributes[$key]);
     }
 
+    /**
+     * Validates a given annotation name according to PaserRules
+     *
+     * @param  string                    $key annotation name
+     * @throws \InvalidArgumentException if annotation name is invalid
+     */
     private function validateKeyOrFail($key)
     {
         if (! $this->rules->isKeyValid($key)) {

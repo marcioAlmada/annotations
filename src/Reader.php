@@ -14,28 +14,34 @@ use Minime\Annotations\Interfaces\CacheInterface;
 class Reader implements ReaderInterface
 {
     /**
-     * @var Interfaces\ParserInterface
+     * @var \Minime\Annotations\Interfaces\ParserInterface
      */
     protected $parser;
 
     /**
-     * @var Interfaces\CacheInterface
+     * @var \Minime\Annotations\Interfaces\CacheInterface
      */
     protected $cache;
 
     /**
-     * @param ParserInterface $parser
+     * @param \Minime\Annotations\Interfaces\ParserInterface $parser
      */
     public function __construct(ParserInterface $parser)
     {
         $this->parser = $parser;
     }
 
+    /**
+     * @param \Minime\Annotations\Interfaces\CacheInterface $cache Cache handler
+     */
     public function setCache(CacheInterface $cache)
     {
         $this->cache = $cache;
     }
 
+    /**
+     * @return \Minime\Annotations\Interfaces\CacheInterface Cache handler
+     */
     public function getCache()
     {
         return $this->cache;

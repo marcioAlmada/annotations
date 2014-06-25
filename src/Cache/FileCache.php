@@ -4,15 +4,33 @@ namespace Minime\Annotations\Cache;
 
 use Minime\Annotations\Interfaces\CacheInterface;
 
+/**
+ * A file storage cache implementation
+ *
+ * @package Minime\Annotations
+ */
 class FileCache implements CacheInterface
 {
+    /**
+     * Cache storage path
+     *
+     * @var string
+     */
     protected $path;
 
+    /**
+     * Cache entry file extension
+     *
+     * @var string
+     */
     protected $extension = 'annotations';
 
+    /**
+     *
+     * @param string $path custom sorage path
+     */
     public function __construct($path = null)
     {
-
         $this->path = $path;
 
         if (! $this->path) {
@@ -25,7 +43,6 @@ class FileCache implements CacheInterface
         if (! is_dir($this->path) || ! is_writable($this->path) || ! is_readable($this->path)) {
             throw new \InvalidArgumentException("Cache path is not a writable/readable directory: {$this->path}.");
         }
-
     }
 
     public function getKey($docblock)

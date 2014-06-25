@@ -34,7 +34,14 @@ class Concrete implements TypeInterface
         return $this->makeInstance($class, $prototype);
     }
 
-    public function makeInstance($class, stdClass $prototype)
+    /**
+     * Creates and hydrates a concrete annotation class
+     *
+     * @param  string   $class     full qualified class name
+     * @param  stdClass $prototype object prototype
+     * @return object   hydrated concrete annotation class
+     */
+    protected function makeInstance($class, stdClass $prototype)
     {
         $reflection = new ReflectionClass($class);
         if (isset($prototype->__construct)) {
@@ -47,7 +54,14 @@ class Concrete implements TypeInterface
         return $this->doMethodConfiguration($instance, $prototype);
     }
 
-    public function doMethodConfiguration($instance, stdClass $prototype)
+    /**
+     * Do configuration injection through method calls
+     *
+     * @param  object   $instance  concrete annotation instance
+     * @param  stdClass $prototype object prototype
+     * @return object   hydrated concrete annotation class
+     */
+    protected function doMethodConfiguration($instance, stdClass $prototype)
     {
         foreach ($prototype as $method => $args) {
             call_user_func_array([$instance, $method], $args);
@@ -56,7 +70,13 @@ class Concrete implements TypeInterface
         return $instance;
     }
 
-    public function isPrototypeSchemaValid($prototype)
+    /**
+     * Validates a prototype object
+     *
+     * @param  stdClass $prototype object prototype
+     * @return boolean  true if prototype is valid
+     */
+    protected function isPrototypeSchemaValid(stdclass $prototype)
     {
         foreach ($prototype as $method => $args) {
             if (! is_array($args)) {

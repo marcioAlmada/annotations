@@ -4,8 +4,18 @@ namespace Minime\Annotations\Cache;
 
 use Minime\Annotations\Interfaces\CacheInterface;
 
+/**
+ * A memory storage cache implementation
+ *
+ * @package Minime\Annotations
+ */
 class MemoryCache implements CacheInterface
 {
+    /**
+     * Cached annotations
+     *
+     * @var array
+     */
     protected $annotations = [];
 
     public function getKey($docblock)
