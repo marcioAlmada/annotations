@@ -31,7 +31,7 @@ $start = microtime(true);
 // run benchmarks
 benchmark($iterations); // no cache
 benchmark($iterations, new Cache\FileCache(__DIR__ . '/../../build/'));
-benchmark($iterations, new Cache\MemoryCache());
+benchmark($iterations, new Cache\ArrayCache());
 
 // get global end time
 $end = microtime(true);

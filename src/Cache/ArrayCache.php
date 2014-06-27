@@ -9,7 +9,7 @@ use Minime\Annotations\Interfaces\CacheInterface;
  *
  * @package Minime\Annotations
  */
-class MemoryCache implements CacheInterface
+class ArrayCache implements CacheInterface
 {
     /**
      * Cached annotations
