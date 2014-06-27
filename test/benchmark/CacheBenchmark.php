@@ -60,13 +60,18 @@ function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
     $properties = $reflection->getProperties(\ReflectionProperty::IS_PRIVATE);
     $i = 0;
 
+    $sequence = function () {
+        static $sequence = ['\\', '|', '/', '-', '\\', '|', '/', '-',];
+        return (next($sequence)) ? current($sequence) : reset($sequence);
+    };
+
     while ($i++ < $iterations) {
         array_walk($properties, function ($property) use ($reader, $class) {
             if ( false === strpos($property->getName(), 'bad_')) {
                 $reader->getPropertyAnnotations($class, $property->getName());
             }
         });
-        echo "\rRunning iteration number", "\033[32m ", $i, " \033[0m";
+        echo "\rRunning iteration number", "\033[32m ", $i, " \033[0m", $sequence();
     }
     echo "\033[1A";
     $endTime = microtime(true);
