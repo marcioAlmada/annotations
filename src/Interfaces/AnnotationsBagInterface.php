@@ -90,5 +90,5 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
      *
      * @return array associative array of annotations
      */
-    public function export();
+    public function toArray();
 }

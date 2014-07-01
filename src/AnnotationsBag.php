@@ -64,7 +64,7 @@ class AnnotationsBag implements AnnotationsBagInterface
      *
      * @return array associative array of annotations
      */
-    public function export()
+    public function toArray()
     {
         return $this->attributes;
     }
@@ -184,7 +184,7 @@ class AnnotationsBag implements AnnotationsBagInterface
      */
     public function union(AnnotationsBagInterface $bag)
     {
-        return new static($this->attributes + $bag->export(), $this->rules);
+        return new static($this->attributes + $bag->toArray(), $this->rules);
     }
 
     /**
@@ -200,7 +200,7 @@ class AnnotationsBag implements AnnotationsBagInterface
      */
     public function jsonSerialize()
     {
-        return $this->export();
+        return $this->toArray();
     }
 
     /**

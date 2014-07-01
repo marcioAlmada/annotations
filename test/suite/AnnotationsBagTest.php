@@ -59,7 +59,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     public function constructRemoveIncorrectIndex()
     {
         $this->Bag = new AnnotationsBag([0 => true, 'post' => 20], $this->Rules);
-        $this->assertSame($this->Bag->export(), ['post' => 20]);
+        $this->assertSame($this->Bag->toArray(), ['post' => 20]);
     }
 
     /**
@@ -112,11 +112,11 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $this->Bag->grep('config'));
 
         // grep that always matches nothing
-        $this->assertCount(0, $this->Bag->grep('^$')->export());
+        $this->assertCount(0, $this->Bag->grep('^$')->toArray());
 
         // chained grep
-        $this->assertSame(['val.max' => 16], $this->Bag->grep('max$')->export());
-        $this->assertSame(['config.export' => ['json', 'csv']], $this->Bag->grep('export$')->export());
+        $this->assertSame(['val.max' => 16], $this->Bag->grep('max$')->toArray());
+        $this->assertSame(['config.export' => ['json', 'csv']], $this->Bag->grep('export$')->toArray());
     }
 
     /**
@@ -136,17 +136,17 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
-            $this->Bag->useNamespace('path.to.the')->export()
+            $this->Bag->useNamespace('path.to.the')->toArray()
         );
 
         // chained namespace grep
         $this->assertSame(
             ['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie', 'the.cake.another.path.to.the.cake' => 'the real cake'],
-            $this->Bag->useNamespace('path')->useNamespace('to')->export()
+            $this->Bag->useNamespace('path')->useNamespace('to')->toArray()
         );
         $this->assertSame(
             ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
-            $this->Bag->useNamespace('path')->useNamespace('to')->useNamespace('the')->export()
+            $this->Bag->useNamespace('path')->useNamespace('to')->useNamespace('the')->toArray()
         );
     }
 
@@ -227,7 +227,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function isCountable()
     {
-        $this->assertCount(10, $this->Bag->export());
+        $this->assertCount(10, $this->Bag->toArray());
         $this->assertCount(10, $this->Bag);
     }
 
@@ -236,7 +236,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function isJsonSerializable()
     {
-        $this->assertSame(json_encode($this->Bag->export()), json_encode($this->Bag));
+        $this->assertSame(json_encode($this->Bag->toArray()), json_encode($this->Bag));
     }
 
     /**
@@ -271,7 +271,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
             $this->Bag->get('Minime\Annotations\Fixtures\AnnotationConstructInjection')
         );
 
-        $this->assertCount(1, $this->Bag->grep('Minime\\\Annotations')->export());
+        $this->assertCount(1, $this->Bag->grep('Minime\\\Annotations')->toArray());
 
         $this->assertInstanceOf(
             '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
