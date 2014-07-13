@@ -12,12 +12,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
     private $Bag;
 
-    private $Rules;
-
     public function setUp()
     {
-        $this->Rules = new ParserRules;
-
         $this->Bag = new AnnotationsBag(
             [
                 'get' => true,
@@ -30,18 +26,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'config.container' => 'Some\Collection',
                 'config.export' => ['json', 'csv'],
                 'Minime\Annotations\Fixtures\AnnotationConstructInjection' => new AnnotationConstructInjection('foo')
-            ],
-            $this->Rules
+            ]
         );
-    }
-
-    /**
-     * @test
-     * @expectedException PHPUnit_Framework_Error
-     */
-    public function constructMustTakeAParserRule()
-    {
-        new AnnotationsBag(['post' => 20]);
     }
 
     /**
@@ -50,30 +36,41 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function constructAcceptsOnlyArrays()
     {
-        new AnnotationsBag('', $this->Rules);
+        new AnnotationsBag('');
     }
 
-    /**
-     * @test
-     */
-    public function constructRemoveIncorrectIndex()
-    {
-        $this->Bag = new AnnotationsBag([0 => true, 'post' => 20], $this->Rules);
-        $this->assertSame($this->Bag->toArray(), ['post' => 20]);
-    }
-
-    /**
-     * @test
-     */
-    public function nullForUnsetAnnotation()
+    public function testGet()
     {
         $this->assertSame(false, $this->Bag->get('post'));
         $this->assertSame(null, $this->Bag->get('bar'));
+        $this->assertInstanceOf(
+            '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
+            $this->Bag->get('Minime\Annotations\Fixtures\AnnotationConstructInjection')
+        );
+    }
+
+    public function testGetAsArray()
+    {
+        // single value
+        $this->assertSame([false], $this->Bag->getAsArray('put'));
+        $this->assertCount(1, $this->Bag->getAsArray('put'));
+
+        // array value
+        $this->assertSame(['json', 'csv'], $this->Bag->getAsArray('config.export'));
+        $this->assertCount(2, $this->Bag->getAsArray('config.export'));
+
+        // null value
+        $this->assertSame([null], $this->Bag->getAsArray('default'));
+        $this->assertCount(1, $this->Bag->getAsArray('default'));
+
+        // this value is not set
+        $this->assertSame([], $this->Bag->getAsArray('foo'));
+        $this->assertCount(0, $this->Bag->getAsArray('foo'));
     }
 
     public function testArrayAccessBag()
     {
-        $this->Bag = new AnnotationsBag([], $this->Rules);
+        $this->Bag = new AnnotationsBag([]);
         $this->assertEquals(0, count($this->Bag));
         $this->Bag['fruit'] = 'orange';
         $this->assertEquals(1, count($this->Bag));
@@ -83,24 +80,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         unset($this->Bag['fruit']);
         $this->assertEquals(0, count($this->Bag));
         $this->assertNull($this->Bag['fruit']);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testArrayAccessInvalidSetterBag()
-    {
-        $this->Bag = new AnnotationsBag([], $this->Rules);
-        $this->Bag[0] = 'orange';
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testArrayAccessInvalidGetterBag()
-    {
-        $this->Bag = new AnnotationsBag([], $this->Rules);
-        $res = $this->Bag[0];
     }
 
     /**
@@ -117,6 +96,8 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         // chained grep
         $this->assertSame(['val.max' => 16], $this->Bag->grep('max$')->toArray());
         $this->assertSame(['config.export' => ['json', 'csv']], $this->Bag->grep('export$')->toArray());
+
+        $this->assertCount(1, $this->Bag->grep('Minime\\\Annotations')->toArray());
     }
 
     /**
@@ -124,52 +105,36 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function useNamespace()
     {
+
+        $this->assertInstanceOf(
+            '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
+            $this->Bag->useNamespace('Minime\Annotations\Fixtures\\')->get('AnnotationConstructInjection')
+        );
+
         $this->Bag = new AnnotationsBag(
             [
                 'path.to.the.treasure' => 'cheers!',
                 'path.to.the.cake' => 'the cake is a lie',
                 'another.path.to.cake' => 'foo',
                 'path.to.the.cake.another.path.to.the.cake' => 'the real cake',
-            ],
-            $this->Rules
+            ]
         );
 
         $this->assertSame(
             ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
-            $this->Bag->useNamespace('path.to.the')->toArray()
+            $this->Bag->useNamespace('path.to.the.')->toArray()
         );
 
         // chained namespace grep
         $this->assertSame(
             ['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie', 'the.cake.another.path.to.the.cake' => 'the real cake'],
-            $this->Bag->useNamespace('path')->useNamespace('to')->toArray()
+            $this->Bag->useNamespace('path.')->useNamespace('to.')->toArray()
         );
+
         $this->assertSame(
             ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
-            $this->Bag->useNamespace('path')->useNamespace('to')->useNamespace('the')->toArray()
+            $this->Bag->useNamespace('path.')->useNamespace('to.')->useNamespace('the.')->toArray()
         );
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     * @dataProvider invalidNamespaceDataProvider
-     */
-    public function useNamespaceWithInvalidArgument($namespace)
-    {
-        $this->Bag->useNamespace($namespace);
-    }
-
-    public function invalidNamespaceDataProvider()
-    {
-        return [
-            [0],
-            ['0'],
-            ['val.'],
-            ['.val'],
-            ['val.val.'],
-            ['.val.val']
-        ];
     }
 
     /**
@@ -180,8 +145,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->Bag = new AnnotationsBag(
             [
                 'alpha' => 'a',
-            ],
-            $this->Rules
+            ]
         );
 
         $Bag = new AnnotationsBag(
@@ -189,8 +153,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'alpha'   => 'x',
                 'delta'   => 'd',
                 'epsilon' => 'e',
-            ],
-            $this->Rules
+            ]
         );
 
         $UnionBag = $this->Bag->union($Bag);
@@ -212,79 +175,22 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->Bag->union(0);
     }
 
-    /**
-     * @test
-     */
-    public function isTraversable()
+    public function testTraversable()
     {
         foreach ($this->Bag as $annotation => $value) {
             $this->assertEquals($value, $this->Bag->get($annotation));
         }
     }
 
-    /**
-     * @test
-     */
-    public function isCountable()
+    public function testCountable()
     {
         $this->assertCount(10, $this->Bag->toArray());
         $this->assertCount(10, $this->Bag);
     }
 
-    /**
-     * @test
-     */
-    public function isJsonSerializable()
+    public function testJsonSerializable()
     {
         $this->assertSame(json_encode($this->Bag->toArray()), json_encode($this->Bag));
     }
 
-    /**
-     * @test
-     */
-    public function getAsArray()
-    {
-        // single value
-        $this->assertSame([false], $this->Bag->getAsArray('put'));
-        $this->assertCount(1, $this->Bag->getAsArray('put'));
-
-        // array value
-        $this->assertSame(['json', 'csv'], $this->Bag->getAsArray('config.export'));
-        $this->assertCount(2, $this->Bag->getAsArray('config.export'));
-
-        // null value
-        $this->assertSame([null], $this->Bag->getAsArray('default'));
-        $this->assertCount(1, $this->Bag->getAsArray('default'));
-
-        // this value is not set
-        $this->assertSame([], $this->Bag->getAsArray('foo'));
-        $this->assertCount(0, $this->Bag->getAsArray('foo'));
-    }
-
-    /**
-     * @test
-     */
-    public function concreteAnnotationSupport()
-    {
-        $this->assertInstanceOf(
-            '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
-            $this->Bag->get('Minime\Annotations\Fixtures\AnnotationConstructInjection')
-        );
-
-        $this->assertCount(1, $this->Bag->grep('Minime\\\Annotations')->toArray());
-
-        $this->assertInstanceOf(
-            '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
-            $this->Bag->useNamespace('Minime\Annotations\Fixtures')->get('AnnotationConstructInjection')
-        );
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     */
-    public function pregAcceptsOnlyStringKeys()
-    {
-        $this->Bag->grep(0);
-    }
 }

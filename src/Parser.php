@@ -15,6 +15,10 @@ use Minime\Annotations\Interfaces\ParserRulesInterface;
  */
 class Parser implements ParserInterface
 {
+    const TOKEN_ANNOTATION_IDENTIFIER = '@';
+
+    const TOKEN_ANNOTATION_NAME = '[a-zA-Z\_\-\\\][a-zA-Z0-9\_\-\.\\\]*';
+
     /**
      * The ParserRules object
      *
@@ -55,14 +59,12 @@ class Parser implements ParserInterface
      *
      * @param ParserRulesInterface $rules
      */
-    public function __construct(ParserRulesInterface $rules)
+    public function __construct()
     {
         $this->types_pattern = '/^('.implode('|', $this->types).')(\s+)/';
-        $this->rules = $rules;
-        $identifier = $rules->getAnnotationIdentifier();
-        $this->data_pattern = '/(?<=\\'.$identifier.')('
-            .$rules->getAnnotationNameRegex()
-            .')(((?!\s\\'.$identifier.').)*)/s';
+        $this->data_pattern = '/(?<=\\'. self::TOKEN_ANNOTATION_IDENTIFIER .')('
+            . self::TOKEN_ANNOTATION_NAME
+            .')(((?!\s\\'. self::TOKEN_ANNOTATION_IDENTIFIER .').)*)/s';
     }
 
     /**
@@ -81,7 +83,6 @@ class Parser implements ParserInterface
                 $value = $value[0];
             }
         }
-        unset($value);
 
         return $annotations;
     }
@@ -97,7 +98,7 @@ class Parser implements ParserInterface
         $annotations = [];
         preg_match_all($this->data_pattern, $str, $found);
         foreach ($found[2] as $key => $value) {
-            $annotations[ $this->rules->sanitizeKey($found[1][$key]) ][] = $this->parseValue($value, $found[1][$key]);
+            $annotations[ $this->sanitizeKey($found[1][$key]) ][] = $this->parseValue($value, $found[1][$key]);
         }
 
         return $annotations;
@@ -121,9 +122,9 @@ class Parser implements ParserInterface
         if (preg_match($this->types_pattern, $value, $found)) { // strong typed
             $type = $found[1];
             $value = trim(substr($value, strlen($type)));
-        }
-        if (in_array($type, $this->types)) {
-            $type = array_search($type, $this->types);
+            if (in_array($type, $this->types)) {
+                $type = array_search($type, $this->types);
+            }
         }
         $typeParser = "Minime\\Annotations\\Types\\". $type;
 
@@ -131,10 +132,16 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @return \Minime\Annotations\Interfaces\ParserRulesInterface
+     * Makes `@\My\Namespaced\Class` equivalent of `@My\Namespaced\Class`
+     * @param  string $key
+     * @return string
      */
-    public function getRules()
+    public function sanitizeKey($key)
     {
-        return $this->rules;
+        if (0 === strpos($key, '\\')) {
+            $key = substr($key, 1);
+        }
+
+        return $key;
     }
 }

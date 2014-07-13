@@ -16,6 +16,7 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
 {
     /**
      * Isolates a given namespace of annotations.
+     *
      * @param string $pattern namespace
      *
      * @return \Minime\Annotations\AnnotationsBag
@@ -46,14 +47,6 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
      * @return array
      */
     public function getAsArray($key);
-
-    /**
-     * replace a set of annotations values
-     * @param array $attributes
-     *
-     * @return self
-     */
-    public function replace(array $attributes);
 
     /**
      * Checks if a given annotation is declared

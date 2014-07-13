@@ -3,7 +3,6 @@
 namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\AnnotationsBagInterface;
-use Minime\Annotations\Interfaces\ParserRulesInterface;
 use InvalidArgumentException;
 use ArrayIterator;
 use RegexIterator;
@@ -21,42 +20,20 @@ class AnnotationsBag implements AnnotationsBagInterface
 
     /**
      * Associative arrays of annotations
+     *
      * @var array
      */
     private $attributes = [];
 
     /**
-     * The ParserRules object
-     * @var ParserRulesInterface
-     */
-    private $rules;
-
-    /**
      * The Constructor
+     *
      * @param array                $attributes
      * @param ParserRulesInterface $rules
      */
-    public function __construct(array $attributes, ParserRulesInterface $rules)
+    public function __construct(array $attributes)
     {
-        $this->rules = $rules;
-        $this->replace($attributes);
-    }
-
-    /**
-     * replace a set of annotations values
-     * @param array $attributes
-     *
-     * @return self
-     */
-    public function replace(array $attributes)
-    {
-        foreach (array_keys($attributes) as $key) {
-            if ($this->rules->isKeyValid($key)) {
-                $this->attributes[$key] = $attributes[$key];
-            }
-        }
-
-        return $this;
+        $this->attributes = $attributes;
     }
 
     /**
@@ -71,31 +48,26 @@ class AnnotationsBag implements AnnotationsBagInterface
 
     /**
      * Checks if a given annotation is declared
-     * @param string $key A valid annotation tag, should match parser rules
      *
+     * @param  string                    $key A valid annotation tag, should match parser rules
      * @throws \InvalidArgumentException If $key is not validated by the parserRules
-     *
      * @return boolean
      */
     public function has($key)
     {
-        $this->validateKeyOrFail($key);
-
         return array_key_exists($key, $this->attributes);
     }
 
     /**
      * Set a single annotation value
-     * @param string $key   a valid annotation tag, should match parser rules
-     * @param mixed  $value the param value
      *
+     * @param  string                    $key   a valid annotation tag, should match parser rules
+     * @param  mixed                     $value the param value
      * @throws \InvalidArgumentException If $key is not validated by the parserRules
-     *
      * @return self
      */
     public function set($key, $value)
     {
-        $this->validateKeyOrFail($key);
         $this->attributes[$key] = $value;
 
         return $this;
@@ -104,8 +76,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Retrieves a single annotation value
      *
-     * @param string $key A valid annotation tag, should match parser rules
-     *
+     * @param  string     $key A valid annotation tag, should match parser rules
      * @return mixed|null
      */
     public function get($key)
@@ -120,8 +91,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Retrieve annotation values as an array even if there's only one single value
      *
-     * @param string $key A valid annotation tag, should match parser rules
-     *
+     * @param  string $key A valid annotation tag, should match parser rules
      * @return array
      */
     public function getAsArray($key)
@@ -139,41 +109,34 @@ class AnnotationsBag implements AnnotationsBagInterface
 
     /**
      * Filters annotations based on a regexp
+     *
      * @param  string                             $pattern Valid regexp
      * @throws \InvalidArgumentException          If non valid regexp is passed
      * @return \Minime\Annotations\AnnotationsBag Annotations collection with filtered results
      */
     public function grep($pattern)
     {
-        if (! is_string($pattern)) {
-            throw new InvalidArgumentException('Grep pattern must be a valid regexp string.');
-        }
-
         $results = array_intersect_key($this->attributes, array_flip(
-            preg_grep('/'.$pattern.'/', array_keys($this->attributes))
+            preg_grep('/' . $pattern . '/', array_keys($this->attributes))
         ));
 
-        return new static($results, $this->rules);
+        return new static($results);
     }
 
     /**
      * Isolates a given namespace of annotations.
-     * @param string $pattern namespace
      *
+     * @param string $pattern namespace
      * @throws \InvalidArgumentException
      * @return \Minime\Annotations\AnnotationsBag
      */
     public function useNamespace($pattern)
     {
-        $pattern = trim($pattern);
-        if (! $this->rules->isNamespaceValid($pattern)) {
-            throw new InvalidArgumentException('Namespace pattern must be a valid namespace string, according to parser rules.');
-        }
-        $namespace_pattern = "/^" . preg_quote($pattern) . "({$this->rules->getNamespaceIdentifier()})/";
+        $namespace_pattern = '/^' . preg_quote(trim($pattern)) . '/';
         $iterator = new RegexIterator($this->getIterator(), $namespace_pattern, RegexIterator::REPLACE, RegexIterator::USE_KEY);
         $iterator->replacement = '';
 
-        return new static(iterator_to_array($iterator), $this->rules);
+        return new static(iterator_to_array($iterator));
     }
 
     /**
@@ -184,7 +147,7 @@ class AnnotationsBag implements AnnotationsBagInterface
      */
     public function union(AnnotationsBagInterface $bag)
     {
-        return new static($this->attributes + $bag->toArray(), $this->rules);
+        return new static($this->attributes + $bag->toArray());
     }
 
     /**
@@ -243,18 +206,5 @@ class AnnotationsBag implements AnnotationsBagInterface
     public function offsetUnset($key)
     {
         unset($this->attributes[$key]);
-    }
-
-    /**
-     * Validates a given annotation name according to PaserRules
-     *
-     * @param  string                    $key annotation name
-     * @throws \InvalidArgumentException if annotation name is invalid
-     */
-    private function validateKeyOrFail($key)
-    {
-        if (! $this->rules->isKeyValid($key)) {
-            throw new InvalidArgumentException('Annotation key must be a valid annotation name string, according to parser rules.');
-        }
     }
 }

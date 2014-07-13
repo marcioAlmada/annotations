@@ -48,7 +48,7 @@ function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
 {
     static $id = 1;
     $startTime = microtime(true);
-    $reader = new Reader(new Parser(new ParserRules()));
+    $reader = new Reader(new Parser);
 
     if($cache) {
         $cache->clear();

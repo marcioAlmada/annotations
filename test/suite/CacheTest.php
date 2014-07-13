@@ -21,7 +21,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
     public function getReader()
     {
-        return new Reader(new Parser(new ParserRules()));
+        return new Reader(new Parser);
     }
 
     public function testReaderCacheInteraction()

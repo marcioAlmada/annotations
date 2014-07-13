@@ -105,6 +105,6 @@ class Reader implements ReaderInterface
             $ast = $this->parser->parse($doc);
         }
 
-        return new AnnotationsBag($ast, $this->parser->getRules());
+        return new AnnotationsBag($ast);
     }
 }

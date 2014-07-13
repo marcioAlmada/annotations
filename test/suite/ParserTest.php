@@ -39,16 +39,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             return $this->parser;
         }
 
-        return $this->parser = new Parser(new ParserRules);
-    }
-
-    /**
-     * @test
-     * @expectedException \PHPUnit_Framework_Error
-     */
-    public function parserRequiresParserRules()
-    {
-        new Parser();
+        return $this->parser = new Parser;
     }
 
     /**
