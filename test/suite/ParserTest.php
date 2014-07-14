@@ -2,44 +2,30 @@
 
 namespace Minime\Annotations;
 
+use \ReflectionProperty;
 use Minime\Annotations\Fixtures\AnnotationsFixture;
 use Minime\Annotations\Interfaces\ParserInterface;
-use \ReflectionProperty;
 
 /**
  * @group parser
  */
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
-    private $Fixture;
+    private $fixture;
 
-    /** @var  ParserInterface */
     private $parser;
 
     public function setUp()
     {
-        $this->Fixture = new AnnotationsFixture;
-    }
-
-    public function tearDown()
-    {
-        $this->Fixture = null;
+        $this->fixture = new AnnotationsFixture;
+        $this->parser = new Parser;
     }
 
     private function getDocblock($fixture)
     {
-        $reflection = new ReflectionProperty($this->Fixture, $fixture);
+        $reflection = new ReflectionProperty($this->fixture, $fixture);
 
         return $reflection->getDocComment();
-    }
-
-    private function getParser()
-    {
-        if ($this->parser) {
-            return $this->parser;
-        }
-
-        return $this->parser = new Parser;
     }
 
     /**
@@ -47,7 +33,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseEmptyFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('empty_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('empty_fixture'));
         $this->assertSame([], $annotations);
     }
 
@@ -56,7 +42,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseNullFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('null_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('null_fixture'));
         $this->assertSame([null, ''], $annotations['value']);
     }
 
@@ -65,7 +51,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseBooleanFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('boolean_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('boolean_fixture'));
         $this->assertSame([true, false, "true", "false"], $annotations['value']);
     }
 
@@ -74,7 +60,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseImplicitBooleanFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('implicit_boolean_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('implicit_boolean_fixture'));
         $this->assertSame(true, $annotations['alpha']);
         $this->assertSame(true, $annotations['beta']);
         $this->assertSame(true, $annotations['gamma']);
@@ -86,7 +72,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseStringFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('string_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('string_fixture'));
         $this->assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
         $this->assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
     }
@@ -96,7 +82,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseIdentifierFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('identifier_parsing_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('identifier_parsing_fixture'));
         $this->assertSame(['bar' => 'test@example.com', 'toto' => true, 'tata' => true, 'number' => 2.1], $annotations);
     }
 
@@ -105,7 +91,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseIntegerFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('integer_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('integer_fixture'));
         $this->assertSame([123, 23, -23], $annotations['value']);
     }
 
@@ -114,7 +100,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseFloatFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('float_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('float_fixture'));
         $this->assertSame([.45, 0.45, 45., -4.5], $annotations['value']);
     }
 
@@ -123,7 +109,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseJsonFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('json_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('json_fixture'));
         $this->assertEquals(
             [
                 ["x", "y"],
@@ -139,7 +125,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseConcreteFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('concrete_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('concrete_fixture'));
         $this->assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationConstructInjection',
           $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][0]
@@ -181,7 +167,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseInvalidConcreteFixture($fixture)
     {
-        $this->getParser()->parse($this->getDocblock($fixture));
+        $this->parser->parse($this->getDocblock($fixture));
     }
 
     public function invalidConcreteAnnotationFixtureProvider()
@@ -198,7 +184,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseSingleValuesFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('single_values_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('single_values_fixture'));
         $this->assertEquals('foo', $annotations['param_a']);
         $this->assertEquals('bar', $annotations['param_b']);
     }
@@ -208,7 +194,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseMultipleValuesFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('multiple_values_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('multiple_values_fixture'));
         $this->assertEquals(['x', 'y', 'z'], $annotations['value']);
     }
 
@@ -217,7 +203,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseParseSameLineFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('same_line_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('same_line_fixture'));
         $this->assertSame(true, $annotations['get']);
         $this->assertSame(true, $annotations['post']);
         $this->assertSame(true, $annotations['ajax']);
@@ -232,7 +218,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseMultilineValueFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('multiline_value_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('multiline_value_fixture'));
         $string = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n"
                   ."Etiam malesuada mauris justo, at sodales nisi accumsan sit amet.\n\n"
                   ."Morbi imperdiet lacus non purus suscipit convallis.\n"
@@ -252,7 +238,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseNamespacedAnnotations()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('namespaced_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('namespaced_fixture'));
 
         $this->assertSame('cheers!', $annotations['path.to.the.treasure']);
         $this->assertSame('the cake is a lie', $annotations['path.to.the.cake']);
@@ -264,7 +250,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseStrongTypedFixture()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('strong_typed_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('strong_typed_fixture'));
         $declarations = $annotations['value'];
         $this->assertNotEmpty($declarations);
         $this->assertSame(
@@ -292,7 +278,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseReservedWordsAsValue()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('reserved_words_as_value_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('reserved_words_as_value_fixture'));
         $expected = ['string','integer','float','json'];
         $this->assertSame($expected, $annotations['value']);
         $this->assertSame($expected, $annotations['value_with_trailing_space']);
@@ -303,7 +289,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function tolerateUnrecognizedTypes()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('non_recognized_type_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('non_recognized_type_fixture'));
         $this->assertEquals(
           "footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations['value']);
     }
@@ -313,13 +299,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseInlineDocblocks()
     {
-        $annotations = $this->getParser()->parse($this->getDocblock('inline_docblock_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('inline_docblock_fixture'));
         $this->assertSame('foo', $annotations['value']);
 
-        $annotations = $this->getParser()->parse($this->getDocblock('inline_docblock_implicit_boolean_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('inline_docblock_implicit_boolean_fixture'));
         $this->assertSame(true, $annotations['alpha']);
 
-        $annotations = $this->getParser()->parse($this->getDocblock('inline_docblock_multiple_implicit_boolean_fixture'));
+        $annotations = $this->parser->parse($this->getDocblock('inline_docblock_multiple_implicit_boolean_fixture'));
         $this->assertSame(true, $annotations['alpha']);
         $this->assertSame(true, $annotations['beta']);
         $this->assertSame(true, $annotations['gama']);
@@ -331,7 +317,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function exceptionWithBadJsonValue()
     {
-        $this->getParser()->parse($this->getDocblock('bad_json_fixture'));
+        $this->parser->parse($this->getDocblock('bad_json_fixture'));
     }
 
     /**
@@ -340,7 +326,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function exceptionWithBadIntegerValue()
     {
-        $this->getParser()->parse($this->getDocblock('bad_integer_fixture'));
+        $this->parser->parse($this->getDocblock('bad_integer_fixture'));
     }
 
     /**
@@ -349,7 +335,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function exceptionWithBadFloatValue()
     {
-        $this->getParser()->parse($this->getDocblock('bad_float_fixture'));
+        $this->parser->parse($this->getDocblock('bad_float_fixture'));
     }
 
     /**
@@ -358,7 +344,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function issue32()
     {
-      $annotations = $this->getParser()->parse($this->getDocblock('i32_fixture'));
+      $annotations = $this->parser->parse($this->getDocblock('i32_fixture'));
       $this->assertSame(['stringed', 'integers', 'floated', 'jsonable'], $annotations['type']);
     }
 }

@@ -3,7 +3,6 @@
 namespace Minime\Annotations\Interfaces;
 
 /**
- *
  * Interface for Parser
  *
  * @package Annotations

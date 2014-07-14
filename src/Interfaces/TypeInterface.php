@@ -3,11 +3,9 @@
 namespace Minime\Annotations\Interfaces;
 
 /**
- *
  * Interface for Type
  *
  * @package Annotations
- *
  */
 interface TypeInterface
 {
