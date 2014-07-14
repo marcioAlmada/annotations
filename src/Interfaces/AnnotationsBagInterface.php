@@ -14,6 +14,14 @@ use Minime\Annotations\AnnotationsBag;
  */
 interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
+
+    /**
+     * The Constructor
+     *
+     * @param array $attributes
+     */
+    public function __construct(array $attributes);
+
     /**
      * Isolates a given namespace of annotations.
      *

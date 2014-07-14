@@ -3,7 +3,6 @@
 namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\ParserInterface;
-use Minime\Annotations\Interfaces\ParserRulesInterface;
 
 /**
  * An Annotations parser
@@ -18,13 +17,6 @@ class Parser implements ParserInterface
     const TOKEN_ANNOTATION_IDENTIFIER = '@';
 
     const TOKEN_ANNOTATION_NAME = '[a-zA-Z\_\-\\\][a-zA-Z0-9\_\-\.\\\]*';
-
-    /**
-     * The ParserRules object
-     *
-     * @var ParserRulesInterface
-     */
-    protected $rules;
 
     /**
      * The parsable type in a given docblock
@@ -57,7 +49,6 @@ class Parser implements ParserInterface
     /**
      * Parser constructor
      *
-     * @param ParserRulesInterface $rules
      */
     public function __construct()
     {
@@ -111,7 +102,7 @@ class Parser implements ParserInterface
      * @param  string $key
      * @return mixed
      */
-    public function parseValue($value, $key = null)
+    protected function parseValue($value, $key = null)
     {
         $value = trim($value);
         if ('' === $value) { // implicit boolean
@@ -136,7 +127,7 @@ class Parser implements ParserInterface
      * @param  string $key
      * @return string
      */
-    public function sanitizeKey($key)
+    protected function sanitizeKey($key)
     {
         if (0 === strpos($key, '\\')) {
             $key = substr($key, 1);

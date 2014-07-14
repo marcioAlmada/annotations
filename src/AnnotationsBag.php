@@ -28,8 +28,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * The Constructor
      *
-     * @param array                $attributes
-     * @param ParserRulesInterface $rules
+     * @param array $attributes
      */
     public function __construct(array $attributes)
     {
@@ -111,7 +110,6 @@ class AnnotationsBag implements AnnotationsBagInterface
      * Filters annotations based on a regexp
      *
      * @param  string                             $pattern Valid regexp
-     * @throws \InvalidArgumentException          If non valid regexp is passed
      * @return \Minime\Annotations\AnnotationsBag Annotations collection with filtered results
      */
     public function grep($pattern)
@@ -126,8 +124,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Isolates a given namespace of annotations.
      *
-     * @param string $pattern namespace
-     * @throws \InvalidArgumentException
+     * @param  string                             $pattern namespace
      * @return \Minime\Annotations\AnnotationsBag
      */
     public function useNamespace($pattern)

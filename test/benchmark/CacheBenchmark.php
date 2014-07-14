@@ -50,7 +50,7 @@ function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
     $startTime = microtime(true);
     $reader = new Reader(new Parser);
 
-    if($cache) {
+    if ($cache) {
         $cache->clear();
         $reader->setCache($cache);
     }
@@ -62,6 +62,7 @@ function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
 
     $sequence = function () {
         static $sequence = ['\\', '|', '/', '-', '\\', '|', '/', '-',];
+
         return (next($sequence)) ? current($sequence) : reset($sequence);
     };
 
