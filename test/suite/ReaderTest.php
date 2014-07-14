@@ -45,4 +45,9 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $annotations = $this->getReader()->getMethodAnnotations($this->fixture, 'method_fixture');
         $this->assertTrue($annotations->get('post'));
     }
+
+    public function testCreateFromDefaults()
+    {
+        $this->assertInstanceOf('Minime\Annotations\Reader', Reader::createFromDefaults());
+    }
 }

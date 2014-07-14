@@ -107,4 +107,15 @@ class Reader implements ReaderInterface
 
         return new AnnotationsBag($ast);
     }
+
+    /**
+     * Shortcut to create an instance of the default annotations Reader
+     * bundled with the default Parser implementation
+     *
+     * @return \Minime\Annotations\Interfaces\ReaderInterface
+     */
+    public static function createFromDefaults()
+    {
+        return new self(new Parser);
+    }
 }
