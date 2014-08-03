@@ -87,17 +87,17 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
      */
     public function grep()
     {
-        $this->assertCount(3, $this->Bag->grep('val'));
-        $this->assertCount(2, $this->Bag->grep('config'));
+        $this->assertCount(3, $this->Bag->grep('#val#'));
+        $this->assertCount(2, $this->Bag->grep('#config#'));
 
         // grep that always matches nothing
-        $this->assertCount(0, $this->Bag->grep('^$')->toArray());
+        $this->assertCount(0, $this->Bag->grep('#^$#')->toArray());
 
         // chained grep
-        $this->assertSame(['val.max' => 16], $this->Bag->grep('max$')->toArray());
-        $this->assertSame(['config.export' => ['json', 'csv']], $this->Bag->grep('export$')->toArray());
+        $this->assertSame(['val.max' => 16], $this->Bag->grep('#max$#')->toArray());
+        $this->assertSame(['config.export' => ['json', 'csv']], $this->Bag->grep('#export$#')->toArray());
 
-        $this->assertCount(1, $this->Bag->grep('Minime\\\Annotations')->toArray());
+        $this->assertCount(1, $this->Bag->grep('#Minime\\\Annotations#')->toArray());
     }
 
     /**

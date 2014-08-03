@@ -3,6 +3,7 @@
 namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\AnnotationsBagInterface;
+use RegexGuard\Factory as RegexGuard;
 use InvalidArgumentException;
 use ArrayIterator;
 use RegexIterator;
@@ -115,7 +116,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     public function grep($pattern)
     {
         $results = array_intersect_key($this->attributes, array_flip(
-            preg_grep('/' . $pattern . '/', array_keys($this->attributes))
+            RegexGuard::getGuard()->grep($pattern, array_keys($this->attributes))
         ));
 
         return new static($results);

@@ -13,7 +13,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "ext-json":"*"
+        "ext-json":"*",
+        "regex-guard/regex-guard": "dev-master"
     },
     "require-dev": {
         "mockery/mockery": "dev-master"
