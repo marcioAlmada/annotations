@@ -66,9 +66,9 @@ class Parser implements ParserInterface
      */
     public function __construct($raw_doc_block, ParserRulesInterface $rules)
     {
-        $this->raw_doc_block = preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $raw_doc_block);
         $this->types_pattern = '/^('.implode('|', $this->types).')(\s+)/';
         $this->rules = $rules;
+        $this->raw_doc_block = $this->getDocblockTagsSection($raw_doc_block);;
         $identifier = $rules->getAnnotationIdentifier();
         $this->data_pattern = '/(?<=\\'.$identifier.')('
             .$rules->getAnnotationNameRegex()
@@ -136,5 +136,32 @@ class Parser implements ParserInterface
 
         return (new $typeParser)->parse($value, $key);
     }
+
+    /**
+     * Filters docblock tags section, removing unwanted long and short descriptions
+     *
+     * @param  string $docblock A docblok string without delimiters
+     * @return string           Tag section from given docblock
+     */
+    protected function getDocblockTagsSection($docblock)
+    {
+        $docblock = $this->sanitizeDocblock($docblock);
+        preg_match('/^\s*\\'. $this->rules->getAnnotationIdentifier() .'/m', $docblock, $matches, PREG_OFFSET_CAPTURE);
+
+        // return found docblock tag section or empty string
+        return isset($matches[0]) ? substr($docblock, $matches[0][1]) : '';
+    }
+
+    /**
+     * Filters docblock delimiters
+     *
+     * @param  string $docblock A raw docblok string
+     * @return string           A docblok string without delimiters
+     */
+    protected function sanitizeDocblock($docblock)
+    {
+        return preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $docblock);
+    }
+
 
 }

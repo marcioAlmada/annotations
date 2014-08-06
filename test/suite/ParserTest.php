@@ -382,4 +382,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
       $annotations = $this->getParser('i32_fixture')->parse();
       $this->assertSame(['stringed', 'integers', 'floated', 'jsonable', 'evaluated'], $annotations['type']);
     }
+
+    /**
+     * @test for issue #49
+     * @link https://github.com/marcioAlmada/annotations/issues/49
+     */
+    public function issue49()
+    {
+      $annotations = $this->getParser('i49_fixture')->parse();
+      $this->assertSame(['return' => 'void'], $annotations);
+    }
 }

@@ -238,6 +238,17 @@ class AnnotationsFixture
     private $i32_fixture;
 
     /**
+     * A valid URL is:
+     * scheme://user:pass@domain.com **we had a false positive here**
+     *
+     * The getReturnType() method will get the return type of the method,
+     * by parsing its @return tag in the comment block. **we had a false positive here**
+     *
+     * @return void
+     */
+    private $i49_fixture;
+
+    /**
      * @get @post @ajax
      * @postParam x
      * @postParam y
