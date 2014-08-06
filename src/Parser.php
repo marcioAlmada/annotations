@@ -61,14 +61,13 @@ class Parser implements ParserInterface
     /**
      * Parse a given docblock
      *
-     * @param  string $docBlock
+     * @param  string $docblock
      * @return array
      */
-    public function parse($docBlock)
+    public function parse($docblock)
     {
-        $docBlock = preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $docBlock);
-
-        $annotations = $this->parseAnnotations($docBlock);
+        $docblock = $this->getDocblockTagsSection($docblock);
+        $annotations = $this->parseAnnotations($docblock);
         foreach ($annotations as &$value) {
             if (1 == count($value)) {
                 $value = $value[0];
@@ -76,6 +75,32 @@ class Parser implements ParserInterface
         }
 
         return $annotations;
+    }
+
+    /**
+     * Filters docblock tags section, removing unwanted long and short descriptions
+     *
+     * @param  string $docblock A docblok string without delimiters
+     * @return string           Tag section from given docblock
+     */
+    protected function getDocblockTagsSection($docblock)
+    {
+        $docblock = $this->sanitizeDocblock($docblock);
+        preg_match('/^\s*\\'.self::TOKEN_ANNOTATION_IDENTIFIER.'/m', $docblock, $matches, PREG_OFFSET_CAPTURE);
+
+        // return found docblock tag section or empty string
+        return isset($matches[0]) ? substr($docblock, $matches[0][1]) : '';
+    }
+
+    /**
+     * Filters docblock delimiters
+     *
+     * @param  string $docblock A raw docblok string
+     * @return string           A docblok string without delimiters
+     */
+    protected function sanitizeDocblock($docblock)
+    {
+        return preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $docblock);
     }
 
     /**
