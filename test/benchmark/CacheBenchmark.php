@@ -36,7 +36,7 @@ benchmark($iterations, new Cache\ArrayCache());
 // get global end time
 $end = microtime(true);
 
-echo "\n### Finished benchmark in\033[32m ",  $end - $start, "\033[0m seconds.\n";
+echo "\n### Finished benchmark in\033[32m ",  $end - $start, "\033[0m.\n";
 
 /**
  * Runs a benchmark for a given cache handler
@@ -76,7 +76,7 @@ function benchmark($iterations = 1000, Interfaces\CacheInterface $cache = null)
     }
     echo "\033[1A";
     $endTime = microtime(true);
-    $msg = "{$id}) Read took \033[32m" . ($endTime - $startTime) . " seconds\033[0m";
+    $msg = "{$id}) Read took \033[32m" . ($endTime - $startTime) . "\033[0m";
     if($cache) $msg .= " with \033[33m\\" .get_class($cache) . "\033[0m;";
     else $msg .= " without cache;";
     echo "\n", $msg, "\n";
