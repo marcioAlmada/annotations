@@ -31,7 +31,7 @@ Minime\Annotations is the first KISS PHP annotations library.
 ```json
 {
   "require": {
-    "minime/annotations": "~1.12"
+    "minime/annotations": "~1.13"
   }
 }
 ```
