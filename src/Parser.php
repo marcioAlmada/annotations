@@ -25,11 +25,11 @@ class Parser implements ParserInterface
      * @var array
      */
     protected $types = [
-        'Integer'  => 'integer',
-        'String'   => 'string',
-        'Float'    => 'float',
-        'Json'     => 'json',
-        'Concrete' => '->'
+        '\Minime\Annotations\Types\Integer'  => 'integer',
+        '\Minime\Annotations\Types\String'   => 'string',
+        '\Minime\Annotations\Types\Float'    => 'float',
+        '\Minime\Annotations\Types\Json'     => 'json',
+        '\Minime\Annotations\Types\Concrete' => '->'
     ];
 
     /**
@@ -37,14 +37,14 @@ class Parser implements ParserInterface
     *
     * @var string
     */
-    protected $types_pattern;
+    protected $typesPattern;
 
     /**
      * The regex to extract data from a single line
      *
      * @var string
      */
-    protected $data_pattern;
+    protected $dataPattern;
 
     /**
      * Parser constructor
@@ -52,10 +52,22 @@ class Parser implements ParserInterface
      */
     public function __construct()
     {
-        $this->types_pattern = '/^('.implode('|', $this->types).')(\s+)/';
-        $this->data_pattern = '/(?<=\\'. self::TOKEN_ANNOTATION_IDENTIFIER .')('
+        $this->buildTypesPattern();
+        $this->dataPattern = '/(?<=\\'. self::TOKEN_ANNOTATION_IDENTIFIER .')('
             . self::TOKEN_ANNOTATION_NAME
             .')(((?!\s\\'. self::TOKEN_ANNOTATION_IDENTIFIER .').)*)/s';
+    }
+
+    public function registerType($class, $token)
+    {
+        $this->types[$class] = $token;
+        $this->buildTypesPattern();
+    }
+
+    public function unregisterType($class)
+    {
+        unset($this->types[$class]);
+        $this->buildTypesPattern();
     }
 
     /**
@@ -81,7 +93,7 @@ class Parser implements ParserInterface
      * Filters docblock tags section, removing unwanted long and short descriptions
      *
      * @param  string $docblock A docblok string without delimiters
-     * @return string           Tag section from given docblock
+     * @return string Tag section from given docblock
      */
     protected function getDocblockTagsSection($docblock)
     {
@@ -96,7 +108,7 @@ class Parser implements ParserInterface
      * Filters docblock delimiters
      *
      * @param  string $docblock A raw docblok string
-     * @return string           A docblok string without delimiters
+     * @return string A docblok string without delimiters
      */
     protected function sanitizeDocblock($docblock)
     {
@@ -112,7 +124,7 @@ class Parser implements ParserInterface
     protected function parseAnnotations($str)
     {
         $annotations = [];
-        preg_match_all($this->data_pattern, $str, $found);
+        preg_match_all($this->dataPattern, $str, $found);
         foreach ($found[2] as $key => $value) {
             $annotations[ $this->sanitizeKey($found[1][$key]) ][] = $this->parseValue($value, $found[1][$key]);
         }
@@ -134,17 +146,16 @@ class Parser implements ParserInterface
 
             return true;
         }
-        $type = 'Dynamic';
-        if (preg_match($this->types_pattern, $value, $found)) { // strong typed
+        $type = '\Minime\\Annotations\\Types\\Dynamic';
+        if (preg_match($this->typesPattern, $value, $found)) { // strong typed
             $type = $found[1];
             $value = trim(substr($value, strlen($type)));
             if (in_array($type, $this->types)) {
                 $type = array_search($type, $this->types);
             }
         }
-        $typeParser = "Minime\\Annotations\\Types\\". $type;
 
-        return (new $typeParser)->parse($value, $key);
+        return (new $type)->parse($value, $key);
     }
 
     /**
@@ -159,5 +170,10 @@ class Parser implements ParserInterface
         }
 
         return $key;
+    }
+
+    protected function buildTypesPattern()
+    {
+        $this->typesPattern = '/^('.implode('|', $this->types).')(\s+)/';
     }
 }
