@@ -20,6 +20,11 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         return new Reader(new Parser);
     }
 
+    public function testGetReader()
+    {
+        $this->assertInstanceOf('Minime\Annotations\Interfaces\ParserInterface', $this->getReader()->getParser());
+    }
+
     public function testGetAnnotations()
     {
         $reflectionClass = new \ReflectionClass($this->fixture);

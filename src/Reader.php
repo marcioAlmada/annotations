@@ -28,7 +28,7 @@ class Reader implements ReaderInterface
      */
     public function __construct(ParserInterface $parser)
     {
-        $this->parser = $parser;
+        $this->setParser($parser);
     }
 
     /**
@@ -45,6 +45,22 @@ class Reader implements ReaderInterface
     public function getCache()
     {
         return $this->cache;
+    }
+
+    /**
+     * @param \Minime\Annotations\Interfaces\ParserInterface $parser
+     */
+    public function setParser(ParserInterface $parser)
+    {
+        $this->parser = $parser;
+    }
+
+    /**
+     * @return \Minime\Annotations\Interfaces\ParserInterface
+     */
+    public function getParser()
+    {
+        return $this->parser;
     }
 
     /**

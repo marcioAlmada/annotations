@@ -10,6 +10,26 @@ namespace Minime\Annotations\Interfaces;
 interface ReaderInterface
 {
     /**
+     * @param \Minime\Annotations\Interfaces\CacheInterface $cache Cache handler
+     */
+    public function setCache(CacheInterface $cache);
+
+    /**
+     * @return \Minime\Annotations\Interfaces\CacheInterface Cache handler
+     */
+    public function getCache();
+
+    /**
+     * @param \Minime\Annotations\Interfaces\ParserInterface $parser
+     */
+    public function setParser(ParserInterface $parser);
+
+    /**
+     * @return \Minime\Annotations\Interfaces\ParserInterface
+     */
+    public function getParser();
+
+    /**
      * Retrieve all annotations from a given class
      *
      * @param  mixed                                                  $class Full qualified class name or object
