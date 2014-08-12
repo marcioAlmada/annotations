@@ -4,7 +4,6 @@ namespace Minime\Annotations;
 
 use \ReflectionProperty;
 use Minime\Annotations\Fixtures\AnnotationsFixture;
-use Minime\Annotations\Interfaces\ParserInterface;
 
 /**
  * @group parser
@@ -336,6 +335,20 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     public function exceptionWithBadFloatValue()
     {
         $this->parser->parse($this->getDocblock('bad_float_fixture'));
+    }
+
+    /**
+     * @test
+     */
+    public function testTypeRegister()
+    {
+        $docblock = '/** @value foo bar */';
+
+        $this->assertSame(['value' => 'foo bar'], $this->parser->parse($docblock));
+        $this->parser->registerType('\Minime\Annotations\Fixtures\FooType', 'foo');
+        $this->assertSame(['value' => 'this foo is bar'], $this->parser->parse($docblock));
+        $this->parser->unregisterType('\Minime\Annotations\Fixtures\FooType');
+        $this->assertSame(['value' => 'foo bar'], $this->parser->parse($docblock));
     }
 
     /**
