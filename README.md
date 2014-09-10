@@ -10,38 +10,175 @@ Minime \ Annotations
 
 Minime\Annotations is the first KISS PHP annotations library.
 
-## Features & Roadmap
-- [TODO] v2.0.0
-- ~~[DONE]~~ HHVM support (see [#19](https://github.com/marcioAlmada/annotations/issues/19))
-- ~~[DONE]~~ Concrete annotations (see [#18](https://github.com/marcioAlmada/annotations/issues/18))
-- ~~[DONE]~~ Parser improvements and optimizations (see [#17](https://github.com/marcioAlmada/annotations/issues/17))
-- ~~[DONE]~~ Class, property and method annotations
-- ~~[DONE]~~ API to filter and traverse annotations
-- ~~[DONE]~~ Traits (for convenient integration)
-- ~~[DONE]~~ Namespaced annotations
-- ~~[DONE]~~ <b>Optional</b> strong typed annotations: float, integer, string, json
-- ~~[DONE]~~ Dynamic annotations (eval type)
-- ~~[DONE]~~ Implicit boolean annotations
-- ~~[DONE]~~ Multiple value annotations
-- ~~[DONE]~~ Inline Docblock support (see [#15](https://github.com/marcioAlmada/annotations/issues/15))
-- ~~[DONE]~~ Multiline annotations (see [#16](https://github.com/marcioAlmada/annotations/issues/16))
-
 ## Composer Installation
 
 ```json
 {
   "require": {
-    "minime/annotations": "~1.12"
+    "minime/annotations": "~2.0"
   }
 }
 ```
 
-Through terminal: `composer require minime/annotations:~1.12` :8ball:
+Through terminal: `composer require minime/annotations:~2.0` :8ball:
+
+## Retrieving Annotations
+
+### Setup
+
+First grab an instance of the `Minime\Annotations\Reader` the lazy way:
+
+```php
+$reader = \Minime\Annotations\Reader::createFromDefaults();
+```
+
+Or instantiate it yourself:
+
+```php
+
+use Minime\Annotations\Reader;
+use Minime\Annotations\Parser;
+use Minime\Annotations\Cache\ArrayCache;
+
+$reader = new Reader(new Parser, new ArrayCache);
+```
+
+At this point it's a good idea to setup cache so you don't waste resources parsing docblocks twice.
+Notice that `Reader::createFromDefaults()` will return a reader instance with `ArrayCache` enabled.
+This means cache will be lost on each request, you might want to use a persistent cache like `FileCache` instead.
 
 
-## The Syntax
+### Reading Annotations
 
-Annotations are declared through a very simple DSL: `@<optional-namespace>.<annotation-name> <optional-type> <value>`. Examples below:
+Consider the following inspiring yada yada example:
+
+```php
+<?php namespace Controllers;
+
+/**
+ * @name Foo
+ * @accept ["json", "xml", "csv"]
+ * @delta .60
+ * @cache-duration 60
+ */
+class FooController
+{
+    /**
+     * @manages Models\Baz
+     */
+    protected $repository;
+
+    /**
+     * @get @post
+     * @auto-redirect Controllers\BarController@index
+     */
+    public function index()
+    {
+        return $this->repository->all();
+    }
+}
+```
+
+Use the `Reader` instance to read annotations from classes, properties and methods. Like so:
+
+```php
+$annotations = $reader->getClassAnnotations('Controllers\FooController');
+
+$annotations->get('name')   // > string(3) "Foo"
+$annotations->get('accept')   // > array(3){ [0] => "json" [1] => "xml" [2] => "csv" }
+$annotations->get('delta')    // > double(0.60)
+$annotations->get('cache-duration')    // > int(60)
+
+$annotations->get('undefined')  // > null
+```
+
+The same applies for methods and properties:
+
+```php
+$propertyAnnotations = $reader->getPropertyAnnotations('Controllers\FooController', 'repository');
+
+$propertyAnnotations->get('manages')   // > string(10) "Models\Baz"
+
+$methodAnnotations = $reader->getMethodAnnotations('Controllers\FooController', 'index');
+
+$methodAnnotations->get('get')   // > bool(true)
+$methodAnnotations->get('post')   // > bool(true)
+$methodAnnotations->get('auto-redirect')   // > string(31) "Controllers\BarController@index"
+```
+
+### Grepping And Traversing
+
+The annotations `Reader` returns `AnnotationsBag` instances so you can easily organize and pick annotations by name, namespace or regex filter:
+
+```php
+/**
+ * @response.xml
+ * @response.xls
+ * @response.json
+ * @response.csv
+ * @method.get
+ * @method.post
+ */
+class Foo {}
+
+$AnnotationsBag = Facade::getClassAnnotations('Foo');
+```
+
+#### Namespacing
+
+Retrieving all annotations within "response" namespace:
+
+```php
+$AnnotationsBag->useNamespace('response')->export();
+// > array(3){
+// >    ["xml"]  => (bool) TRUE,
+// >    ["xls"]  => (bool) TRUE,
+// >    ["json"] => (bool) TRUE,
+// >    ["csv"]  => (bool) TRUE
+// > }
+```
+
+#### Piping
+
+You can easily "pipe" filters. This time we will grep all annotations beginning with "x" and within "response" namespace:
+
+```php
+$AnnotationsBag->useNamespace('response')->grep('/^x/')->export();
+// > array(3){
+// >    ["xml"]  => (bool) TRUE,
+// >    ["xls"]  => (bool) TRUE
+// > }
+```
+
+#### Traversing results
+
+As you might expect, `AnnotationsBag` is traversable too:
+
+```php
+foreach($annotations->useNamespace('method') as $annotation => $value)
+{
+    // some behavior
+}
+```
+
+## The Default Syntax
+
+According to the default `Parser`, annotations are declared through a very simple DSL: 
+
+```
+@(<namespace><namespace-delimiter>)?<annotation-identifier> <type>? <value>?
+```
+
+- `@` must have a doc block mark
+    -  must  have an annotation identifier
+        - annotation identifier can have namespace with segments delimited by  `.` and `\`
+    - whitespace
+    - can have an annotation value
+        - value can have an optional type [`json`, `string`, `integer`, `float`, `->`], if absent type is assumed from value
+        - whitespace
+        - optional value, if absent `true` is assumed
+
+Some valid examples below:
 
 ```php
 /**
@@ -85,115 +222,6 @@ Annotations are declared through a very simple DSL: `@<optional-namespace>.<anno
  * @Concrete\Class\Based\Annotation -> { "foo" : ["bar"] }
  */
 ```
-For detailed information, please read below.
-
-## Retrieving Annotations
-
-### Using Traits
-
-The trait approach is useful when your API needs classes with self/internal inspection capabilities:
-
-```php
-/**
- * @get @post @delete
- * @entity bar
- * @has-many Baz
- * @accept ["json", "xml", "csv"]
- * @max 45
- * @delta .45
- * @cache-duration eval 1000 * 24 * 60 * 60
- */
-class Foo { use Minime\Annotations\Traits\Reader; }
-
-$foo = new Foo();
-$annotations = $foo->getClassAnnotations();
-
-$annotations->get('get')      // > bool(true)
-$annotations->get('post')     // > bool(true)
-$annotations->get('delete')   // > bool(true)
-
-$annotations->get('entity')   // > string(3) "bar"
-$annotations->get('has-many') // > string(3) "Baz"
-
-$annotations->get('accept')   // > array(3){ [0] => "json" [1] => "xml" [2] => "csv" }
-$annotations->get('max')      // > int(45)
-$annotations->get('delta')    // > double(0.45)
-$annotations->get('cache-duration')    // > int(86400000)
-
-$annotations->get('undefined')  // > null
-```
-
-Get annotations from property and methods as easily with:
-
-```php
-$foo->getPropertyAnnotations('property_name')->...;
-$foo->getMethodAnnotations('method_name')->...;
-```
-
-### Using The Facade
-
-The facade is useful when you want to inspect classes out of your logic domain:
-
-```php
-use Minime\Annotations\Facade;
-
-Facade::getClassAnnotations('Full\Class\Name');
-Facade::getPropertyAnnotations('Full\Class\Name', 'property_name');
-Facade::getMethodAnnotations('Full\Class\Name', 'method_name');
-```
-
-### Grepping and traversing
-
-Annotations will grow and you will need to manage them. That's why we give you an `AnnotationsBag` so you can easily organize and pick annotations by name, namespace or go crazy with some regex:
-
-```php
-/**
- * @response.xml
- * @response.xls
- * @response.json
- * @response.csv
- * @method.get
- * @method.post
- */
-class Foo {}
-
-$AnnotationsBag = Facade::getClassAnnotations('Foo');
-```
-
-#### Namespacing
-
-Retrieving all annotations within "response" namespace:
-
-```php
-$AnnotationsBag->useNamespace('response')->export();
-// > array(3){
-// >    ["xml"]  => (bool) TRUE,
-// >    ["xls"]  => (bool) TRUE,
-// >    ["json"] => (bool) TRUE,
-// >    ["csv"]  => (bool) TRUE
-// > }
-```
-
-#### Piping
-
-You can easily "pipe" filters. This time we will grep all annotations beginning with "x" and within "response" namespace:
-
-```php
-$AnnotationsBag->useNamespace('response')->grep('^x')->export();
-// > array(3){
-// >    ["xml"]  => (bool) TRUE,
-// >    ["xls"]  => (bool) TRUE
-// > }
-```
-
-#### Traversing results
-
-```php
-foreach($annotations_bag->useNamespace('method') as $annotation => $value)
-{
-    // some behavior
-}
-```
 
 ## Concrete Annotations
 
@@ -206,6 +234,69 @@ Sometimes you need your annotations to encapsulate logic and you can only do it 
 ```
 
 In the example above: when prompted, the annotation parser will instantiate a `new \Model\Field\Validation()` following the declared JSON prototype `{ "rules" : {...} }`. Voilà! Instantly classy annotations.
+
+## Caching
+
+This package comes with two cache handlers. `ArrayCache` (for testing) and a very basic `FileCache` for persistence. Cache handler can be set during `Reader` instantiation:
+
+```
+use Minime\Annotations\Reader;
+use Minime\Annotations\Parser;
+use Minime\Annotations\Cache\FileCache;
+
+$cacheHandler = new FileCache('storage/path`);
+$reader = new Reader(new Parser, $cacheHandler);
+```
+
+Or later with `FileCache::setCache()`:
+
+```
+$reader->setCache(new FileCache);
+```
+
+## Public API
+
+### Minime\Annotations\Reader
+#### Reader::getClassAnnotations($subject)
+#### Reader::getPropertyAnnotations($subject, $propertyName)
+#### Reader::getMethodAnnotations($subject, $methodName)
+#### Reader::setCache(CacheInterface $cache)
+#### Reader::getCache()
+#### Reader::setParser(ParserInterface $cache)
+#### Reader::getParser()
+
+### Minime\Annotations\AnnotationsBag
+#### AnnotationsBag::grep($pattern)
+#### AnnotationsBag::useNamespace($pattern)
+#### AnnotationsBag::union(AnnotationsBag $bag)
+#### AnnotationsBag::toArray()
+#### AnnotationsBag::get($key)
+#### AnnotationsBag::getAsArray($key)
+#### AnnotationsBag::has($key)
+#### AnnotationsBag::set($key, $value)
+#### AnnotationsBag::count
+
+### Minime\Annotations\Cache\FileCache
+#### FileCache::__construct($storagePath = null)
+#### FileCache::clear()
+
+Clears entire cache. See example in context with `Reader`:
+
+```
+$reader->getCache()->clear();
+```
+
+### Minime\Annotations\Cache\ArrayCache
+
+Array cache is lost after each request. Use array cache for tests only.
+
+#### ArrayCache::clear()
+
+Clears entire cache. See example in context with `Reader`:
+
+```
+$reader->getCache()->clear();
+```
 
 ## Contributions
 
@@ -220,11 +311,6 @@ Found a bug? Have an improvement? Take a look at the [issues](https://github.com
 0. Modify code: correct bug, implement features
 0. Back to step 4
 
-> PLEASE, be as objective as possible. Avoid combos of improvements + doc + solve bugs + features within the same pull request.
-
 ## Copyright
 
 Copyright (c) 2014 Márcio Almada. Distributed under the terms of an MIT-style license. See LICENSE for details.
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/marcioAlmada/annotations/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
