@@ -5,6 +5,7 @@ namespace Minime\Annotations;
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ReaderInterface;
 use Minime\Annotations\Interfaces\CacheInterface;
+use Minime\Annotations\Cache\ArrayCache;
 
 /**
  * This class is the primary entry point to read annotations
@@ -26,15 +27,16 @@ class Reader implements ReaderInterface
     /**
      * @param \Minime\Annotations\Interfaces\ParserInterface $parser
      */
-    public function __construct(ParserInterface $parser)
+    public function __construct(ParserInterface $parser, CacheInterface $cache = null)
     {
         $this->setParser($parser);
+        $this->setCache($cache);
     }
 
     /**
      * @param \Minime\Annotations\Interfaces\CacheInterface $cache Cache handler
      */
-    public function setCache(CacheInterface $cache)
+    public function setCache(CacheInterface $cache = null)
     {
         $this->cache = $cache;
     }
@@ -132,6 +134,6 @@ class Reader implements ReaderInterface
      */
     public static function createFromDefaults()
     {
-        return new self(new Parser);
+        return new self(new Parser, new ArrayCache);
     }
 }
