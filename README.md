@@ -79,36 +79,38 @@ class FooController
 }
 ```
 
-Use the `Reader` instance to read annotations from classes, properties and methods. Like so:
+Use the `Minime\Annotations\Reader` instance to read annotations from classes, properties and methods. Like so:
 
 ```php
 $annotations = $reader->getClassAnnotations('Controllers\FooController');
 
-$annotations->get('name')   // > string(3) "Foo"
+$annotations->get('name')     // > string(3) "Foo"
 $annotations->get('accept')   // > array(3){ [0] => "json" [1] => "xml" [2] => "csv" }
-$annotations->get('delta')    // > double(0.60)
-$annotations->get('cache-duration')    // > int(60)
+$annotations->get('delta')           // > double(0.60)
+$annotations->get('cache-duration')  // > int(60)
 
 $annotations->get('undefined')  // > null
 ```
 
-The same applies for methods and properties:
+The same applies properties...
 
 ```php
-$propertyAnnotations = $reader->getPropertyAnnotations('Controllers\FooController', 'repository');
+$annotations = $reader->getPropertyAnnotations('Controllers\FooController', 'repository');
+$annotations->get('manages')   // > string(10) "Models\Baz"
+```
 
-$propertyAnnotations->get('manages')   // > string(10) "Models\Baz"
+And for methods:
 
-$methodAnnotations = $reader->getMethodAnnotations('Controllers\FooController', 'index');
-
-$methodAnnotations->get('get')   // > bool(true)
-$methodAnnotations->get('post')   // > bool(true)
-$methodAnnotations->get('auto-redirect')   // > string(31) "Controllers\BarController@index"
+```php
+$annotations = $reader->getMethodAnnotations('Controllers\FooController', 'index');
+$annotations->get('get')   // > bool(true)
+$annotations->get('post')   // > bool(true)
+$annotations->get('auto-redirect')   // > string(31) "Controllers\BarController@index"
 ```
 
 ### Grepping And Traversing
 
-The annotations `Reader` returns `AnnotationsBag` instances so you can easily organize and pick annotations by name, namespace or regex filter:
+The annotations `Minime\Annotations\Reader` returns `AnnotationsBag` instances so you can easily organize and pick annotations by name, namespace or regex filter:
 
 ```php
 /**
@@ -170,13 +172,15 @@ According to the default `Parser`, annotations are declared through a very simpl
 ```
 
 - `@` must have a doc block mark
-    -  must  have an annotation identifier
-        - annotation identifier can have namespace with segments delimited by  `.` and `\`
+-  must  have an annotation identifier
+    - annotation identifier can have namespace with segments delimited by  `.` or `\`
+- whitespace
+- can have an annotation value
+    - value can have an optional type [`json`, `string`, `integer`, `float`, `->`]
+        - if absent, type is assumed from value
     - whitespace
-    - can have an annotation value
-        - value can have an optional type [`json`, `string`, `integer`, `float`, `->`], if absent type is assumed from value
-        - whitespace
-        - optional value, if absent `true` is assumed
+    - optional value
+        - if absent, `true` is assumed
 
 Some valid examples below:
 
@@ -237,9 +241,9 @@ In the example above: when prompted, the annotation parser will instantiate a `n
 
 ## Caching
 
-This package comes with two cache handlers. `ArrayCache` (for testing) and a very basic `FileCache` for persistence. Cache handler can be set during `Reader` instantiation:
+This package comes with two cache handlers. `ArrayCache` (for testing) and a very basic `FileCache` for persistence. Cache handler can be set during `Minime\Annotations\Reader` instantiation:
 
-```
+```php
 use Minime\Annotations\Reader;
 use Minime\Annotations\Parser;
 use Minime\Annotations\Cache\FileCache;
@@ -250,7 +254,7 @@ $reader = new Reader(new Parser, $cacheHandler);
 
 Or later with `FileCache::setCache()`:
 
-```
+```php
 $reader->setCache(new FileCache);
 ```
 
@@ -258,8 +262,29 @@ $reader->setCache(new FileCache);
 
 ### Minime\Annotations\Reader
 #### Reader::getClassAnnotations($subject)
+
+Get all annotations from a given class:
+
+```php
+$reader->getClassAnnotations('Full\Qualified\Class');
+```
+
 #### Reader::getPropertyAnnotations($subject, $propertyName)
+
+Get all annotations from a given class property:
+
+```php
+$reader->getPropertyAnnotations('Full\Qualified\Class', 'propertyName');
+```
+
 #### Reader::getMethodAnnotations($subject, $methodName)
+
+Get all annotations from a given class method:
+
+```php
+$reader->getMethodAnnotations('Full\Qualified\Class', 'methodName');
+```
+
 #### Reader::setCache(CacheInterface $cache)
 #### Reader::getCache()
 #### Reader::setParser(ParserInterface $cache)
@@ -267,10 +292,25 @@ $reader->setCache(new FileCache);
 
 ### Minime\Annotations\AnnotationsBag
 #### AnnotationsBag::grep($pattern)
+
+Filters annotations using a valid regular expression and returns a new `AnnotationBag`
+with the matching results.
+
 #### AnnotationsBag::useNamespace($pattern)
+
+Isolates a given namespace of annotations. Basically this method filters
+annotations by a namespace and returns a new `AnnotationBag` with simplified
+annotations identifiers.
+
 #### AnnotationsBag::union(AnnotationsBag $bag)
+
+Performs union operation with a subject `AnnotationBag`:
+
+```php
+$annotations->union($defaultAnnotations);
+```
 #### AnnotationsBag::toArray()
-#### AnnotationsBag::get($key)
+#### AnnotationsBag::get($key, $default = null)
 #### AnnotationsBag::getAsArray($key)
 #### AnnotationsBag::has($key)
 #### AnnotationsBag::set($key, $value)
@@ -278,11 +318,22 @@ $reader->setCache(new FileCache);
 
 ### Minime\Annotations\Cache\FileCache
 #### FileCache::__construct($storagePath = null)
+
+See example in context with `Minime\Annotations\Reader`:
+
+```php
+use Minime\Annotations\Cache\FileCache;
+
+$reader->setCache(new FileCache('app/tmp/storage/path'));
+```
+
+If no path is given OS tmp dir is assumed as cache storage path.
+
 #### FileCache::clear()
 
-Clears entire cache. See example in context with `Reader`:
+Clears entire cache. See example in context with `Minime\Annotations\Reader`:
 
-```
+```php
 $reader->getCache()->clear();
 ```
 
@@ -292,9 +343,9 @@ Array cache is lost after each request. Use array cache for tests only.
 
 #### ArrayCache::clear()
 
-Clears entire cache. See example in context with `Reader`:
+Clears entire cache. See example in context with `Minime\Annotations\Reader`:
 
-```
+```php
 $reader->getCache()->clear();
 ```
 
