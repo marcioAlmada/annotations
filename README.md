@@ -176,11 +176,9 @@ Please refer to annotations bag public [API](#minimeannotationsreader) for more 
 
 ## The Default Syntax
 
-According to the default `Parser`, annotations are declared through a very simple DSL: 
+![@(<namespace><namespace-delimiter>)?<annotation-identifier> <type>? <value>?](https://dl.dropboxusercontent.com/u/49549530/annotations/grammar.png)
 
-```
-@(<namespace><namespace-delimiter>)?<annotation-identifier> <type>? <value>?
-```
+Which basically means that:
 
 - `@` line must start with a docblock annotation tag
 -  must  have an annotation identifier
