@@ -59,7 +59,7 @@ class AnnotationsFixture
     private $float_fixture;
 
     /**
-     * @bar test@example.com @toto @tata @number float 2.1
+     * @bar test@example.com @toto @tata @number 2.1
      */
     private $identifier_parsing_fixture;
 
