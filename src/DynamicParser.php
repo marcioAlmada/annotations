@@ -112,7 +112,8 @@ class DynamicParser implements ParserInterface
     }
 
     /**
-     * Just a hook so derived parses can modify annotation identifiers before they get indexed
+     * Just a hook so derived parsers can transform annotation identifiers before they go to AST
+     *
      * @param  string $key
      * @return string
      */
