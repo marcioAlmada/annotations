@@ -1,0 +1,6 @@
+annotation  ::= '@'(namespace delimiter)*(identifier) ((type |) value |)
+identifier  ::= '[a-z] [A-Z] [0-9] _ -'
+namespace   ::= ('\' |)('[a-z] [A-Z] _ -'(delimiter))*
+delimiter   ::= '.' | '\'
+type        ::= 'json' | 'string' | 'integer' | 'float' | '->'
+value       ::= 'all unicode characters including \n'

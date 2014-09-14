@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<svg width="590" height="160" viewBox="-8 -86 590 160 " xmlns="http://www.w3.org/2000/svg" version="1.1">
+<defs><style type="text/css">.terminal_rect{fill:rgb(206,255,206);stroke:black;stroke-width:2;}.terminal_text{fill:black;font-family:Verdana,Sans-serif;text-anchor:middle;font-size:14px;}.symbol_rect{fill:rgb(206,255,206);stroke:black;stroke-width:2;}.symbol_text{fill:black;font-family:Verdana,Sans-serif;font-weight:bold;font-style:italic;text-anchor:middle;font-size:14px;}.path{fill:none;stroke:black;stroke-width:2;}.rule_text{fill:black;font-family:Verdana,Sans-serif;font-weight:bold;font-size:14px;}.rule_path_edge{fill:none;stroke:black;stroke-width:3;}</style></defs>
+<text class="rule_text" x="0" y="-64" >namespace:</text>
+<rect class="terminal_rect" x="66" y="-14" width="26" height="28" rx="28" />
+<text class="terminal_text" x="79" y="4" >\</text>
+<path class="path" d="M66 44 L82 44" />
+<path class="path" d="M30 0 L66 0 M30 0 Q42 0 42 12 M128 0 L92 0 M128 0 Q116 0 116 12" />
+<path class="path" d="M54 44 L66 44 M54 44 Q42 44 42 32 L42 12 M104 44 L82 44 M104 44 Q116 44 116 32 L116 12" />
+<rect class="terminal_rect" x="200" y="-14" width="166" height="28" rx="28" />
+<text class="terminal_text" x="283" y="4" >[a-z] [A-Z] _ -</text>
+<rect class="symbol_rect" x="390" y="-14" width="106" height="28" rx="1" />
+<text class="symbol_text" x="443" y="4" >delimiter</text>
+<path class="path" d="M366 0 L390 0" />
+<path class="path" d="M200 0 L176 0 M188 0 Q176 0 176 -12 L176 -36 Q176 -48 188 -48 L508 -48 Q520 -48 520 -36 L520 -12 Q520 0 508 0 L496 0 L520 0" />
+<path class="path" d="M200 0 L152 0 Q164 0 164 12 L164 24 Q164 36 176 36 L520 36 Q532 36 532 24 L532 12 Q532 0 544 0 L496 0 M152 0 L176 0 M520 0 L544 0" />
+<path class="path" d="M128 0 L152 0" />
+<path class="path" d="M0 0 L30 0 M574 0 L544 0" />
+<path class="rule_path_edge" d="M0 -6 L0 6 M574 -6 L574 6" />
+</svg>
