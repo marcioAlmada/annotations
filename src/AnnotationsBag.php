@@ -110,7 +110,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Filters annotations based on a regexp
      *
-     * @param  string                             $pattern Valid regexp
+     * @param  string                             $pattern valid regexp
      * @return \Minime\Annotations\AnnotationsBag Annotations collection with filtered results
      */
     public function grep($pattern)
@@ -125,13 +125,17 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Isolates a given namespace of annotations.
      *
-     * @param  string                             $pattern namespace
+     * @param  string                             $pattern    namespace
+     * @param  array                              $delimiters possible namespace delimiters to mask
      * @return \Minime\Annotations\AnnotationsBag
      */
-    public function useNamespace($pattern)
+    public function useNamespace($pattern, array $delimiters = ['.', '\\'])
     {
-        $namespace_pattern = '/^' . preg_quote(trim($pattern)) . '/';
-        $iterator = new RegexIterator($this->getIterator(), $namespace_pattern, RegexIterator::REPLACE, RegexIterator::USE_KEY);
+        $mask =  implode('', $delimiters);
+        $consumer =  '(' . implode('|', array_map('preg_quote', $delimiters)) .')';
+        $namespace_pattern = '/^' . preg_quote(rtrim($pattern, $mask)) .  $consumer . '/';
+        $iterator = new RegexIterator(
+            $this->getIterator(), $namespace_pattern, RegexIterator::REPLACE, RegexIterator::USE_KEY);
         $iterator->replacement = '';
 
         return new static(iterator_to_array($iterator));

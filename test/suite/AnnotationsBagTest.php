@@ -111,6 +111,11 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
             $this->Bag->useNamespace('Minime\Annotations\Fixtures\\')->get('AnnotationConstructInjection')
         );
 
+        $this->assertSame(
+            $this->Bag->useNamespace('Minime\Annotations\Fixtures\\')->get('AnnotationConstructInjection'),
+            $this->Bag->useNamespace('Minime\Annotations\Fixtures')->get('AnnotationConstructInjection')
+        );
+
         $this->Bag = new AnnotationsBag(
             [
                 'path.to.the.treasure' => 'cheers!',
@@ -125,6 +130,11 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
             $this->Bag->useNamespace('path.to.the.')->toArray()
         );
 
+        $this->assertSame(
+            $this->Bag->useNamespace('path.to.the')->toArray(),
+            $this->Bag->useNamespace('path.to.the.')->toArray()
+        );
+
         // chained namespace grep
         $this->assertSame(
             ['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie', 'the.cake.another.path.to.the.cake' => 'the real cake'],
@@ -134,6 +144,11 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(
             ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
             $this->Bag->useNamespace('path.')->useNamespace('to.')->useNamespace('the.')->toArray()
+        );
+
+        $this->assertSame(
+            $this->Bag->useNamespace('path.')->useNamespace('to.')->useNamespace('the.')->toArray(),
+            $this->Bag->useNamespace('path')->useNamespace('to')->useNamespace('the')->toArray()
         );
     }
 
