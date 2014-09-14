@@ -16,6 +16,7 @@ class Dynamic implements TypeInterface
      */
     public function parse($value, $annotation = null)
     {
+        if ('' === $value) return true; // implicit boolean
         $json = Json::jsonDecode($value);
         if (JSON_ERROR_NONE === json_last_error()) {
             return $json;

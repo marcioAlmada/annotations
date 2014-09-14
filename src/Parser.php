@@ -142,10 +142,6 @@ class Parser implements ParserInterface
     protected function parseValue($value, $key = null)
     {
         $value = trim($value);
-        if ('' === $value) { // implicit boolean
-
-            return true;
-        }
         $type = '\Minime\\Annotations\\Types\\Dynamic';
         if (preg_match($this->typesPattern, $value, $found)) { // strong typed
             $type = $found[1];
