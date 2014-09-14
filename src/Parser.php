@@ -2,8 +2,6 @@
 
 namespace Minime\Annotations;
 
-use Minime\Annotations\Interfaces\ParserInterface;
-
 /**
  * An Annotations parser
  *
@@ -12,14 +10,10 @@ use Minime\Annotations\Interfaces\ParserInterface;
  * @license MIT
  *
  */
-class Parser implements ParserInterface
+class Parser extends DynamicParser
 {
-    const TOKEN_ANNOTATION_IDENTIFIER = '@';
-
-    const TOKEN_ANNOTATION_NAME = '[a-zA-Z\_\-\\\][a-zA-Z0-9\_\-\.\\\]*';
-
     /**
-     * The parsable type in a given docblock
+     * The lexer table of parsable types in a given docblock
      * declared in a ['token' => 'symbol'] associative array
      *
      * @var array
@@ -40,22 +34,13 @@ class Parser implements ParserInterface
     protected $typesPattern;
 
     /**
-     * The regex to extract data from a single line
-     *
-     * @var string
-     */
-    protected $dataPattern;
-
-    /**
      * Parser constructor
      *
      */
     public function __construct()
     {
         $this->buildTypesPattern();
-        $this->dataPattern = '/(?<=\\'. self::TOKEN_ANNOTATION_IDENTIFIER .')('
-            . self::TOKEN_ANNOTATION_NAME
-            .')(((?!\s\\'. self::TOKEN_ANNOTATION_IDENTIFIER .').)*)/s';
+        parent::__construct();
     }
 
     public function registerType($class, $token)
@@ -68,68 +53,6 @@ class Parser implements ParserInterface
     {
         unset($this->types[$class]);
         $this->buildTypesPattern();
-    }
-
-    /**
-     * Parse a given docblock
-     *
-     * @param  string $docblock
-     * @return array
-     */
-    public function parse($docblock)
-    {
-        $docblock = $this->getDocblockTagsSection($docblock);
-        $annotations = $this->parseAnnotations($docblock);
-        foreach ($annotations as &$value) {
-            if (1 == count($value)) {
-                $value = $value[0];
-            }
-        }
-
-        return $annotations;
-    }
-
-    /**
-     * Filters docblock tags section, removing unwanted long and short descriptions
-     *
-     * @param  string $docblock A docblok string without delimiters
-     * @return string Tag section from given docblock
-     */
-    protected function getDocblockTagsSection($docblock)
-    {
-        $docblock = $this->sanitizeDocblock($docblock);
-        preg_match('/^\s*\\'.self::TOKEN_ANNOTATION_IDENTIFIER.'/m', $docblock, $matches, PREG_OFFSET_CAPTURE);
-
-        // return found docblock tag section or empty string
-        return isset($matches[0]) ? substr($docblock, $matches[0][1]) : '';
-    }
-
-    /**
-     * Filters docblock delimiters
-     *
-     * @param  string $docblock A raw docblok string
-     * @return string A docblok string without delimiters
-     */
-    protected function sanitizeDocblock($docblock)
-    {
-        return preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $docblock);
-    }
-
-    /**
-     * Creates raw [annotation => value, [...]] tree
-     *
-     * @param  string $str
-     * @return array
-     */
-    protected function parseAnnotations($str)
-    {
-        $annotations = [];
-        preg_match_all($this->dataPattern, $str, $found);
-        foreach ($found[2] as $key => $value) {
-            $annotations[ $this->sanitizeKey($found[1][$key]) ][] = $this->parseValue($value, $found[1][$key]);
-        }
-
-        return $annotations;
     }
 
     /**
@@ -156,6 +79,7 @@ class Parser implements ParserInterface
 
     /**
      * Makes `@\My\Namespaced\Class` equivalent of `@My\Namespaced\Class`
+     *
      * @param  string $key
      * @return string
      */
