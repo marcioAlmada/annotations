@@ -40,7 +40,7 @@ use Minime\Annotations\Cache\ArrayCache;
 $reader = new Reader(new Parser, new ArrayCache);
 ```
 
-`Reader::createFromDefaults()` creates a reader instance with array cache enabled.
+Notice that `Reader::createFromDefaults()` creates a reader instance with array cache enabled.
 On production you might want to use a persistent cache handler like `FileCache` instead:
 
 ```php
@@ -51,7 +51,7 @@ $reader->setCache(new FileCache('app/storage/path'));
 
 ## Reading Annotations
 
-Consider the following class with docblock annotations:
+Consider the following class with some docblock annotations:
 
 ```php
 <?php
@@ -76,7 +76,7 @@ class FooController
 }
 ```
 
-Use the `Minime\Annotations\Reader` instance to read annotations from classes,
+Let's use the `Minime\Annotations\Reader` instance to read annotations from classes,
 properties and methods. Like so:
 
 ```php
@@ -142,7 +142,7 @@ $AnnotationsBag->useNamespace('response')->toArray();
 
 ### Piping Filters
 
-You can easily "pipe" filters. This time we will grep all annotations beginning with "x" and within
+You can also easily "pipe" filters. This time let's "grep" all annotations beginning with "x" and within
 "response" namespace:
 
 ```php
@@ -259,8 +259,8 @@ Voilà! Instantly classy annotations.
 
 ## Caching
 
-This package comes with two cache handlers. `ArrayCache` (for testing) and a very basic `FileCache`
-for persistence. Cache handler can be set during `Minime\Annotations\Reader` instantiation:
+This package comes with two basic cache handlers. `ArrayCache` (for testing) and a very simple `FileCache`
+handler for persistence. Cache handlers can be set during `Minime\Annotations\Reader` instantiation:
 
 ```php
 use Minime\Annotations\Reader;
