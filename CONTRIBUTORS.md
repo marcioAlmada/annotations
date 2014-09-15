@@ -7,5 +7,6 @@ Sort alphabetically:
 * Emmanuel Antico <emmanuel.antico@gmail.com>
 * Ignace Butera <nyamsprod@gmail.com>
 * Márcio Almada <marcio3w@gmail.com>
+* Michael O'Connell <moconnell@lifestylepubs.com>
 * Pascal Borreli <pascal@borreli.com>
 * Romain <romain@exaprint.fr>
