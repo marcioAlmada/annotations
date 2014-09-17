@@ -7,6 +7,7 @@ Minime \ Annotations
 [![Latest Stable Version](https://poser.pugx.org/minime/annotations/v/stable.png)](https://packagist.org/packages/minime/annotations)
 [![Total Downloads](https://poser.pugx.org/minime/annotations/downloads.png)](https://packagist.org/packages/minime/annotations)
 [![License](https://poser.pugx.org/minime/annotations/license.png)](https://packagist.org/packages/minime/annotations)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5065eb68-a841-4877-9e30-83fd2e224f29/mini.png)](https://insight.sensiolabs.com/projects/5065eb68-a841-4877-9e30-83fd2e224f29)
 
 Minime\Annotations is the first KISS PHP annotations library.
 
