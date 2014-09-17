@@ -42,11 +42,15 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $this->assertSame(false, $this->Bag->get('post'));
-        $this->assertSame(null, $this->Bag->get('bar'));
         $this->assertInstanceOf(
             '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
             $this->Bag->get('Minime\Annotations\Fixtures\AnnotationConstructInjection')
         );
+
+        $this->assertSame(false, $this->Bag->get('post', true));
+        $this->assertSame(null, $this->Bag->get('undefined'));
+        $this->assertSame(false, $this->Bag->get('undefined', false));
+        $this->assertSame([], $this->Bag->get('undefined', []));
     }
 
     public function testGetAsArray()

@@ -75,16 +75,17 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Retrieves a single annotation value
      *
-     * @param  string     $key A valid annotation tag, should match parser rules
+     * @param  string     $key     A valid annotation tag, should match parser rules
+     * @param  mixed      $defaut  Default value in case $key is not set
      * @return mixed|null
      */
-    public function get($key)
+    public function get($key, $defaut = null)
     {
         if ($this->has($key)) {
             return $this->attributes[$key];
         }
 
-        return null;
+        return $defaut;
     }
 
     /**
