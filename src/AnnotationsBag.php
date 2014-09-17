@@ -4,7 +4,6 @@ namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\AnnotationsBagInterface;
 use RegexGuard\Factory as RegexGuard;
-use InvalidArgumentException;
 use ArrayIterator;
 use RegexIterator;
 
