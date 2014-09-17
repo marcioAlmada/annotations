@@ -48,8 +48,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Checks if a given annotation is declared
      *
-     * @param  string                    $key A valid annotation tag, should match parser rules
-     * @throws \InvalidArgumentException If $key is not validated by the parserRules
+     * @param  string  $key A valid annotation tag, should match parser rules
      * @return boolean
      */
     public function has($key)
@@ -60,9 +59,8 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Set a single annotation value
      *
-     * @param  string                    $key   a valid annotation tag, should match parser rules
-     * @param  mixed                     $value the param value
-     * @throws \InvalidArgumentException If $key is not validated by the parserRules
+     * @param  string $key   a valid annotation tag, should match parser rules
+     * @param  mixed  $value the param value
      * @return self
      */
     public function set($key, $value)
@@ -75,8 +73,8 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Retrieves a single annotation value
      *
-     * @param  string     $key     A valid annotation tag, should match parser rules
-     * @param  mixed      $defaut  Default value in case $key is not set
+     * @param  string     $key    A valid annotation tag, should match parser rules
+     * @param  mixed      $defaut Default value in case $key is not set
      * @return mixed|null
      */
     public function get($key, $defaut = null)

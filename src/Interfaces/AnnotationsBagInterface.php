@@ -25,8 +25,7 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
     /**
      * Isolates a given namespace of annotations.
      *
-     * @param string $pattern namespace
-     *
+     * @param  string                             $pattern namespace
      * @return \Minime\Annotations\AnnotationsBag
      */
     public function useNamespace($pattern);
@@ -41,8 +40,9 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
 
     /**
      * Filters annotations based on a regexp
+     *
      * @param  string                             $pattern Valid regexp
-     * @throws \InvalidArgumentException          If non valid regexp is passed
+     * @throws \InvalidArgumentException          If invalid regexp is passed
      * @return \Minime\Annotations\AnnotationsBag Annotations collection with filtered results
      */
     public function grep($pattern);
@@ -50,29 +50,24 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
     /**
      * Retrieve annotation values as an array even if there's only one single value
      *
-     * @param string $key A valid annotation tag, should match parser rules
-     *
+     * @param  string $key A valid annotation tag
      * @return array
      */
     public function getAsArray($key);
 
     /**
      * Checks if a given annotation is declared
-     * @param string $key A valid annotation tag, should match parser rules
      *
-     * @throws \InvalidArgumentException If $key is not validated by the parserRules
-     *
+     * @param  string  $key A valid annotation tag
      * @return boolean
      */
     public function has($key);
 
     /**
      * Set a single annotation value
-     * @param string $key   a valid annotation tag, should match parser rules
-     * @param mixed  $value the param value
      *
-     * @throws \InvalidArgumentException If $key is not validated by the parserRules
-     *
+     * @param  string $key   a valid annotation tag
+     * @param  mixed  $value the param value
      * @return self
      */
     public function set($key, $value);
@@ -80,8 +75,7 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
     /**
      * Retrieves a single annotation value
      *
-     * @param string $key A valid annotation tag, should match parser rules
-     *
+     * @param  string     $key A valid annotation tag
      * @return mixed|null
      */
     public function get($key);
