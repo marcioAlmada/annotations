@@ -6,6 +6,7 @@ namespace Minime\Annotations\Interfaces;
  * Interface for annotations Cache
  *
  * @package Annotations
+ * @api
  */
 interface CacheInterface
 {

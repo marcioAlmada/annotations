@@ -18,6 +18,25 @@ All Notable changes to `minime/annotations` package will be documented in this f
 ### Security
 - Nothing
 
+## 2.1.0 - 2014-09-22
+
+### Added
+- Public interfaces now have the `@api` docblock tag, interfaces without this tag should not be implemented
+- `Minime\Annotations\Interfaces\AnnotationsBag::get` method now has a `$default` value argument
+- `Minime\Annotations\AnnotationsBag::get` method now has a `$default` value argument
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
 ## 2.0.0 - 2014-09-14
 
 ### Added
@@ -28,6 +47,7 @@ All Notable changes to `minime/annotations` package will be documented in this f
 - `Minime\Annotations\Parser::registerType` allows new types to be added at runtime
 - `Minime\Annotations\Parser::unregisterType` allows types to be removed at runtime
 - `Minime\Annotations\DynamicParser` is a very basic parser without types support
+- `Minime\Annotations\AnnotationsBag::get` method now has a `$default` value argument
 
 ### Deprecated
 - Nothing

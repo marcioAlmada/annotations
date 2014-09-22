@@ -8,9 +8,6 @@ use Minime\Annotations\AnnotationsBag;
  * An annotation collection interface
  *
  * @package Annotations
- * @author  Márcio Almada and the Minime Community
- * @license MIT
- *
  */
 interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
@@ -78,7 +75,7 @@ interface AnnotationsBagInterface extends \ArrayAccess, \Countable, \IteratorAgg
      * @param  string     $key A valid annotation tag
      * @return mixed|null
      */
-    public function get($key);
+    public function get($key, $default = null);
 
     /**
      * Unbox all annotations in the form of an associative array

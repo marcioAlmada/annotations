@@ -5,7 +5,8 @@ namespace Minime\Annotations\Interfaces;
 /**
  * Interface for annotation reader
  *
- * @package Minime\Annotations\Interfaces
+ * @package Annotations
+ * @api
  */
 interface ReaderInterface
 {
