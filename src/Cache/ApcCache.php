@@ -21,7 +21,7 @@ class ApcCache implements CacheInterface
 
     public function getKey($docblock)
     {
-        return md5($docblock);
+        return 'minime-annotations:' . md5($docblock);
     }
 
     public function set($key, array $annotations)
@@ -42,5 +42,11 @@ class ApcCache implements CacheInterface
 
     public function clear()
     {
+        $cache = apc_cache_info('user');
+        foreach($cache['cache_list'] as $entry) {
+            if(strpos($entry['info'], 'minime-annotations:') === 0) {
+                apc_delete($entry['info']);
+            }
+        }
     }
 }
