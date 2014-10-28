@@ -7,6 +7,7 @@ use Mockery;
 use Minime\Annotations\Interfaces\CacheInterface;
 use Minime\Annotations\Cache\FileCache;
 use Minime\Annotations\Cache\ArrayCache;
+use Minime\Annotations\Cache\ApcCache;
 use Minime\Annotations\Fixtures\AnnotationsFixture;
 
 class CacheTest extends \PHPUnit_Framework_TestCase
@@ -102,6 +103,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         return [
             [new FileCache(__DIR__ . '/../../build/')],
             [new ArrayCache()],
+            [new ApcCache()],
         ];
     }
 }
