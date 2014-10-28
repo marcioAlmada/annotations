@@ -15,7 +15,7 @@ before_script:
   - composer self-update
   - composer require satooshi/php-coveralls:dev-master --no-update --dev
   - composer install --dev --prefer-source
-  - [ "$TRAVIS_PHP_VERSION" == "5.4" ] && phpenv config-add test/condig/apc.ini # enable apc for php 5.4
+  - '[ "$TRAVIS_PHP_VERSION" == "5.4" ] && phpenv config-add test/config/apc.ini || true # enable apc for php 5.4'
 
 after_script:
   - php vendor/bin/coveralls
