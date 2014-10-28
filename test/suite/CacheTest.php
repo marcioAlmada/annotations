@@ -45,10 +45,34 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testArrayCache(){
+        $this->assertCacheHandlerWorks(new ArrayCache());
+    }
+
+    public function testFileCache(){
+        $this->assertCacheHandlerWorks(new FileCache(__DIR__ . '/../../build/'));
+    }
+
+    public function testFileCacheWithDefaultStoragePath(){
+        new FileCache();
+    }
+
     /**
-     * @dataProvider cacheProvider
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessageRegExp #^Cache path is not a writable/readable directory: .+\.#
      */
-    public function testCacheHandlers(CacheInterface $cache)
+    public function testFileCacheWithBadStoragePath(){
+        new FileCache(__DIR__ . '/invalid/path/');
+    }
+
+    /**
+     * @requires extension apc
+     */
+    public function testApcCache(){
+        $this->assertCacheHandlerWorks(new ApcCache());
+    }
+
+    public function assertCacheHandlerWorks(CacheInterface $cache)
     {
         $reader = $this->getReader();
         $reader->setCache($cache);
@@ -98,12 +122,4 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $reader->getCache()->clear();
     }
 
-    public function cacheProvider()
-    {
-        return [
-            [new FileCache(__DIR__ . '/../../build/')],
-            [new ArrayCache()],
-            [new ApcCache()],
-        ];
-    }
 }
