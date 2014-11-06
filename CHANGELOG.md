@@ -18,6 +18,23 @@ All Notable changes to `minime/annotations` package will be documented in this f
 ### Security
 - Nothing
 
+## 2.2.0 - 2014-11-06
+
+### Added
+- `Minime\Annotations\Cache\ApcCache` APC cache handler
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
 ## 2.1.0 - 2014-09-22
 
 ### Added
