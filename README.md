@@ -272,7 +272,7 @@ $cacheHandler = new FileCache('storage/path');
 $reader = new Reader(new Parser, $cacheHandler);
 ```
 
-Or later with `FileCache::setCache()`:
+Or later with `Reader::setCache()`:
 
 ```php
 $reader->setCache(new FileCache);
