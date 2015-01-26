@@ -66,6 +66,18 @@ class Reader implements ReaderInterface
     }
 
     /**
+     * Retrieve all annotations from a given function or closure
+     *
+     * @param  mixed $fn                                              Full qualified function name or closure
+     * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
+     * @throws \ReflectionException                                   If function is not found
+     */
+    public function getFunctionAnnotations($fn)
+    {
+        return $this->getAnnotations(new \ReflectionFunction($fn));
+    }
+
+    /**
      * Retrieve all annotations from a given class
      *
      * @param  mixed                                                  $class Full qualified class name or object

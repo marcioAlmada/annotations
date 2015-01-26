@@ -98,13 +98,21 @@ $annotations = $reader->getPropertyAnnotations('FooController', 'repository');
 $annotations->get('manages')   // > string(10) "Models\Baz"
 ```
 
-... and methods:
+methods...
 
 ```php
 $annotations = $reader->getMethodAnnotations('FooController', 'index');
 $annotations->get('get')   // > bool(true)
 $annotations->get('post')   // > bool(true)
 $annotations->get('auto-redirect')   // > string(19) "BarController@index"
+```
+
+and functions || closures:
+
+```php
+/** @name Foo */ function foo(){}
+$annotations = $reader->getFunctionAnnotations('foo');
+$annotations->get('name')   // > string(3) "Foo"
 ```
 
 ## Managing Annotations
@@ -303,6 +311,14 @@ Get all annotations from a given class method:
 
 ```php
 $reader->getMethodAnnotations('Full\Qualified\Class', 'methodName');
+```
+
+#### ::getFunctionAnnotations($fn)
+
+Get all annotations from a given full qualified function name or closure:
+
+```php
+$reader->getFunctionAnnotations('utils\foo');
 ```
 
 #### ::getCache()
