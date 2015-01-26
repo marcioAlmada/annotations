@@ -32,6 +32,22 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($annotations->get('get'));
     }
 
+    public function testReadFunctionAnnotations()
+    {
+        if(! function_exists($fn = __NAMESPACE__ . '\\fn')){
+            /** @bar */ function fn(){}
+        }
+
+        $this->assertTrue($this->getReader()->getFunctionAnnotations($fn)->get('bar'));
+    }
+
+    public function testReadClosureAnnotations()
+    {
+        /** @foo */
+        $closure = function(){};
+        $this->assertTrue($this->getReader()->getFunctionAnnotations($closure)->get('foo'));
+    }
+
     public function testReadClassAnnotations()
     {
         $annotations = $this->getReader()->getClassAnnotations($this->fixture);
