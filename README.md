@@ -6,6 +6,7 @@ Minime \ Annotations
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/marcioAlmada/annotations/badges/quality-score.png?s=dba04c50549638ca00a6f22ff35903066f351909)](https://scrutinizer-ci.com/g/marcioAlmada/annotations/)
 [![Latest Stable Version](https://poser.pugx.org/minime/annotations/v/stable.png)](https://packagist.org/packages/minime/annotations)
 [![Total Downloads](https://poser.pugx.org/minime/annotations/downloads.png)](https://packagist.org/packages/minime/annotations)
+[![Reference Status](https://www.versioneye.com/php/minime:annotations/reference_badge.svg?style=flat)](https://www.versioneye.com/php/minime:annotations/references)
 [![License](https://poser.pugx.org/minime/annotations/license.png)](https://packagist.org/packages/minime/annotations)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/5065eb68-a841-4877-9e30-83fd2e224f29/mini.png)](https://insight.sensiolabs.com/projects/5065eb68-a841-4877-9e30-83fd2e224f29)
 
