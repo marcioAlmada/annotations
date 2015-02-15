@@ -186,7 +186,7 @@ Please refer to annotations bag public [API](#minimeannotationsreader) for more 
 
 ## The Default Syntax
 
-![@(<namespace><namespace-delimiter>)?<annotation-identifier> <type>? <value>?](https://dl.dropboxusercontent.com/u/49549530/annotations/grammar.png)
+![@(<namespace><namespace-delimiter>)?<annotation-identifier> <type>? <value>?](https://dl.dropboxusercontent.com/u/49549530/annotations/grammar.png?v=c81e)
 
 Which basically means that:
 
