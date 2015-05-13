@@ -207,9 +207,4 @@ class DynamicParserTest extends BaseTest
       $annotations = $this->getFixture('i49_fixture');
       $this->assertSame(['return' => 'void'], $annotations);
     }
-
-    protected function getFixture($fixture)
-    {
-        return $this->parser->parse($this->getDocblock($fixture));
-    }
 }
