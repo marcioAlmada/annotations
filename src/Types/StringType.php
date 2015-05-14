@@ -4,7 +4,7 @@ namespace Minime\Annotations\Types;
 
 use Minime\Annotations\Interfaces\TypeInterface;
 
-class String implements TypeInterface
+class StringType implements TypeInterface
 {
 
     /**

@@ -7,7 +7,7 @@ use ReflectionClass;
 use Minime\Annotations\Interfaces\TypeInterface;
 use Minime\Annotations\ParserException;
 
-class Concrete implements TypeInterface
+class ConcreteType implements TypeInterface
 {
 
     /**
@@ -23,7 +23,7 @@ class Concrete implements TypeInterface
         if (! class_exists($class)) {
             throw new ParserException("Concrete annotation expects {$class} to exist.");
         }
-        $prototype = (new Json)->parse($value);
+        $prototype = (new JsonType)->parse($value);
         if (! $prototype instanceof stdClass) {
             throw new ParserException("Json value for annotation({$class}) must be of type object.");
         }

@@ -4,7 +4,7 @@ namespace Minime\Annotations\Types;
 
 use Minime\Annotations\Interfaces\TypeInterface;
 
-class Dynamic implements TypeInterface
+class DynamicType implements TypeInterface
 {
 
     /**
@@ -17,10 +17,16 @@ class Dynamic implements TypeInterface
     public function parse($value, $annotation = null)
     {
         if ('' === $value) return true; // implicit boolean
-        $json = Json::jsonDecode($value);
+
+        $json = JsonType::jsonDecode($value);
+
         if (JSON_ERROR_NONE === json_last_error()) {
             return $json;
-        } elseif (false !== ($float = filter_var($value, FILTER_VALIDATE_FLOAT))) {
+        }
+        elseif (false !== ($int = filter_var($value, FILTER_VALIDATE_INT))) {
+            return $int;
+        }
+        elseif (false !== ($float = filter_var($value, FILTER_VALIDATE_FLOAT))) {
             return $float;
         }
 

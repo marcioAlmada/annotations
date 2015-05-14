@@ -45,8 +45,8 @@ class AnnotationsFixture
 
     /**
      * @value 123
-     * @value 023
-     * @value -023
+     * @value 23
+     * @value -23
      */
     private $integer_fixture;
 
