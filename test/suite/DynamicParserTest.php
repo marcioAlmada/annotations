@@ -207,4 +207,14 @@ class DynamicParserTest extends BaseTest
       $annotations = $this->parser->parse($this->getDocblock('i49_fixture'));
       $this->assertSame(['return' => 'void'], $annotations);
     }
+
+    /**
+     * @test for issue #55
+     * @link https://github.com/marcioAlmada/annotations/issues/55
+     */
+    public function issue55()
+    {
+      $annotations = $this->parser->parse($this->getDocblock('i55_fixture'));
+      $this->assertSame(['name' => 'gsouf'], $annotations);
+    }
 }

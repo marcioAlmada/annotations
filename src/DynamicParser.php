@@ -79,7 +79,7 @@ class DynamicParser implements ParserInterface
      */
     protected function sanitizeDocblock($docblock)
     {
-        return preg_replace('/^\s*\*\s{0,1}|\/\*{1,2}|\s*\*\//m', '', $docblock);
+        return preg_replace('/\s*\*\/$|^\s*\*\s{0,1}|^\/\*{1,2}/m', '', $docblock);
     }
 
     /**

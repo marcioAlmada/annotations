@@ -233,6 +233,12 @@ class AnnotationsFixture
     private $i49_fixture;
 
     /**
+     * @name gsouf
+     *
+     */
+    private $i55_fixture;
+
+    /**
      * @get @post @ajax
      * @postParam x
      * @postParam y
