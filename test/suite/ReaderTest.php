@@ -67,6 +67,40 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($annotations->get('post'));
     }
 
+    public function testReadConstantAnnotations()
+    {
+
+        // Single constant with annotation
+        $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_FIXTURE");
+        $this->assertCount(2, $annotations);
+        $this->assertSame($annotations->get("fix"), 56);
+        $this->assertTrue($annotations->has("foo"));
+
+
+        // Many constant under the same const declaration with annotation
+        $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_MANY1");
+        $this->assertCount(1, $annotations);
+        $this->assertSame($annotations->get("value"), "foo");
+
+        $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_MANY2");
+        $this->assertCount(2, $annotations);
+        $this->assertSame($annotations->get("value"), "bar");
+        $this->assertSame($annotations->get("type"), "constant");
+
+
+        // single const with no anntation
+        $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_EMPTY");
+        $this->assertCount(0, $annotations);
+
+        // Many constant under the same const declaration with no anntation
+        $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_EMPTY_MANY1");
+        $this->assertCount(0, $annotations);
+
+        $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_EMPTY_MANY2");
+        $this->assertCount(0, $annotations);
+
+    }
+
     public function testCreateFromDefaults()
     {
         $this->assertInstanceOf('Minime\Annotations\Reader', Reader::createFromDefaults());

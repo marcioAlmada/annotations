@@ -246,4 +246,34 @@ class AnnotationsFixture
      */
     private function method_fixture() {}
 
+    /**
+     * Related to issue #56
+     * @fix 56
+     * @foo
+     */
+    const CONSTANT_FIXTURE = "someValue";
+
+    /**
+     * Related to issue #56
+     * @fix 56
+     * @foo
+     */
+    const
+        /**
+         * @value foo
+         */
+        CONSTANT_MANY1 = "foo",
+        /**
+         * @value bar
+         * @type constant
+         */
+        CONSTANT_MANY2 = "bar";
+
+
+    const CONSTANT_EMPTY = "empty";
+
+    const
+        CONSTANT_EMPTY_MANY1 = "foo",
+        CONSTANT_EMPTY_MANY2 = "bar";
+
 }
