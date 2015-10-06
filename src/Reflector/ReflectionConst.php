@@ -21,6 +21,7 @@ class ReflectionConst implements \Reflector
     protected $constNode = null;
 
     protected $docComment = null;
+    private $docCommentProcessed = false;
 
     /**
      * @param string|object $class        fully qualified name or instance of the class
@@ -91,53 +92,55 @@ class ReflectionConst implements \Reflector
     public function getDocComment()
     {
 
-        if (null == $this->docComment) {
-            /* more than one means we have this case :
-             *  const
-             *     /**
-             *      * @annotation
-             *      * /
-             *      FOO = 'foo',
-             *      /**
-             *      * @annotation
-             *      * /
-             *      BAR = 'bar'
-             * ;
+        if (false == $this->docCommentProcessed) {
+            $this->docComment = null;
+
+
+            /**
              *
-             * Else we have this case
+             * The first constant can have additional docblock
              *
              * /**
-             *  * @annotation
+             *  * This belongs to the first
              *  * /
-             *  const Foo = 'foo';
+             * const
+             *
+             *      FOO = 'foo',
+             *      BAR = 'bar'
+             *
+             *
+             * const
+             *      /**
+             *       * This belongs to the first
+             *       * /
+             *      FOO = "foo";
              *
              */
-            if (count($this->classConstNode->consts) > 1) {
-                $comments = $this->constNode->getAttribute('comments', []);
-            } else {
-                $comments = $this->classConstNode->getAttribute('comments', []);
+            // Then we take every comments from the constant node
+            // Then if it's the first of the list we tank everything from the classConstNode
+            // (and we order it from the closest to the further
+
+            $comments = array_reverse($this->constNode->getAttribute('comments', []));
+            if ($this->classConstNode->consts[0] == $this->constNode) {
+                $comments += array_reverse($this->classConstNode->getAttribute('comments', []));
             }
+
 
             if (count($comments) > 0) {
                 // we can have many doc comment for one statement
                 // We only take the closest one
-                $docComment = end($comments);
-
-                if (substr($docComment, 0, 3) == '/**') {
-                    $this->docComment = $docComment;
-                } else {
-                    $this->docComment = "";
+                while ($this->docComment === null && $currentComment = current($comments)) {
+                    if (substr($currentComment, 0, 3) == '/**') {
+                        $this->docComment = $currentComment;
+                    }
+                    next($comments);
                 }
 
-            } else {
-                $this->docComment = "";
             }
-
+            $this->docCommentProcessed = true;
         }
 
         return $this->docComment;
-
-
     }
 
     /**

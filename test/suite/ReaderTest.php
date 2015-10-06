@@ -81,7 +81,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_MANY1");
         $this->assertCount(1, $annotations);
         $this->assertSame($annotations->get("value"), "foo");
-
+        // second constant has comment
         $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_MANY2");
         $this->assertCount(2, $annotations);
         $this->assertSame($annotations->get("value"), "bar");
@@ -95,9 +95,34 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         // Many constant under the same const declaration with no anntation
         $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_EMPTY_MANY1");
         $this->assertCount(0, $annotations);
-
+        // second constant
         $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_EMPTY_MANY2");
         $this->assertCount(0, $annotations);
+
+
+        // Test case with comment between doc and constant
+        $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_WITH_COMMENT_BEFORE_DOC");
+        $this->assertCount(1, $annotations);
+        $this->assertSame(true, $annotations->get("withComment"));
+
+
+        // Test case with one comment before many constants
+        $annotations = $this
+            ->getReader()
+            ->getConstantAnnotations($this->fixture, "CONSTANT_MANY_WITH_COMMENT_BEFORE_FIRST");
+        $this->assertCount(1, $annotations);
+        $this->assertSame(true, $annotations->get("hasCommentBefore"));
+        // Next constant has nothing
+        $annotations = $this
+            ->getReader()
+            ->getConstantAnnotations($this->fixture, "CONSTANT_MANY_WITH_COMMENT_BEFORE_NEXT");
+        $this->assertCount(0, $annotations);
+
+
+        // Test case with no doc comment but with simple comment
+        $annotations = $this->getReader()->getConstantAnnotations($this->fixture, "CONSTANT_SIMPLE_COMMENT_ONLY");
+        $this->assertCount(0, $annotations);
+
 
     }
 
