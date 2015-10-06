@@ -294,7 +294,7 @@ class AnnotationsFixture
         CONSTANT_MANY_WITH_COMMENT_BEFORE_FIRST = "someValue",
         CONSTANT_MANY_WITH_COMMENT_BEFORE_NEXT  = "someValue";
 
-    // No doc comment but simple comment is here
+    // @wrongSyntax
     const CONSTANT_SIMPLE_COMMENT_ONLY = "someValue";
 
 
