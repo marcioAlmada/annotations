@@ -18,6 +18,41 @@ All Notable changes to `minime/annotations` package will be documented in this f
 ### Security
 - Nothing
 
+## 2.3.1 - 2015-09-16
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Issue with space #55
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
+## 2.3.0 - 2015-01-26
+
+### Added
+
+- Added `Reader::getFunctionAnnotations($fn)`
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
 ## 2.2.0 - 2014-11-06
 
 ### Added
