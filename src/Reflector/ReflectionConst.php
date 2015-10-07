@@ -24,8 +24,8 @@ class ReflectionConst implements \Reflector
     private $docCommentProcessed = false;
 
     /**
-     * @param string|object $class        fully qualified name or instance of the class
-     * @param string $constName           name of the constant
+     * @param  string|object        $class     fully qualified name or instance of the class
+     * @param  string               $constName name of the constant
      * @throws \ReflectionException
      */
     public function __construct($class, $constName)
@@ -83,6 +83,7 @@ class ReflectionConst implements \Reflector
                 }
             }
         }
+
         return null;
     }
 
@@ -124,7 +125,6 @@ class ReflectionConst implements \Reflector
             if ($this->classConstNode->consts[0] == $this->constNode) {
                 $comments += array_reverse($this->classConstNode->getAttribute('comments', []));
             }
-
 
             if (count($comments) > 0) {
                 // we can have many doc comment for one statement

@@ -43,7 +43,7 @@ class ApcCache implements CacheInterface
     public function clear()
     {
         $cache = apc_cache_info('user');
-        foreach($cache['cache_list'] as $entry) {
+        foreach ($cache['cache_list'] as $entry) {
             if(isset($entry['info'])
                && strpos($entry['info'], 'minime-annotations:') === 0) {
                 apc_delete($entry['info']);
