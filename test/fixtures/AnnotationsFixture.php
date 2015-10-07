@@ -246,4 +246,56 @@ class AnnotationsFixture
      */
     private function method_fixture() {}
 
+    /**
+     * @notRead
+     */
+    /**
+     * Related to issue #56
+     * @fix 56
+     * @foo
+     */
+    const CONSTANT_FIXTURE = "someValue";
+
+    /**
+     * Related to issue #56
+     * @fix 56
+     * @foo
+     */
+    const
+        /**
+         * @value foo
+         */
+        CONSTANT_MANY1 = "foo",
+        /**
+         * @value bar
+         * @type constant
+         */
+        CONSTANT_MANY2 = "bar";
+
+
+    const CONSTANT_EMPTY = "empty";
+
+    const
+        CONSTANT_EMPTY_MANY1 = "foo",
+        CONSTANT_EMPTY_MANY2 = "bar";
+
+    /**
+     * Case with comment between doc comment and const
+     * @withComment true
+     */
+    // Some comment
+    const CONSTANT_WITH_COMMENT_BEFORE_DOC = "someValue";
+
+    /**
+     * Case with many const and one doc comment before all
+     * @hasCommentBefore true
+     */
+    const
+        CONSTANT_MANY_WITH_COMMENT_BEFORE_FIRST = "someValue",
+        CONSTANT_MANY_WITH_COMMENT_BEFORE_NEXT  = "someValue";
+
+    // @wrongSyntax
+    const CONSTANT_SIMPLE_COMMENT_ONLY = "someValue";
+
+
 }

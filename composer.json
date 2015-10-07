@@ -14,7 +14,8 @@
     "require": {
         "php": ">=5.4.0",
         "ext-json":"*",
-        "regex-guard/regex-guard": "~1.0"
+        "regex-guard/regex-guard": "~1.0",
+        "nikic/php-parser" : "~1.0"
     },
     "require-dev": {
         "mockery/mockery": "dev-master"

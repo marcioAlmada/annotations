@@ -2,10 +2,11 @@
 
 namespace Minime\Annotations;
 
+use Minime\Annotations\Cache\ArrayCache;
+use Minime\Annotations\Interfaces\CacheInterface;
 use Minime\Annotations\Interfaces\ParserInterface;
 use Minime\Annotations\Interfaces\ReaderInterface;
-use Minime\Annotations\Interfaces\CacheInterface;
-use Minime\Annotations\Cache\ArrayCache;
+use Minime\Annotations\Reflector\ReflectionConst;
 
 /**
  * This class is the primary entry point to read annotations
@@ -113,6 +114,16 @@ class Reader implements ReaderInterface
     public function getMethodAnnotations($class, $method)
     {
         return $this->getAnnotations(new \ReflectionMethod($class, $method));
+    }
+
+    /**
+     * @param string|object                                     $class fully qualified name or instance of the class
+     * @param string                                            $const name of the constant
+     * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
+     */
+    public function getConstantAnnotations($class, $const)
+    {
+        return $this->getAnnotations(new ReflectionConst($class, $const));
     }
 
     /**
