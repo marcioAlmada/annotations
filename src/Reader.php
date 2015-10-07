@@ -69,7 +69,7 @@ class Reader implements ReaderInterface
     /**
      * Retrieve all annotations from a given function or closure
      *
-     * @param  mixed $fn                                              Full qualified function name or closure
+     * @param  mixed                                                  $fn Full qualified function name or closure
      * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
      * @throws \ReflectionException                                   If function is not found
      */
@@ -117,8 +117,10 @@ class Reader implements ReaderInterface
     }
 
     /**
-     * @param string|object                                     $class fully qualified name or instance of the class
-     * @param string                                            $const name of the constant
+     * Retrieve all annotations from a given constant of a class
+     *
+     * @param  string|object                                          $class fully qualified name or instance of the class
+     * @param  string                                                 $const name of the constant
      * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
      */
     public function getConstantAnnotations($class, $const)
