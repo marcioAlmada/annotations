@@ -117,6 +117,8 @@ class Reader implements ReaderInterface
     }
 
     /**
+     * Retrieve all annotations from a given constant of a class
+     *
      * @param  string|object                                          $class fully qualified name or instance of the class
      * @param  string                                                 $const name of the constant
      * @return \Minime\Annotations\Interfaces\AnnotationsBagInterface Annotations collection
