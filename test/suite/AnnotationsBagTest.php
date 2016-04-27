@@ -126,11 +126,12 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
                 'path.to.the.cake' => 'the cake is a lie',
                 'another.path.to.cake' => 'foo',
                 'path.to.the.cake.another.path.to.the.cake' => 'the real cake',
+                'path.to.the.cake.array' => ['bar']
             ]
         );
 
         $this->assertSame(
-            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
+            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake', 'cake.array' => ['bar']],
             $this->Bag->useNamespace('path.to.the.')->toArray()
         );
 
@@ -141,12 +142,12 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
         // chained namespace grep
         $this->assertSame(
-            ['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie', 'the.cake.another.path.to.the.cake' => 'the real cake'],
+            ['the.treasure' => 'cheers!', 'the.cake' => 'the cake is a lie', 'the.cake.another.path.to.the.cake' => 'the real cake', 'the.cake.array' => ['bar']],
             $this->Bag->useNamespace('path.')->useNamespace('to.')->toArray()
         );
 
         $this->assertSame(
-            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake'],
+            ['treasure' => 'cheers!', 'cake' => 'the cake is a lie', 'cake.another.path.to.the.cake' => 'the real cake', 'cake.array' => ['bar']],
             $this->Bag->useNamespace('path.')->useNamespace('to.')->useNamespace('the.')->toArray()
         );
 
@@ -183,15 +184,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('e', $UnionBag->get('epsilon'));
 
         $this->assertNotSame($this->Bag, $this->Bag->union($Bag));
-    }
-
-    /**
-     * @test
-     * @expectedException PHPUnit_Framework_Error
-     */
-    public function unionAcceptsOnlyAnnotationsBag()
-    {
-        $this->Bag->union(0);
     }
 
     public function testTraversable()

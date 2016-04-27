@@ -129,14 +129,19 @@ class AnnotationsBag implements AnnotationsBagInterface
      */
     public function useNamespace($pattern, array $delimiters = ['.', '\\'])
     {
-        $mask =  implode('', $delimiters);
-        $consumer =  '(' . implode('|', array_map('preg_quote', $delimiters)) .')';
-        $namespace_pattern = '/^' . preg_quote(rtrim($pattern, $mask)) .  $consumer . '/';
-        $iterator = new RegexIterator(
-            $this->getIterator(), $namespace_pattern, RegexIterator::REPLACE, RegexIterator::USE_KEY);
-        $iterator->replacement = '';
+        $mask = implode('', $delimiters);
+        $consumer = '(' . implode('|', array_map('preg_quote', $delimiters)) . ')';
+        $namespace_pattern = '/^' . preg_quote(rtrim($pattern, $mask)) . $consumer . '/';
+        $result = [];
 
-        return new static(iterator_to_array($iterator));
+        foreach ($this as $name => $value) {
+            $replacedName = preg_replace($namespace_pattern, '$2', $name);
+            if ($replacedName != $name) {
+                $result[$replacedName] = $value;
+            }
+        }
+
+        return new static($result);
     }
 
     /**
