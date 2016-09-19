@@ -18,6 +18,12 @@ All Notable changes to `minime/annotations` package will be documented in this f
 ### Security
 - Nothing
 
+## 3.0.0 - 2016-09-19
+
+### Added
+- PHP7 support
+- ReaderInterface::getConstantAnnotations($class, $const) // thanks to @gsouf
+
 ## 2.3.1 - 2015-09-16
 
 ### Added
