@@ -93,7 +93,7 @@ class ReflectionConst implements \Reflector
     public function getDocComment()
     {
 
-        if (false == $this->docCommentProcessed) {
+        if (false === $this->docCommentProcessed) {
             $this->docComment = null;
 
 
@@ -148,7 +148,6 @@ class ReflectionConst implements \Reflector
      */
     public static function export()
     {
-
     }
 
     /**
@@ -156,6 +155,5 @@ class ReflectionConst implements \Reflector
      */
     public function __toString()
     {
-        // TODO: Implement __toString() method.
     }
 }
