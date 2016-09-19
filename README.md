@@ -17,12 +17,12 @@ Minime\Annotations is the first KISS PHP annotations library.
 ```json
 {
   "require": {
-    "minime/annotations": "~2.0"
+    "minime/annotations": "~3.0"
   }
 }
 ```
 
-Through terminal: `composer require minime/annotations:~2.0` :8ball:
+Through terminal: `composer require minime/annotations:~3.0` :8ball:
 
 ## Setup
 
