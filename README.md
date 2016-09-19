@@ -3,7 +3,7 @@ Minime \ Annotations
 
 [![Build Status](https://travis-ci.org/marcioAlmada/annotations.svg?branch=master)](https://travis-ci.org/marcioAlmada/annotations)
 [![Coverage Status](https://coveralls.io/repos/marcioAlmada/annotations/badge.svg?branch=master)](https://coveralls.io/r/marcioAlmada/annotations?branch=master)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/marcioAlmada/annotations/badges/quality-score.png?s=dba04c50549638ca00a6f22ff35903066f351909)](https://scrutinizer-ci.com/g/marcioAlmada/annotations/)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/marcioAlmada/annotations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/marcioAlmada/annotations/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/minime/annotations/v/stable.png)](https://packagist.org/packages/minime/annotations)
 [![Total Downloads](https://poser.pugx.org/minime/annotations/downloads.png)](https://packagist.org/packages/minime/annotations)
 [![Reference Status](https://www.versioneye.com/php/minime:annotations/reference_badge.svg?style=flat)](https://www.versioneye.com/php/minime:annotations/references)
