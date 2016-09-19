@@ -19,11 +19,11 @@ class Parser extends DynamicParser
      * @var array
      */
     protected $types = [
-        '\Minime\Annotations\Types\Integer'  => 'integer',
-        '\Minime\Annotations\Types\String'   => 'string',
-        '\Minime\Annotations\Types\Float'    => 'float',
-        '\Minime\Annotations\Types\Json'     => 'json',
-        '\Minime\Annotations\Types\Concrete' => '->'
+        '\Minime\Annotations\Types\IntegerType'  => 'integer',
+        '\Minime\Annotations\Types\StringType'   => 'string',
+        '\Minime\Annotations\Types\FloatType'    => 'float',
+        '\Minime\Annotations\Types\JsonType'     => 'json',
+        '\Minime\Annotations\Types\ConcreteType' => '->'
     ];
 
     /**
@@ -65,7 +65,7 @@ class Parser extends DynamicParser
     protected function parseValue($value, $key = null)
     {
         $value = trim($value);
-        $type = '\Minime\\Annotations\\Types\\Dynamic';
+        $type = '\Minime\\Annotations\\Types\\DynamicType';
         if (preg_match($this->typesPattern, $value, $found)) { // strong typed
             $type = $found[1];
             $value = trim(substr($value, strlen($type)));

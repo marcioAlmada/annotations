@@ -30,15 +30,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @test
-     * @expectedException PHPUnit_Framework_Error
-     */
-    public function constructAcceptsOnlyArrays()
-    {
-        new AnnotationsBag('');
-    }
-
     public function testGet()
     {
         $this->assertSame(false, $this->Bag->get('post'));
@@ -183,15 +174,6 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('e', $UnionBag->get('epsilon'));
 
         $this->assertNotSame($this->Bag, $this->Bag->union($Bag));
-    }
-
-    /**
-     * @test
-     * @expectedException PHPUnit_Framework_Error
-     */
-    public function unionAcceptsOnlyAnnotationsBag()
-    {
-        $this->Bag->union(0);
     }
 
     public function testTraversable()

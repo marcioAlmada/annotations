@@ -26,4 +26,9 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
 
         return $reflection->getDocComment();
     }
+
+    protected function getFixture($fixture)
+    {
+        return $this->parser->parse($this->getDocblock($fixture));
+    }
 }

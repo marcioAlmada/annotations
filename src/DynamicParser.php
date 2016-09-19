@@ -3,7 +3,7 @@
 namespace Minime\Annotations;
 
 use Minime\Annotations\Interfaces\ParserInterface;
-use Minime\Annotations\Types\Dynamic as DynamicType;
+use Minime\Annotations\Types\DynamicType;
 
 /**
  * An Annotations parser

@@ -23,7 +23,7 @@ class ParserTest extends DynamicParserTest
      */
     public function parseConcreteFixture()
     {
-        $annotations = $this->parser->parse($this->getDocblock('concrete_fixture'));
+        $annotations = $this->getFixture('concrete_fixture');
         $this->assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationConstructInjection',
           $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][0]
@@ -65,7 +65,7 @@ class ParserTest extends DynamicParserTest
      */
     public function parseInvalidConcreteFixture($fixture)
     {
-        $this->parser->parse($this->getDocblock($fixture));
+        $this->getFixture($fixture);
     }
 
     public function invalidConcreteAnnotationFixtureProvider()
@@ -82,7 +82,7 @@ class ParserTest extends DynamicParserTest
      */
     public function parseStrongTypedFixture()
     {
-        $annotations = $this->parser->parse($this->getDocblock('strong_typed_fixture'));
+        $annotations = $this->getFixture('strong_typed_fixture');
         $declarations = $annotations['value'];
         $this->assertNotEmpty($declarations);
         $this->assertSame(
@@ -110,7 +110,7 @@ class ParserTest extends DynamicParserTest
      */
     public function parseReservedWordsAsValue()
     {
-        $annotations = $this->parser->parse($this->getDocblock('reserved_words_as_value_fixture'));
+        $annotations = $this->getFixture('reserved_words_as_value_fixture');
         $expected = ['string','integer','float','json'];
         $this->assertSame($expected, $annotations['value']);
         $this->assertSame($expected, $annotations['value_with_trailing_space']);
@@ -121,7 +121,7 @@ class ParserTest extends DynamicParserTest
      */
     public function tolerateUnrecognizedTypes()
     {
-        $annotations = $this->parser->parse($this->getDocblock('non_recognized_type_fixture'));
+        $annotations = $this->getFixture('non_recognized_type_fixture');
         $this->assertEquals(
           "footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations['value']);
     }
@@ -132,7 +132,7 @@ class ParserTest extends DynamicParserTest
      */
     public function exceptionWithBadJsonValue()
     {
-        $this->parser->parse($this->getDocblock('bad_json_fixture'));
+        $this->getFixture('bad_json_fixture');
     }
 
     /**
@@ -141,7 +141,7 @@ class ParserTest extends DynamicParserTest
      */
     public function exceptionWithBadIntegerValue()
     {
-        $this->parser->parse($this->getDocblock('bad_integer_fixture'));
+        $this->getFixture('bad_integer_fixture');
     }
 
     /**
@@ -150,7 +150,7 @@ class ParserTest extends DynamicParserTest
      */
     public function exceptionWithBadFloatValue()
     {
-        $this->parser->parse($this->getDocblock('bad_float_fixture'));
+        $this->getFixture('bad_float_fixture');
     }
 
     /**
