@@ -2,12 +2,11 @@
 
 namespace Minime\Annotations\Reflector;
 
-use PhpParser\Error;
-use PhpParser\Lexer;
+use PhpParser\ParserFactory;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Parser as PHPParser;
+use PhpParser\Error as ParserError;
 
 /**
  * We need this class in the annotation reader because there is no builtin constant reflector
@@ -35,10 +34,10 @@ class ReflectionConst implements \Reflector
         $className = $classReflection->getName();
         $fileName = $classReflection->getFileName();
 
-        $parser = new PHPParser(new Lexer());
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         try {
             $stmts = $parser->parse(file_get_contents($fileName));
-        } catch (Error $e) {
+        } catch (ParserError $e) {
             throw new \ReflectionException("Cannot parse the class ${fileName}", 0, $e);
         }
 
