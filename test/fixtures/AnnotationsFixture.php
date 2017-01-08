@@ -74,6 +74,9 @@ class AnnotationsFixture
      * @Minime\Annotations\Fixtures\AnnotationConstructInjection  -> { "__construct" : ["bar"] }
      * @\Minime\Annotations\Fixtures\AnnotationConstructInjection -> { "__construct" : ["bar"] }
      *
+     * @Minime\Annotations\Fixtures\AnnotationConstructSugarInjection  -> ["foo", "bar"]
+     * @\Minime\Annotations\Fixtures\AnnotationConstructSugarInjection -> ["baz"]
+     *
      * @Minime\Annotations\Fixtures\AnnotationSetterInjection    -> { "setFoo" : ["bar"] }
      * @\Minime\Annotations\Fixtures\AnnotationSetterInjection   -> { "setFoo" : ["bar"] }
      */
@@ -83,11 +86,6 @@ class AnnotationsFixture
      * @SomeUndefinedClass -> {}
      */
     private $bad_concrete_fixture;
-
-    /**
-     * @Minime\Annotations\Fixtures\AnnotationSetterInjection -> []
-     */
-    private $bad_concrete_fixture_root_schema;
 
     /**
      * @Minime\Annotations\Fixtures\AnnotationSetterInjection -> { "setFoo" : "bar" }

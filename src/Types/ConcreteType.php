@@ -23,15 +23,29 @@ class ConcreteType implements TypeInterface
         if (! class_exists($class)) {
             throw new ParserException("Concrete annotation expects {$class} to exist.");
         }
+
         $prototype = (new JsonType)->parse($value);
-        if (! $prototype instanceof stdClass) {
-            throw new ParserException("Json value for annotation({$class}) must be of type object.");
-        }
-        if (! $this->isPrototypeSchemaValid($prototype)) {
-            throw new ParserException("Only arrays should be used to configure concrete annotation method calls.");
+
+        if ($prototype instanceof stdClass) {
+            if (! $this->isPrototypeSchemaValid($prototype)) {
+                throw new ParserException("Only arrays should be used to configure concrete annotation method calls.");
+            }
+
+            return $this->makeInstance($class, $prototype);
         }
 
-        return $this->makeInstance($class, $prototype);
+        if (is_array($prototype)) {
+            return $this->makeConstructSugarInjectionInstance($class, $prototype);
+        }
+
+        throw new ParserException("Json value for annotation({$class}) must be of type object or array.");
+    }
+
+    protected function makeConstructSugarInjectionInstance($class, array $prototype) {
+        $reflection = new ReflectionClass($class);
+        $instance = $reflection->newInstanceArgs($prototype);
+
+        return $instance;
     }
 
     /**

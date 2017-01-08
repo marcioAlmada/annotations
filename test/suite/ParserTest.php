@@ -40,6 +40,14 @@ class ParserTest extends DynamicParserTest
           '{"foo":"bar","bar":"baz"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][1])
         );
+        $this->assertSame(
+          '{"foo":"foo","bar":"bar"}',
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructSugarInjection'][0])
+        );
+        $this->assertSame(
+          '{"foo":"baz","bar":"bar"}',
+          json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructSugarInjection'][1])
+        );
         $this->assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationSetterInjection',
           $annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][0]
@@ -72,7 +80,6 @@ class ParserTest extends DynamicParserTest
     {
       return [
         ['bad_concrete_fixture'],
-        ['bad_concrete_fixture_root_schema'],
         ['bad_concrete_fixture_method_schema']
       ];
     }
