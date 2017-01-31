@@ -18,6 +18,24 @@ All Notable changes to `minime/annotations` package will be documented in this f
 ### Security
 - Nothing
 
+## 3.0.1 - 2017-01-31
+
+### Added
+- PHPParser dependency now points to a more recent version, thanks to @rulatir
+- Allow `-> []` as sugar for `-> { "__construct": []} `, relates to issue #18
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
 ## 3.0.0 - 2016-09-19
 
 ### Added
