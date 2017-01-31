@@ -18,6 +18,24 @@ All Notable changes to `minime/annotations` package will be documented in this f
 ### Security
 - Nothing
 
+## 3.0.2 - 2017-01-31
+
+### Added
+- Fixed mockery/mockery dependency
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
+
 ## 3.0.1 - 2017-01-31
 
 ### Added
