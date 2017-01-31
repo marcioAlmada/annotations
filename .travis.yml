@@ -14,7 +14,7 @@ matrix:
 before_script:
   - composer self-update
   - composer require satooshi/php-coveralls:~1.0 --no-update --dev
-  - composer install --dev --prefer-source
+  - composer install --prefer-source
   - '[ "$TRAVIS_PHP_VERSION" == "5.4" ] && phpenv config-add test/config/apc.ini || true # enable apc for php 5.4'
 
 after_script:
