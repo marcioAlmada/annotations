@@ -4,6 +4,7 @@ namespace Minime\Annotations;
 
 use \ReflectionProperty;
 use Minime\Annotations\Fixtures\AnnotationsFixture;
+use Minime\Annotations\Interfaces\ParserInterface;
 
 /**
  * BaseTest
@@ -13,6 +14,9 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
 {
     protected $fixture;
 
+    /**
+     * @var ParserInterface
+     */
     protected $parser;
 
     public function setUp()

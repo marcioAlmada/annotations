@@ -23,34 +23,75 @@ class ConcreteType extends AbstractType
     }
 
     /**
+     * @var array
+     */
+    private $namespaceLookup = [];
+
+    /**
+     * Set of user defined namespaces to lookup for class autoloading.
+     *
+     * @param array $namespaces
+     */
+    public function setNamespaces(array $namespaces)
+    {
+        $this->namespaceLookup = $namespaces;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return string
+     *
+     * @throws ParserException
+     */
+    protected function checkClassExistence($class)
+    {
+        $found = class_exists($class);
+        $classname = $class;
+        $i = 0;
+
+        while (!$found && $i < count($this->namespaceLookup)) {
+            $classname = $this->namespaceLookup[$i] . $class;
+            $found = class_exists($classname);
+            $i++;
+        }
+
+        if (!$found) {
+            throw new ParserException("Concrete annotation expects '{$class}' to exist.");
+        }
+
+        return $classname;
+    }
+
+    /**
      * Process a value to be a concrete annotation
      *
-     * @param  string                              $value json string
-     * @param  string                              $class name of concrete annotation type (class)
-     * @throws \Minime\Annotations\ParserException
+     * @param  string $value json string
+     * @param  string $class name of concrete annotation type (class)
+     *
+     * @throws ParserException
+     *
      * @return object
      */
     public function parse($value, $class = null)
     {
-        if (!class_exists($class)) {
-            throw new ParserException("Concrete annotation expects '{$class}' to exist.");
-        }
+        $classname = $this->checkClassExistence($class);
 
         $prototype = (new JsonType)->parse($value);
 
         if ($prototype instanceof stdClass) {
-            if (! $this->isPrototypeSchemaValid($prototype)) {
+            if (!$this->isPrototypeSchemaValid($prototype)) {
                 throw new ParserException("Only arrays should be used to configure concrete annotation method calls.");
             }
 
-            return $this->makeInstance($class, $prototype);
+            return $this->makeInstance($classname, $prototype);
         }
 
         if (is_array($prototype)) {
-            return $this->makeConstructSugarInjectionInstance($class, $prototype);
+            return $this->makeConstructSugarInjectionInstance($classname, $prototype);
         }
 
-        throw new ParserException("Json value for annotation({$class}) must be of type object or array.");
+        throw new ParserException("Json value for annotation({$classname}) must be of type object or array.");
     }
 
     protected function makeConstructSugarInjectionInstance($class, array $prototype) {

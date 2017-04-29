@@ -2,9 +2,6 @@
 
 namespace Minime\Annotations;
 
-use \ReflectionProperty;
-use Minime\Annotations\Fixtures\AnnotationsFixture;
-
 /**
  * ParserTest
  *
@@ -39,6 +36,14 @@ class ParserTest extends DynamicParserTest
         $this->assertSame(
           '{"foo":"bar","bar":"baz"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][1])
+        );
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationConstructSugarInjection',
+          $annotations['Minime\Annotations\Fixtures\AnnotationConstructSugarInjection'][0]
+        );
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationConstructSugarInjection',
+          $annotations['Minime\Annotations\Fixtures\AnnotationConstructSugarInjection'][1]
         );
         $this->assertSame(
           '{"foo":"foo","bar":"bar"}',
@@ -172,5 +177,44 @@ class ParserTest extends DynamicParserTest
         $this->assertSame(['value' => 'this foo is bar'], $this->parser->parse($docblock));
         $this->parser->unregisterType('\Minime\Annotations\Fixtures\FooType');
         $this->assertSame(['value' => 'foo bar'], $this->parser->parse($docblock));
+    }
+
+    /**
+     * @test
+     */
+    public function testConcreteTypeNamespaceLookup()
+    {
+        $this->parser->registerConcreteNamespaceLookup([
+            'Minime\\Annotations\\Types\\Dummy\\',
+            'Minime\\Annotations\\Fixtures\\'
+        ]);
+
+        $annotations = $this->getFixture('short_concrete_fixture');
+
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationConstructInjection',
+          $annotations['AnnotationConstructInjection']
+        );
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationConstructSugarInjection',
+          $annotations['AnnotationConstructSugarInjection']
+        );
+        $this->assertInstanceOf(
+          'Minime\Annotations\Fixtures\AnnotationSetterInjection',
+          $annotations['AnnotationSetterInjection']
+        );
+
+        $this->assertSame(
+          '{"foo":"bar","bar":"baz"}',
+          json_encode($annotations['AnnotationConstructInjection'])
+        );
+        $this->assertSame(
+          '{"foo":"foo","bar":"bar"}',
+          json_encode($annotations['AnnotationConstructSugarInjection'])
+        );
+        $this->assertSame(
+          '{"foo":"bar"}',
+          json_encode($annotations['AnnotationSetterInjection'])
+        );
     }
 }

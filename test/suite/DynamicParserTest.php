@@ -4,7 +4,7 @@ namespace Minime\Annotations;
 
 /**
  * DynamicParserTest
- * 
+ *
  * @group parser
  */
 class DynamicParserTest extends BaseTest
@@ -153,7 +153,7 @@ class DynamicParserTest extends BaseTest
                   ."Suspendisse egestas orci a felis imperdiet, non consectetur est suscipit.";
         $this->assertSame($string, $annotations['multiline_string']);
 
-        $cowsay = "------\n< moo >\n------ \n        \   ^__^\n         ".
+        $cowsay = "------\n< moo >\n------\n        \   ^__^\n         ".
                   "\  (oo)\_______\n            (__)\       )\/\\\n                ".
                   "||----w |\n                ||     ||";
         $this->assertSame($cowsay, $annotations['multiline_indented_string']);

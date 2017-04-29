@@ -119,4 +119,8 @@ class Parser extends DynamicParser
     {
         $this->typesPattern = '/^('.implode('|', $this->types).')(\s+)/';
     }
+
+    public function registerConcreteNamespaceLookup(array $namespaces) {
+        $this->typeContainer->concreteType->setNamespaces($namespaces);
+    }
 }
