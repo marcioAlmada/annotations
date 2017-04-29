@@ -2,11 +2,23 @@
 
 namespace Minime\Annotations\Types;
 
-use Minime\Annotations\Interfaces\TypeInterface;
 use Minime\Annotations\ParserException;
 
-class FloatType implements TypeInterface
+class FloatType extends AbstractType
 {
+    /**
+     * @var TypeInterface
+     */
+    private static $instance;
+
+    public static function getType()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new FloatType();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * Filter a value to be a Float

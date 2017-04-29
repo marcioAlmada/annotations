@@ -2,10 +2,21 @@
 
 namespace Minime\Annotations\Types;
 
-use Minime\Annotations\Interfaces\TypeInterface;
-
-class DynamicType implements TypeInterface
+class DynamicType extends AbstractType
 {
+    /**
+     * @var TypeInterface
+     */
+    private static $instance;
+
+    public static function getType()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new DynamicType();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * Parse a given undefined type value

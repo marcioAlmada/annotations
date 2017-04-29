@@ -2,11 +2,23 @@
 
 namespace Minime\Annotations\Types;
 
-use Minime\Annotations\Interfaces\TypeInterface;
 use Minime\Annotations\ParserException;
 
-class JsonType implements TypeInterface
+class JsonType extends AbstractType
 {
+    /**
+     * @var TypeInterface
+     */
+    private static $instance;
+
+    public static function getType()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new JsonType();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * Filter a value to be a Json

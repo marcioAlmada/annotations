@@ -7,7 +7,7 @@ use Minime\Annotations\Fixtures\AnnotationsFixture;
 
 /**
  * ParserTest
- * 
+ *
  * @group parser
  */
 class ParserTest extends DynamicParserTest

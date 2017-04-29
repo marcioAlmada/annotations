@@ -4,11 +4,23 @@ namespace Minime\Annotations\Types;
 
 use stdClass;
 use ReflectionClass;
-use Minime\Annotations\Interfaces\TypeInterface;
 use Minime\Annotations\ParserException;
 
-class ConcreteType implements TypeInterface
+class ConcreteType extends AbstractType
 {
+    /**
+     * @var TypeInterface
+     */
+    private static $instance;
+
+    public static function getType()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new ConcreteType();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * Process a value to be a concrete annotation
@@ -20,8 +32,8 @@ class ConcreteType implements TypeInterface
      */
     public function parse($value, $class = null)
     {
-        if (! class_exists($class)) {
-            throw new ParserException("Concrete annotation expects {$class} to exist.");
+        if (!class_exists($class)) {
+            throw new ParserException("Concrete annotation expects '{$class}' to exist.");
         }
 
         $prototype = (new JsonType)->parse($value);
@@ -79,7 +91,7 @@ class ConcreteType implements TypeInterface
     {
         foreach ($prototype as $method => $args) {
             call_user_func_array([$instance, $method], $args);
-        }
+            }
 
         return $instance;
     }
@@ -92,7 +104,7 @@ class ConcreteType implements TypeInterface
      */
     protected function isPrototypeSchemaValid(stdclass $prototype)
     {
-        foreach ($prototype as $method => $args) {
+        foreach ($prototype as $args) {
             if (! is_array($args)) {
                 return false;
             }

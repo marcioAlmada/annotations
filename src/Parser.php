@@ -19,12 +19,19 @@ class Parser extends DynamicParser
      * @var array
      */
     protected $types = [
-        '\Minime\Annotations\Types\IntegerType'  => 'integer',
-        '\Minime\Annotations\Types\StringType'   => 'string',
-        '\Minime\Annotations\Types\FloatType'    => 'float',
-        '\Minime\Annotations\Types\JsonType'     => 'json',
-        '\Minime\Annotations\Types\ConcreteType' => '->'
+        'integerType'  => 'integer',
+        'stringType'   => 'string',
+        'floatType'    => 'float',
+        'jsonType'     => 'json',
+        'concreteType' => '->'
     ];
+
+    /**
+     * A fallback type if no strong type declaration found.
+     *
+     * @var string
+     */
+    protected $typeFallback = 'dynamicType';
 
     /**
     * The regex equivalent of $types
@@ -34,11 +41,23 @@ class Parser extends DynamicParser
     protected $typesPattern;
 
     /**
+     * @var TypeContainer
+     */
+    private $typeContainer;
+
+    /**
      * Parser constructor
      *
      */
     public function __construct()
     {
+        $this->typeContainer = new TypeContainer();
+        $this->typeContainer->add($this->typeFallback);
+
+        foreach ($this->types as $key => $value) {
+            $this->typeContainer->add($key);
+        }
+
         $this->buildTypesPattern();
         parent::__construct();
     }
@@ -46,12 +65,14 @@ class Parser extends DynamicParser
     public function registerType($class, $token)
     {
         $this->types[$class] = $token;
+        $this->typeContainer->add($class);
         $this->buildTypesPattern();
     }
 
     public function unregisterType($class)
     {
         unset($this->types[$class]);
+        $this->typeContainer->remove($class);
         $this->buildTypesPattern();
     }
 
@@ -65,16 +86,18 @@ class Parser extends DynamicParser
     protected function parseValue($value, $key = null)
     {
         $value = trim($value);
-        $type = '\Minime\\Annotations\\Types\\DynamicType';
+        $type = $this->typeFallback;
+
         if (preg_match($this->typesPattern, $value, $found)) { // strong typed
             $type = $found[1];
             $value = trim(substr($value, strlen($type)));
+
             if (in_array($type, $this->types)) {
                 $type = array_search($type, $this->types);
             }
         }
 
-        return (new $type)->parse($value, $key);
+        return $this->typeContainer->{$type}->parse($value, $key);
     }
 
     /**
