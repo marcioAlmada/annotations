@@ -2,7 +2,9 @@
 
 namespace Minime\Annotations\Types;
 
-class StringType extends AbstractType
+use Minime\Annotations\Interfaces\TypeInterface;
+
+class StringType implements TypeInterface
 {
     /**
      * @var TypeInterface

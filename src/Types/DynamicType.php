@@ -2,7 +2,9 @@
 
 namespace Minime\Annotations\Types;
 
-class DynamicType extends AbstractType
+use Minime\Annotations\Interfaces\TypeInterface;
+
+class DynamicType implements TypeInterface
 {
     /**
      * @var TypeInterface

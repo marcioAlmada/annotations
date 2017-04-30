@@ -2,9 +2,10 @@
 
 namespace Minime\Annotations\Types;
 
+use Minime\Annotations\Interfaces\TypeInterface;
 use Minime\Annotations\ParserException;
 
-class IntegerType extends AbstractType
+class IntegerType implements TypeInterface
 {
     /**
      * @var TypeInterface

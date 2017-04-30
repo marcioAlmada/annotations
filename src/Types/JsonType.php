@@ -2,9 +2,10 @@
 
 namespace Minime\Annotations\Types;
 
+use Minime\Annotations\Interfaces\TypeInterface;
 use Minime\Annotations\ParserException;
 
-class JsonType extends AbstractType
+class JsonType implements TypeInterface
 {
     /**
      * @var TypeInterface

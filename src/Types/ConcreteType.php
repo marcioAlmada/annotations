@@ -4,9 +4,10 @@ namespace Minime\Annotations\Types;
 
 use stdClass;
 use ReflectionClass;
+use Minime\Annotations\Interfaces\TypeInterface;
 use Minime\Annotations\ParserException;
 
-class ConcreteType extends AbstractType
+class ConcreteType implements TypeInterface
 {
     /**
      * @var TypeInterface

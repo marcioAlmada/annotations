@@ -2,9 +2,10 @@
 
 namespace Minime\Annotations\Types;
 
+use Minime\Annotations\Interfaces\TypeInterface;
 use Minime\Annotations\ParserException;
 
-class FloatType extends AbstractType
+class FloatType implements TypeInterface
 {
     /**
      * @var TypeInterface
