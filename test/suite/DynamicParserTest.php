@@ -2,16 +2,39 @@
 
 namespace Minime\Annotations;
 
+use \ReflectionProperty;
+use Minime\Annotations\Fixtures\AnnotationsFixture;
+use Minime\Annotations\Interfaces\ParserInterface;
+
 /**
  * DynamicParserTest
- * 
+ *
  * @group parser
  */
-class DynamicParserTest extends BaseTest
+class DynamicParserTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    protected $fixture;
+
+    /**
+     * @var ParserInterface
+     */
+    protected $parser;
+
+    protected function getDocblock($fixture)
     {
-        parent::setup();
+        $reflection = new ReflectionProperty($this->fixture, $fixture);
+
+        return $reflection->getDocComment();
+    }
+
+    protected function getFixture($fixture)
+    {
+        return $this->parser->parse($this->getDocblock($fixture));
+    }
+
+    protected function setUp(): void
+    {
+        $this->fixture = new AnnotationsFixture;
         $this->parser = new DynamicParser;
     }
 

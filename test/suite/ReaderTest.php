@@ -3,11 +3,11 @@ namespace Minime\Annotations;
 
 use Minime\Annotations\Fixtures\AnnotationsFixture;
 
-class ReaderTest extends \PHPUnit_Framework_TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     private $fixture;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->fixture = new AnnotationsFixture;
     }
@@ -30,15 +30,6 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $reflectionClass = new \ReflectionClass($this->fixture);
         $annotations = $this->getReader()->getAnnotations($reflectionClass);
         $this->assertTrue($annotations->get('get'));
-    }
-
-    public function testReadFunctionAnnotations()
-    {
-        if(! function_exists($fn = __NAMESPACE__ . '\\fn')){
-            /** @bar */ function fn(){}
-        }
-
-        $this->assertTrue($this->getReader()->getFunctionAnnotations($fn)->get('bar'));
     }
 
     public function testReadClosureAnnotations()

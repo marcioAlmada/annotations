@@ -12,19 +12,22 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": "~8",
         "ext-json":"*",
-        "regex-guard/regex-guard": "~1.0",
-        "nikic/php-parser" : ">=2.0 <5.0.0"
+        "regex-guard/regex-guard": "~1.1",
+        "nikic/php-parser" : ">=4.0 <5.0.0"
     },
     "require-dev": {
-        "mockery/mockery": "^0.9",
-        "phpunit/phpunit": ">=4.8 <6.0.0"
+        "mockery/mockery": "~1.6",
+        "phpunit/phpunit": "~10"
     },
     "autoload": {
         "psr-4": { "Minime\\Annotations\\": "src/" }
     },
     "autoload-dev": {
         "psr-4": { "Minime\\Annotations\\Fixtures\\": "test/fixtures/" }
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
