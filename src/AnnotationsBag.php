@@ -153,7 +153,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * Countable
      */
-    public function count()
+    public function count(): int
     {
         return count($this->attributes);
     }
@@ -161,7 +161,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * JsonSerializable
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
@@ -169,7 +169,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * IteratorAggregate
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new ArrayIterator($this->attributes);
     }
@@ -177,7 +177,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * ArrayAccess - Whether or not an offset exists.
      */
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
@@ -185,7 +185,7 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * ArrayAccess - Returns the value at specified offset.
      */
-    public function offsetGet($key)
+    public function offsetGet($key): mixed
     {
         return $this->get($key);
     }
@@ -193,17 +193,15 @@ class AnnotationsBag implements AnnotationsBagInterface
     /**
      * ArrayAccess - Assigns a value to the specified offset.
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->set($key, $value);
-
-        return true;
     }
 
     /**
      * ArrayAccess - Unsets an offset.
      */
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         unset($this->attributes[$key]);
     }
