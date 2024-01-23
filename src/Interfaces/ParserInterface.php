@@ -17,4 +17,11 @@ interface ParserInterface
      * @return array
      */
     public function parse($docBlock);
+
+    /**
+     * Register set of namespaces for ConcreteType to autolookup.
+     *
+     * @param array $namespaces
+     */
+    public function registerConcreteNamespaceLookup(array $namespaces);
 }

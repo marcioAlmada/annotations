@@ -7,6 +7,19 @@ use Minime\Annotations\ParserException;
 
 class JsonType implements TypeInterface
 {
+    /**
+     * @var TypeInterface
+     */
+    private static $instance;
+
+    public static function getType()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new JsonType();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * Filter a value to be a Json

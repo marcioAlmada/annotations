@@ -7,6 +7,19 @@ use Minime\Annotations\ParserException;
 
 class FloatType implements TypeInterface
 {
+    /**
+     * @var TypeInterface
+     */
+    private static $instance;
+
+    public static function getType()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new FloatType();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * Filter a value to be a Float

@@ -7,12 +7,12 @@ use Minime\Annotations\Fixtures\AnnotationConstructInjection;
 /**
  * @group bag
  */
-class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
+class AnnotationsBagTest extends \PHPUnit\Framework\TestCase
 {
 
     private $Bag;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->Bag = new AnnotationsBag(
             [

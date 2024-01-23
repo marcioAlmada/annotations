@@ -6,6 +6,19 @@ use Minime\Annotations\Interfaces\TypeInterface;
 
 class DynamicType implements TypeInterface
 {
+    /**
+     * @var TypeInterface
+     */
+    private static $instance;
+
+    public static function getType()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new DynamicType();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * Parse a given undefined type value

@@ -121,4 +121,9 @@ class DynamicParser implements ParserInterface
     {
         return $key;
     }
+
+    public function registerConcreteNamespaceLookup(array $namespaces)
+    {
+    }
+
 }

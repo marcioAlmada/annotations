@@ -83,6 +83,15 @@ class AnnotationsFixture
     private $concrete_fixture;
 
     /**
+     * @AnnotationConstructInjection  -> { "__construct" : ["bar"] }
+     *
+     * @AnnotationConstructSugarInjection  -> ["foo", "bar"]
+     *
+     * @AnnotationSetterInjection    -> { "setFoo" : ["bar"] }
+     */
+    private $short_concrete_fixture;
+
+    /**
      * @SomeUndefinedClass -> {}
      */
     private $bad_concrete_fixture;
