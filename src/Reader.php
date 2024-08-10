@@ -136,7 +136,7 @@ class Reader implements ReaderInterface
      */
     public function getAnnotations(\Reflector $Reflection)
     {
-        $doc = $Reflection->getDocComment();
+        $doc = (string)$Reflection->getDocComment();
         if ($this->cache) {
             $key = $this->cache->getKey($doc);
             $ast = $this->cache->get($key);

@@ -3,80 +3,79 @@
 namespace Minime\Annotations;
 
 use \ReflectionProperty;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Minime\Annotations\Fixtures\AnnotationsFixture;
+
+require_once __DIR__ . '/DynamicParserTestCase.php';
 
 /**
  * ParserTest
  * 
- * @group parser
  */
-class ParserTest extends DynamicParserTest
+class ParserTest extends DynamicParserTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
         $this->parser = new Parser;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseConcreteFixture()
     {
         $annotations = $this->getFixture('concrete_fixture');
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationConstructInjection',
           $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][0]
         );
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationConstructInjection',
           $annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][1]
         );
-        $this->assertSame(
+        self::assertSame(
           '{"foo":"bar","bar":"baz"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][0])
         );
-        $this->assertSame(
+        self::assertSame(
           '{"foo":"bar","bar":"baz"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructInjection'][1])
         );
-        $this->assertSame(
+        self::assertSame(
           '{"foo":"foo","bar":"bar"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructSugarInjection'][0])
         );
-        $this->assertSame(
+        self::assertSame(
           '{"foo":"baz","bar":"bar"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationConstructSugarInjection'][1])
         );
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationSetterInjection',
           $annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][0]
         );
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
           'Minime\Annotations\Fixtures\AnnotationSetterInjection',
           $annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][1]
         );
-        $this->assertSame(
+        self::assertSame(
           '{"foo":"bar"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][0])
         );
-        $this->assertSame(
+        self::assertSame(
           '{"foo":"bar"}',
           json_encode($annotations['Minime\Annotations\Fixtures\AnnotationSetterInjection'][1])
         );
     }
 
-    /**
-     * @test
-     * @expectedException \Minime\Annotations\ParserException
-     * @dataProvider invalidConcreteAnnotationFixtureProvider
-     */
+    #[Test]
+    #[DataProvider('invalidConcreteAnnotationFixtureProvider')]
     public function parseInvalidConcreteFixture($fixture)
     {
+        $this->expectException(\Minime\Annotations\ParserException::class);
         $this->getFixture($fixture);
     }
 
-    public function invalidConcreteAnnotationFixtureProvider()
+    public static function invalidConcreteAnnotationFixtureProvider()
     {
       return [
         ['bad_concrete_fixture'],
@@ -84,15 +83,13 @@ class ParserTest extends DynamicParserTest
       ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseStrongTypedFixture()
     {
         $annotations = $this->getFixture('strong_typed_fixture');
         $declarations = $annotations['value'];
-        $this->assertNotEmpty($declarations);
-        $this->assertSame(
+        self::assertNotEmpty($declarations);
+        self::assertSame(
             [
             "abc", "45", // string
             45, -45, // integer
@@ -102,7 +99,7 @@ class ParserTest extends DynamicParserTest
         );
 
         $declarations = $annotations['json_value'];
-        $this->assertEquals(
+        self::assertEquals(
             [
             ["x", "y"], // json
             json_decode('{"x": {"y": "z"}}'),
@@ -112,65 +109,53 @@ class ParserTest extends DynamicParserTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseReservedWordsAsValue()
     {
         $annotations = $this->getFixture('reserved_words_as_value_fixture');
         $expected = ['string','integer','float','json'];
-        $this->assertSame($expected, $annotations['value']);
-        $this->assertSame($expected, $annotations['value_with_trailing_space']);
+        self::assertSame($expected, $annotations['value']);
+        self::assertSame($expected, $annotations['value_with_trailing_space']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function tolerateUnrecognizedTypes()
     {
         $annotations = $this->getFixture('non_recognized_type_fixture');
-        $this->assertEquals(
+        self::assertEquals(
           "footype Tolerate me. DockBlocks can't be evaluated rigidly.", $annotations['value']);
     }
 
-    /**
-     * @test
-     * @expectedException \Minime\Annotations\ParserException
-     */
+    #[Test]
     public function exceptionWithBadJsonValue()
     {
+        $this->expectException(\Minime\Annotations\ParserException::class);
         $this->getFixture('bad_json_fixture');
     }
 
-    /**
-     * @test
-     * @expectedException \Minime\Annotations\ParserException
-     */
+    #[Test]
     public function exceptionWithBadIntegerValue()
     {
+        $this->expectException(\Minime\Annotations\ParserException::class);
         $this->getFixture('bad_integer_fixture');
     }
 
-    /**
-     * @test
-     * @expectedException \Minime\Annotations\ParserException
-     */
+    #[Test]
     public function exceptionWithBadFloatValue()
     {
+        $this->expectException(\Minime\Annotations\ParserException::class);
         $this->getFixture('bad_float_fixture');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testTypeRegister()
     {
         $docblock = '/** @value foo bar */';
 
-        $this->assertSame(['value' => 'foo bar'], $this->parser->parse($docblock));
+        self::assertSame(['value' => 'foo bar'], $this->parser->parse($docblock));
         $this->parser->registerType('\Minime\Annotations\Fixtures\FooType', 'foo');
-        $this->assertSame(['value' => 'this foo is bar'], $this->parser->parse($docblock));
+        self::assertSame(['value' => 'this foo is bar'], $this->parser->parse($docblock));
         $this->parser->unregisterType('\Minime\Annotations\Fixtures\FooType');
-        $this->assertSame(['value' => 'foo bar'], $this->parser->parse($docblock));
+        self::assertSame(['value' => 'foo bar'], $this->parser->parse($docblock));
     }
 }

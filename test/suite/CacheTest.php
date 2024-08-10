@@ -4,18 +4,22 @@ namespace Minime\Annotations;
 
 use Mockery;
 
+use PHPUnit\Framework\TestCase;
 use Minime\Annotations\Interfaces\CacheInterface;
 use Minime\Annotations\Cache\FileCache;
 use Minime\Annotations\Cache\ArrayCache;
 use Minime\Annotations\Cache\ApcCache;
 use Minime\Annotations\Fixtures\AnnotationsFixture;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 
-class CacheTest extends \PHPUnit_Framework_TestCase
+require_once __DIR__ . '/BaseTestCase.php';
+
+class CacheTest extends TestCase
 {
 
     protected $fixtureClass = 'Minime\Annotations\Fixtures\AnnotationsFixture';
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
@@ -39,35 +43,31 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $reader = $this->getReader();
         $reader->setCache($cache);
 
-        $this->assertSame(
+        self::assertSame(
             $reader->getPropertyAnnotations($this->fixtureClass, 'inline_docblock_fixture')->get('value'),
             $reader->getPropertyAnnotations($this->fixtureClass, 'inline_docblock_fixture')->get('value') // from cache
         );
     }
 
     public function testArrayCache(){
-        $this->assertCacheHandlerWorks(new ArrayCache());
+        self::assertCacheHandlerWorks(new ArrayCache());
     }
 
     public function testFileCache(){
-        $this->assertCacheHandlerWorks(new FileCache(__DIR__ . '/../../build/'));
+        self::assertCacheHandlerWorks(new FileCache(__DIR__ . '/../../build/'));
     }
 
-    public function testFileCacheWithDefaultStoragePath(){
+    public function getFileCacheWithDefaultStoragePath(){
         new FileCache();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessageRegExp #^Cache path is not a writable/readable directory: .+\.#
-     */
     public function testFileCacheWithBadStoragePath(){
+        $this->expectExceptionMessageMatches("#^Cache path is not a writable/readable directory: .+\.#");
+        $this->expectException(\InvalidArgumentException::class);
         new FileCache(__DIR__ . '/invalid/path/');
     }
 
-    /**
-     * @requires extension apc
-     */
+    #[RequiresPhpExtension('apcu')]
     public function testApcCache(){
         $this->assertCacheHandlerWorks(new ApcCache());
     }
@@ -79,42 +79,42 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
         $reader->getCache()->clear();
 
-        $this->assertSame(
+        self::assertSame(
             $reader->getPropertyAnnotations($this->fixtureClass, 'integer_fixture')->toArray(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'integer_fixture')->toArray()
         );
 
-        $this->assertSame(
+        self::assertSame(
             $reader->getPropertyAnnotations($this->fixtureClass, 'float_fixture')->toArray(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'float_fixture')->toArray()
         );
 
-        $this->assertSame(
+        self::assertSame(
             $reader->getPropertyAnnotations($this->fixtureClass, 'namespaced_fixture')->toArray(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'namespaced_fixture')->toArray()
         );
 
-        $this->assertSame(
+        self::assertSame(
             $reader->getPropertyAnnotations($this->fixtureClass, 'serialize_fixture')->toArray(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'serialize_fixture')->toArray()
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             $reader->getPropertyAnnotations($this->fixtureClass, 'json_fixture')->toArray(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'json_fixture')->toArray()
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             $reader->getPropertyAnnotations($this->fixtureClass, 'strong_typed_fixture')->toArray(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'strong_typed_fixture')->toArray()
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             $reader->getPropertyAnnotations($this->fixtureClass, 'multiline_value_fixture')->toArray(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'multiline_value_fixture')->toArray()
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             $reader->getPropertyAnnotations($this->fixtureClass, 'concrete_fixture')->toArray(),
             $reader->getPropertyAnnotations($this->fixtureClass, 'concrete_fixture')->toArray()
         );

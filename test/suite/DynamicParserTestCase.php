@@ -2,102 +2,87 @@
 
 namespace Minime\Annotations;
 
+use PHPUnit\Framework\Attributes\Test;
+
+require_once __DIR__ . '/BaseTestCase.php';
+
 /**
  * DynamicParserTest
  * 
- * @group parser
  */
-class DynamicParserTest extends BaseTest
+class DynamicParserTestCase extends BaseTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
         $this->parser = new DynamicParser;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseEmptyFixture()
     {
         $annotations = $this->getFixture('empty_fixture');
-        $this->assertSame([], $annotations);
+        self::assertSame([], $annotations);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseNullFixture()
     {
         $annotations = $this->getFixture('null_fixture');
-        $this->assertSame([null, ''], $annotations['value']);
+        self::assertSame([null, ''], $annotations['value']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseBooleanFixture()
     {
         $annotations = $this->getFixture('boolean_fixture');
-        $this->assertSame([true, false, "true", "false"], $annotations['value']);
+        self::assertSame([true, false, "true", "false"], $annotations['value']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseImplicitBooleanFixture()
     {
         $annotations = $this->getFixture('implicit_boolean_fixture');
-        $this->assertSame(true, $annotations['alpha']);
-        $this->assertSame(true, $annotations['beta']);
-        $this->assertSame(true, $annotations['gamma']);
-        $this->assertArrayNotHasKey('delta', $annotations);
+        self::assertSame(true, $annotations['alpha']);
+        self::assertSame(true, $annotations['beta']);
+        self::assertSame(true, $annotations['gamma']);
+        self::assertArrayNotHasKey('delta', $annotations);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseStringFixture()
     {
         $annotations = $this->getFixture('string_fixture');
-        $this->assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
-        $this->assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
+        self::assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
+        self::assertSame(['abc', 'abc', 'abc ', '123'], $annotations['value']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseIdentifierFixture()
     {
         $annotations = $this->getFixture('identifier_parsing_fixture');
-        $this->assertSame(['bar' => 'test@example.com', 'toto' => true, 'tata' => true, 'number' => 2.1], $annotations);
+        self::assertSame(['bar' => 'test@example.com', 'toto' => true, 'tata' => true, 'number' => 2.1], $annotations);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseIntegerFixture()
     {
         $annotations = $this->getFixture('integer_fixture');
-        $this->assertSame([123, 23, -23], $annotations['value']);
+        self::assertSame([123, 23, -23], $annotations['value']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseFloatFixture()
     {
         $annotations = $this->getFixture('float_fixture');
-        $this->assertSame([.45, 0.45, 45., -4.5], $annotations['value']);
+        self::assertSame([.45, 0.45, 45., -4.5], $annotations['value']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseJsonFixture()
     {
         $annotations = $this->getFixture('json_fixture');
-        $this->assertEquals(
+        self::assertEquals(
             [
                 ["x", "y"],
                 json_decode('{"x": {"y": "z"}}'),
@@ -107,43 +92,35 @@ class DynamicParserTest extends BaseTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseSingleValuesFixture()
     {
         $annotations = $this->getFixture('single_values_fixture');
-        $this->assertEquals('foo', $annotations['param_a']);
-        $this->assertEquals('bar', $annotations['param_b']);
+        self::assertEquals('foo', $annotations['param_a']);
+        self::assertEquals('bar', $annotations['param_b']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseMultipleValuesFixture()
     {
         $annotations = $this->getFixture('multiple_values_fixture');
-        $this->assertEquals(['x', 'y', 'z'], $annotations['value']);
+        self::assertEquals(['x', 'y', 'z'], $annotations['value']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseParseSameLineFixture()
     {
         $annotations = $this->getFixture('same_line_fixture');
-        $this->assertSame(true, $annotations['get']);
-        $this->assertSame(true, $annotations['post']);
-        $this->assertSame(true, $annotations['ajax']);
-        $this->assertSame(true, $annotations['alpha']);
-        $this->assertSame(true, $annotations['beta']);
-        $this->assertSame(true, $annotations['gamma']);
-        $this->assertArrayNotHasKey('undefined', $annotations);
+        self::assertSame(true, $annotations['get']);
+        self::assertSame(true, $annotations['post']);
+        self::assertSame(true, $annotations['ajax']);
+        self::assertSame(true, $annotations['alpha']);
+        self::assertSame(true, $annotations['beta']);
+        self::assertSame(true, $annotations['gamma']);
+        self::assertArrayNotHasKey('undefined', $annotations);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseMultilineValueFixture()
     {
         $annotations = $this->getFixture('multiline_value_fixture');
@@ -151,17 +128,15 @@ class DynamicParserTest extends BaseTest
                   ."Etiam malesuada mauris justo, at sodales nisi accumsan sit amet.\n\n"
                   ."Morbi imperdiet lacus non purus suscipit convallis.\n"
                   ."Suspendisse egestas orci a felis imperdiet, non consectetur est suscipit.";
-        $this->assertSame($string, $annotations['multiline_string']);
+        self::assertSame($string, $annotations['multiline_string']);
 
         $cowsay = "------\n< moo >\n------ \n        \   ^__^\n         ".
                   "\  (oo)\_______\n            (__)\       )\/\\\n                ".
                   "||----w |\n                ||     ||";
-        $this->assertSame($cowsay, $annotations['multiline_indented_string']);
+        self::assertSame($cowsay, $annotations['multiline_indented_string']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseNamespacedAnnotations()
     {
         $annotations = $this->getFixture('namespaced_fixture');
@@ -171,9 +146,7 @@ class DynamicParserTest extends BaseTest
         $this->assertSame('foo', $annotations['another.path.to.cake']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseInlineDocblocks()
     {
         $annotations = $this->getFixture('inline_docblock_fixture');
@@ -189,9 +162,9 @@ class DynamicParserTest extends BaseTest
     }
 
     /**
-     * @test for issue #32
      * @link https://github.com/marcioAlmada/annotations/issues/32
      */
+    #[Test]
     public function issue32()
     {
       $annotations = $this->getFixture('i32_fixture');
@@ -199,9 +172,9 @@ class DynamicParserTest extends BaseTest
     }
 
     /**
-     * @test for issue #49
      * @link https://github.com/marcioAlmada/annotations/issues/49
      */
+    #[Test]
     public function issue49()
     {
       $annotations = $this->getFixture('i49_fixture');
@@ -209,9 +182,9 @@ class DynamicParserTest extends BaseTest
     }
 
     /**
-     * @test for issue #55
      * @link https://github.com/marcioAlmada/annotations/issues/55
      */
+    #[Test]
     public function issue55()
     {
       $annotations = $this->parser->parse($this->getDocblock('i55_fixture'));

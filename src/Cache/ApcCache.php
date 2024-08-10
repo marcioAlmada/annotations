@@ -26,15 +26,15 @@ class ApcCache implements CacheInterface
 
     public function set($key, array $annotations)
     {
-        if (! apc_exists($key)) {
-            apc_store($key, $annotations);
+        if (! apcu_exists($key)) {
+            apcu_store($key, $annotations);
         }
     }
 
     public function get($key)
     {
-        if (apc_exists($key)) {
-            return apc_fetch($key);
+        if (apcu_exists($key)) {
+            return apcu_fetch($key);
         }
 
         return [];
@@ -42,11 +42,13 @@ class ApcCache implements CacheInterface
 
     public function clear()
     {
-        $cache = apc_cache_info('user');
-        foreach ($cache['cache_list'] as $entry) {
-            if(isset($entry['info'])
-               && strpos($entry['info'], 'minime-annotations:') === 0) {
-                apc_delete($entry['info']);
+        $cache = apcu_cache_info();
+        if ($cache) {
+            foreach ($cache['cache_list'] as $entry) {
+                if(isset($entry['info'])
+                   && strpos($entry['info'], 'minime-annotations:') === 0) {
+                    apcu_delete($entry['info']);
+                }
             }
         }
     }

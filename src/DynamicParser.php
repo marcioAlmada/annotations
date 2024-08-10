@@ -77,7 +77,7 @@ class DynamicParser implements ParserInterface
      * @param  string $docblock A raw docblok string
      * @return string A docblok string without delimiters
      */
-    protected function sanitizeDocblock($docblock)
+    protected function sanitizeDocblock(string $docblock)
     {
         return preg_replace('/\s*\*\/$|^\s*\*\s{0,1}|^\/\*{1,2}/m', '', $docblock);
     }

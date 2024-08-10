@@ -2,17 +2,20 @@
 
 namespace Minime\Annotations;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Minime\Annotations\Fixtures\AnnotationConstructInjection;
 
+require_once __DIR__ . '/BaseTestCase.php';
+
 /**
- * @group bag
  */
-class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
+class AnnotationsBagTest extends TestCase
 {
 
     private $Bag;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->Bag = new AnnotationsBag(
             [
@@ -32,61 +35,59 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $this->assertSame(false, $this->Bag->get('post'));
-        $this->assertInstanceOf(
+        self::assertSame(false, $this->Bag->get('post'));
+        self::assertInstanceOf(
             '\Minime\Annotations\Fixtures\AnnotationConstructInjection',
             $this->Bag->get('Minime\Annotations\Fixtures\AnnotationConstructInjection')
         );
 
-        $this->assertSame(false, $this->Bag->get('post', true));
-        $this->assertSame(null, $this->Bag->get('undefined'));
-        $this->assertSame(false, $this->Bag->get('undefined', false));
-        $this->assertSame([], $this->Bag->get('undefined', []));
+        self::assertSame(false, $this->Bag->get('post', true));
+        self::assertSame(null, $this->Bag->get('undefined'));
+        self::assertSame(false, $this->Bag->get('undefined', false));
+        self::assertSame([], $this->Bag->get('undefined', []));
     }
 
     public function testGetAsArray()
     {
         // single value
-        $this->assertSame([false], $this->Bag->getAsArray('put'));
-        $this->assertCount(1, $this->Bag->getAsArray('put'));
+        self::assertSame([false], $this->Bag->getAsArray('put'));
+        self::assertCount(1, $this->Bag->getAsArray('put'));
 
         // array value
-        $this->assertSame(['json', 'csv'], $this->Bag->getAsArray('config.export'));
-        $this->assertCount(2, $this->Bag->getAsArray('config.export'));
+        self::assertSame(['json', 'csv'], $this->Bag->getAsArray('config.export'));
+        self::assertCount(2, $this->Bag->getAsArray('config.export'));
 
         // null value
-        $this->assertSame([null], $this->Bag->getAsArray('default'));
-        $this->assertCount(1, $this->Bag->getAsArray('default'));
+        self::assertSame([null], $this->Bag->getAsArray('default'));
+        self::assertCount(1, $this->Bag->getAsArray('default'));
 
         // this value is not set
-        $this->assertSame([], $this->Bag->getAsArray('foo'));
-        $this->assertCount(0, $this->Bag->getAsArray('foo'));
+        self::assertSame([], $this->Bag->getAsArray('foo'));
+        self::assertCount(0, $this->Bag->getAsArray('foo'));
     }
 
     public function testArrayAccessBag()
     {
         $this->Bag = new AnnotationsBag([]);
-        $this->assertEquals(0, count($this->Bag));
+        self::assertEquals(0, count($this->Bag));
         $this->Bag['fruit'] = 'orange';
-        $this->assertEquals(1, count($this->Bag));
-        $this->assertSame('orange', $this->Bag['fruit']);
-        $this->assertTrue(isset($this->Bag['fruit']));
-        $this->assertFalse(isset($this->Bag['cheese']));
+        self::assertEquals(1, count($this->Bag));
+        self::assertSame('orange', $this->Bag['fruit']);
+        self::assertTrue(isset($this->Bag['fruit']));
+        self::assertFalse(isset($this->Bag['cheese']));
         unset($this->Bag['fruit']);
-        $this->assertEquals(0, count($this->Bag));
-        $this->assertNull($this->Bag['fruit']);
+        self::assertEquals(0, count($this->Bag));
+        self::assertNull($this->Bag['fruit']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function grep()
     {
-        $this->assertCount(3, $this->Bag->grep('#val#'));
-        $this->assertCount(2, $this->Bag->grep('#config#'));
+        self::assertCount(3, $this->Bag->grep('#val#'));
+        self::assertCount(2, $this->Bag->grep('#config#'));
 
         // grep that always matches nothing
-        $this->assertCount(0, $this->Bag->grep('#^$#')->toArray());
+        self::assertCount(0, $this->Bag->grep('#^$#')->toArray());
 
         // chained grep
         $this->assertSame(['val.max' => 16], $this->Bag->grep('#max$#')->toArray());
@@ -95,9 +96,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $this->Bag->grep('#Minime\\\Annotations#')->toArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function useNamespace()
     {
 
@@ -147,9 +146,7 @@ class AnnotationsBagTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function union()
     {
         $this->Bag = new AnnotationsBag(

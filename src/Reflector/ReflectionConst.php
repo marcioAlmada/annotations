@@ -2,6 +2,7 @@
 
 namespace Minime\Annotations\Reflector;
 
+use PhpParser\PhpVersion;
 use PhpParser\ParserFactory;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
@@ -34,17 +35,18 @@ class ReflectionConst implements \Reflector
         $className = $classReflection->getName();
         $fileName = $classReflection->getFileName();
 
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->createForVersion(PhpVersion::fromString('8.0'));
+
         try {
             $stmts = $parser->parse(file_get_contents($fileName));
         } catch (ParserError $e) {
-            throw new \ReflectionException("Cannot parse the class ${fileName}", 0, $e);
+            throw new \ReflectionException("Cannot parse the class {$fileName}", 0, $e);
         }
 
         // Class can be in a namespace or at the root of the statement
         $classNode = $this->findClassNode($stmts);
         if (!$classNode) {
-            throw new \ReflectionException("Class ${className} not found in file ${fileName}");
+            throw new \ReflectionException("Class {$className} not found in file {$fileName}");
         }
 
 
@@ -62,7 +64,7 @@ class ReflectionConst implements \Reflector
         }
 
         if (!$this->constNode) {
-            throw new \ReflectionException("Class constant ${constName} does not exist in class ${className}");
+            throw new \ReflectionException("Class constant {$constName} does not exist in class {$className}");
         }
 
     }
